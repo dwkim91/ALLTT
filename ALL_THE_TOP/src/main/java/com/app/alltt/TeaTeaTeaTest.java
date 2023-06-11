@@ -1,5 +1,5 @@
 package com.app.alltt;
 
-public class TeTeTeTest {
+public class TeaTeaTeaTest {
 	//까꿍
 }
