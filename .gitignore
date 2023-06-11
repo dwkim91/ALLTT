@@ -1,3 +1,7 @@
 /.metadata/
-ALL_THE_TOP/target/classes/com/app/alltt/hyun/hyun.class
+/.classpath
+/.project
+/.settings
+/target/
+
 ALL_THE_TOP/target/m2e-wtp/web-resources/META-INF/MANIFEST.MF
