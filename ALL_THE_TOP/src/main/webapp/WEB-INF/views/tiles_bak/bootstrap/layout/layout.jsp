@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %> 
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"/>
 <!DOCTYPE html>
@@ -19,14 +19,15 @@
     rel="stylesheet">
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/plyr.css" type="text/css">
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/plyr.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/style.css" type="text/css">
+    <script src="${contextPath}/resources/bootstrap/js/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
@@ -39,10 +40,8 @@
     <tiles:insertAttribute name="header"/>
     <!-- Header End -->
 
-    
-
 	<!-- Content Section Begin -->
-	<tiles:insertAttribute name="content"/>
+	<tiles:insertAttribute name="body"/>
 	<!-- Content Section End -->
 
 	<!-- Footer Section Begin -->
@@ -61,14 +60,13 @@
 <!-- Search model end -->
 
 <!-- Js Plugins -->
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/player.js"></script>
-<script src="js/jquery.nice-select.min.js"></script>
-<script src="js/mixitup.min.js"></script>
-<script src="js/jquery.slicknav.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/main.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/bootstrap.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/player.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/jquery.nice-select.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/mixitup.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/jquery.slicknav.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/owl.carousel.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/main.js"></script>
 
 
 </body>

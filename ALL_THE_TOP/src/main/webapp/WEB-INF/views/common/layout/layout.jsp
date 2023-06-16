@@ -19,14 +19,15 @@
     rel="stylesheet">
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/plyr.css" type="text/css">
-    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/plyr.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/style.css" type="text/css">
+    <script src="${contextPath}/resources/bootstrap/js/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
@@ -59,14 +60,13 @@
 <!-- Search model end -->
 
 <!-- Js Plugins -->
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/player.js"></script>
-<script src="js/jquery.nice-select.min.js"></script>
-<script src="js/mixitup.min.js"></script>
-<script src="js/jquery.slicknav.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/main.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/bootstrap.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/player.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/jquery.nice-select.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/mixitup.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/jquery.slicknav.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/owl.carousel.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/main.js"></script>
 
 
 </body>
