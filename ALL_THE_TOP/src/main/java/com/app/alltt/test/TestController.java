@@ -5,12 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/alltt")
 public class TestController {
 
-	@GetMapping("/index")
+	@GetMapping("/main")
 	public String index() {
-		return "/alltt/index";
+		return "/alltt/main";
 	}
 	
 	@GetMapping("/login")

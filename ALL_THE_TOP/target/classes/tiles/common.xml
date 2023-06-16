@@ -8,9 +8,9 @@
 		<put-attribute name="footer" 	value="/WEB-INF/views/common/layout/footer.jsp" />			
 	</definition>
 	
-	<definition name="/alltt/index" extends="alltt">												
+	<definition name="/alltt/main" extends="alltt">												
 		<put-attribute name="body" value="/WEB-INF/views/client/index/index.jsp"/> 					
-		<put-attribute name="title"   value="index"/> 											
+		<put-attribute name="title"   value="main"/> 											
 	</definition>
 	
 	<definition name="/alltt/login" extends="alltt">												
