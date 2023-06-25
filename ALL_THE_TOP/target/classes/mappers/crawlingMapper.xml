@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="crawlingMapper">
+	
+	<insert id="insertContent" parameterType="CrawlingDTO" useGeneratedKeys="true" keyProperty="contentId">
+		INSERT INTO CONTENT (
+      		TITLE,
+      		CREATOR,
+      		ACTORS,
+      		SUMMARY,
+      		ENROLL_DT,
+       		CONTENT_TYPE
+		)
+		VALUES (
+			#{title},	
+			#{creator},	
+			#{actors},	
+			#{summary},	
+			#{enrollDt},	
+			#{contentType}			
+		)
+	</insert>
+	
+	<insert id="insertDetailLink" parameterType="CrawlingDTO">
+		INSERT INTO DETAIL_LINK (
+			CONTENT_ID,
+			PLATFORM_ID,
+			IMG_URL,
+			URL
+		)
+		VALUES (
+			#{contentId},		
+			#{platformId},	
+			#{imgUrl},	
+			#{url}		
+		)
+	</insert>
+	
+	<insert id="insertGenre" parameterType="CrawlingDTO">
+		INSERT INTO CONTENT_GENRE (
+			CONTENT_ID,
+			GENRE_ID
+		)
+		VALUES (
+			#{contentId},		
+			#{genreId}	
+		)
+	</insert>
+	
+	<insert id="insertContentKey" parameterType="ContentKeyDTO">
+		INSERT INTO CONTENT_KEY (
+			CONTENT_ID,
+			CONTENT_KEY
+		)
+		VALUES (
+			#{contentId},
+			#{contentKey}
+		)
+	</insert>
+	
+	<select id="selectListGenreId" parameterType="long" resultType="Integer">
+		SELECT
+			GENRE_ID
+		FROM
+			CONTENT_GENRE
+		WHERE
+			CONTENT_ID = #{contentId}
+	</select>
+
+	<select id="selectOneContentId" resultType="long">
+		SELECT
+			CONTENT_ID
+		FROM
+			CONTENT
+		WHERE
+			TITLE = #{title}
+	</select>
+
+	<select id="selectListGenreLink" parameterType="int" resultType="GenreLinkDTO">
+		SELECT
+			CONTENT_TYPE,
+			GENRE_ID,
+			PLATFORM_ID,
+			URL
+		FROM
+			GENRE_LINK
+		WHERE
+			PLATFORM_ID = #{platformId}
+	</select>
+	
+	<select id="selectOneDetailLink" parameterType="String" resultType="DetailLinkDTO">
+		SELECT 
+			*
+		FROM
+			DETAIL_LINK
+		WHERE
+			IMG_URL = #{imgUrl}
+	</select>
+	
+	<select id="selectListContentId" parameterType="String" resultType="Long">
+		SELECT 
+			CONTENT_ID
+		FROM 
+			CONTENT_KEY
+		WHERE 
+			CONTENT_KEY = #{contentKey}
+	</select>
+	
+	<select id="selectOneContentType" parameterType="Long" resultType="String">
+		SELECT
+       		CONTENT_TYPE
+		FROM
+			CONTENT
+		WHERE	
+			CONTENT_ID = #{contentId}
+	</select>
+	
+	<select id="selectListContentKey" parameterType="String" resultType="Long">
+		SELECT 
+			CONTENT_ID,
+		FROM 
+			CONTENT_KEY
+		WHERE 
+			CONTENT_KEY = #{contentKey}
+	</select>
+	
+	<select id="selectListPlatformId" parameterType="Long" resultType="Integer">
+		SELECT
+       		PLATFORM_ID
+		FROM
+			DETAIL_LINK
+		WHERE	
+			CONTENT_ID = #{contentId}
+	</select>
+	
+</mapper>

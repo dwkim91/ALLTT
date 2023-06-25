@@ -6,6 +6,12 @@
 	<settings>
 		<setting name="mapUnderscoreToCamelCase" value="true"/>
 	</settings>
-
+	
+	<typeAliases>
+		<typeAlias type="com.app.alltt.crawling.dto.CrawlingDTO"		alias="CrawlingDTO"/>
+		<typeAlias type="com.app.alltt.genrelink.dto.GenreLinkDTO"		alias="GenreLinkDTO"/>
+		<typeAlias type="com.app.alltt.contentkey.dto.ContentKeyDTO"	alias="ContentKeyDTO"/>
+		<typeAlias type="com.app.alltt.detaillink.dto.DetailLinkDTO"	alias="DetailLinkDTO"/>
+	</typeAliases>
 
 </configuration>
