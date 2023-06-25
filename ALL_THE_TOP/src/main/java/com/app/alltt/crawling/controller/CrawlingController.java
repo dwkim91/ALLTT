@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.app.alltt.crawling.service.CrawlingService;
 
 @Controller
@@ -15,6 +14,7 @@ public class CrawlingController {
 	@Autowired
 	private CrawlingService crawlingService;
 	
+	//private ChromeCrawling crawling = new ChromeCrawling();
 	
 	@GetMapping("/addNetflixContents")
 	@ResponseBody
@@ -28,19 +28,17 @@ public class CrawlingController {
 	@GetMapping("/addTvingContents")
 	@ResponseBody
 	public String addTvingContents() {
+
+		crawlingService.chromeDriverInit();
 		
-		//crawlingService.addTvingContents();
+		crawlingService.tvingLogin("alltttv", "!allott1234");
 		
-		return "<h1>Success</h1>";
-	}
-	
-	@GetMapping("/addWavveContents")
-	@ResponseBody
-	public String addWavveContents() {
+		//crawlingService.addContents(crawlingService);
 		
-		//crawlingService.addWavveContents();
+		crawlingService.quit();
 		
 		return "<h1>Success</h1>";
 	}
 	
 }
+
