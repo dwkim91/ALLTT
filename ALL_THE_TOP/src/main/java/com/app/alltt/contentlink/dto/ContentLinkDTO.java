@@ -1,16 +1,16 @@
-package com.app.alltt.detaillink.dto;
+package com.app.alltt.contentlink.dto;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class DetailLinkDTO {
+public class ContentLinkDTO {
 	
 	private long linkId;	
-	private long contentId;	
-	private String contentType;	
+	private long contentId;
 	private int platformId;	
 	private String imgUrl;
 	private String url;
+	private boolean contentStatus;
 	
 	public long getLinkId() {
 		return linkId;
@@ -23,12 +23,6 @@ public class DetailLinkDTO {
 	}
 	public void setContentId(long contentId) {
 		this.contentId = contentId;
-	}
-	public String getContentType() {
-		return contentType;
-	}
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
 	}
 	public int getPlatformId() {
 		return platformId;
@@ -48,11 +42,17 @@ public class DetailLinkDTO {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	public boolean isContentStatus() {
+		return contentStatus;
+	}
+	public void setContentStatus(boolean contentStatus) {
+		this.contentStatus = contentStatus;
+	}
 	
 	@Override
 	public String toString() {
-		return "DetailLinkDTO [linkId=" + linkId + ", contentId=" + contentId + ", contentType=" + contentType
-				+ ", platformId=" + platformId + ", imgUrl=" + imgUrl + ", url=" + url + "]";
+		return "ContentLinkDTO [linkId=" + linkId + ", contentId=" + contentId + ", platformId=" + platformId
+				+ ", imgUrl=" + imgUrl + ", url=" + url + ", contentStatus=" + contentStatus + "]";
 	}
 	
 }
