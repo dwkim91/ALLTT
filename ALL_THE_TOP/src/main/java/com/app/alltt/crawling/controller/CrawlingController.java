@@ -20,7 +20,7 @@ public class CrawlingController {
 	@ResponseBody
 	public String addNetflixContents() {
 		
-		//crawlingService.addNetflixContents();
+		crawlingService.contentsCrawling();
 		
 		return "<h1>Success</h1>";
 	}
@@ -29,13 +29,16 @@ public class CrawlingController {
 	@ResponseBody
 	public String addTvingContents() {
 
-		crawlingService.chromeDriverInit();
+		crawlingService.crawlingTest_230625();
 		
-		crawlingService.tvingLogin("alltttv", "!allott1234");
+		return "<h1>Success</h1>";
+	}
+	
+	@GetMapping("/addWavveContents")
+	@ResponseBody
+	public String addWavveContents() throws InterruptedException {
 		
-		//crawlingService.addContents(crawlingService);
-		
-		crawlingService.quit();
+		crawlingService.addWavveContent();
 		
 		return "<h1>Success</h1>";
 	}

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 public class GenreLinkDTO {
 	
 	private int linkId;
+	private int platformId;
 	private String contentType;	
 	private int genreId;
-	private int platformId;
 	private String url;
 	
 	public int getLinkId() {

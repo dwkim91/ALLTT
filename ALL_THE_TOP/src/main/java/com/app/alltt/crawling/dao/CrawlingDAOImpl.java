@@ -6,9 +6,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.app.alltt.content.dto.ContentDTO;
 import com.app.alltt.contentkey.dto.ContentKeyDTO;
+import com.app.alltt.contentlink.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
-import com.app.alltt.detaillink.dto.DetailLinkDTO;
 import com.app.alltt.genrelink.dto.GenreLinkDTO;
 
 @Repository
@@ -23,8 +24,8 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public void insertDetailLink(CrawlingDTO crawlingDTO) {
-		sqlSession.insert("crawlingMapper.insertDetailLink", crawlingDTO);
+	public void insertContentLink(CrawlingDTO crawlingDTO) {
+		sqlSession.insert("crawlingMapper.insertContentLink", crawlingDTO);
 	}
 
 	@Override
@@ -38,18 +39,13 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public long selectOneContentId(String title) {
-		return sqlSession.selectOne("crawlingMapper.selectOneContentId", title);
-	}
-
-	@Override
 	public List<GenreLinkDTO> selectListGenreLink(int platformId) {
 		return sqlSession.selectList("crawlingMapper.selectListGenreLink", platformId);
 	}
 
 	@Override
-	public DetailLinkDTO selectOneDetailLink(String imgUrl) {
-		return sqlSession.selectOne("crawlingMapper.selectOneDetailLink", imgUrl); 
+	public ContentLinkDTO selectOneContentLink(String imgUrl) {
+		return sqlSession.selectOne("crawlingMapper.selectOneContentLink", imgUrl); 
 	}
 
 	@Override
@@ -64,7 +60,7 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 
 	@Override
 	public List<String> selectListContentKey(long conteneId) {
-		return sqlSession.selectList("crawlingMapper.selectListContentId", conteneId);
+		return sqlSession.selectList("crawlingMapper.selectListContentKey", conteneId);
 	}
 
 	@Override
@@ -76,7 +72,15 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	public void insertContentKey(ContentKeyDTO contentKeyDTO) {
 		sqlSession.insert("crawlingMapper.insertContentKey", contentKeyDTO);
 	}
-	
-	
+
+	@Override
+	public ContentDTO selectOneContent(long contentId) {
+		return sqlSession.selectOne("crawlingMapper.selectOneContent", contentId);
+	}
+
+	@Override
+	public void updateContentStatus() {
+		sqlSession.update("crawlingMapper.updateContentStatus");
+	}
 	
 }
