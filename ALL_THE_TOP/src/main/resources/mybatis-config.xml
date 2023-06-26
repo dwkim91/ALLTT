@@ -9,9 +9,10 @@
 	
 	<typeAliases>
 		<typeAlias type="com.app.alltt.crawling.dto.CrawlingDTO"		alias="CrawlingDTO"/>
+		<typeAlias type="com.app.alltt.content.dto.ContentDTO"			alias="ContentDTO"/>
 		<typeAlias type="com.app.alltt.genrelink.dto.GenreLinkDTO"		alias="GenreLinkDTO"/>
 		<typeAlias type="com.app.alltt.contentkey.dto.ContentKeyDTO"	alias="ContentKeyDTO"/>
-		<typeAlias type="com.app.alltt.detaillink.dto.DetailLinkDTO"	alias="DetailLinkDTO"/>
+		<typeAlias type="com.app.alltt.contentlink.dto.ContentLinkDTO"	alias="ContentLinkDTO"/>
 	</typeAliases>
 
 </configuration>
