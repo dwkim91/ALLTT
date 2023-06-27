@@ -24,5 +24,13 @@ public interface CrawlingDAO {
 	public List<Integer> selectListPlatformId(long contentId);
 	public ContentDTO selectOneContent(long contentId);
 	public void updateContentStatus();
+	
+	public String selectOneTitle(long contentId);
+	public void updateCreator(CrawlingDTO crawlingDTO);
+	public void updateActors(CrawlingDTO crawlingDTO);
+	public void updateSummary(CrawlingDTO crawlingDTO);
+	
+	//test가져오기
+	public List<ContentDTO> selectListContent();
 
 }
