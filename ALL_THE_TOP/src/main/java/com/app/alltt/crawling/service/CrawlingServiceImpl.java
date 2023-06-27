@@ -41,9 +41,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
 	private static final String WEB_DRIVER_PATH = "C:\\chromedriver\\chromedriver.exe";
 	
+	// ==================================== 
+	// ===== 크롤링 공통 메서드 Start ===== 
+	// ==================================== 
+	
 	// 크롬드라이버 초기화 
-	@Override
-	public void chromeDriverInit() {
+	private void chromeDriverInit() {
 		
 		//        (크롬드라이버 명 , 크롬드라이버 경로)
 		System.setProperty(WEB_DRIVER_ID, 	WEB_DRIVER_PATH);
@@ -69,8 +72,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// URL 이동 
-	@Override
-	public boolean moveToTargetUrl(String url) {
+	private boolean moveToTargetUrl(String url) {
 
 		boolean isTargetUrl = false;
 		int delay = 250;
@@ -92,8 +94,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// 페이지 아래 끝으로 이동 
-	@Override
-	public void moveToBottomPage(String className) { 
+	private void moveToBottomPage(String className) { 
 		
 		boolean isBottom = false;
 		int delay = 250;
@@ -124,201 +125,32 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 	}
 	
-	// 티빙 로그인 
-	public void tvingLogin(String tvingId, String passwd) {
-		
-		// 크롬드라이버 URL이동
-		driver.get("https://user.tving.com/pc/user/login.tving?returnUrl=https%3A%2F%2Fwww.tving.com");
-		//티빙 로그인 버튼 클릭   
-		driver.findElement(By.xpath("//*[@id=\"locLogin\"]")).click();
-		// xpath로 셀렉트 된 input type value 입력 (ID)
-		driver.findElement(By.xpath("//*[@id=\"a\"]")).sendKeys(tvingId);
-		// xpath로 셀렉트 된 input type value 입력 (PW)
-		driver.findElement(By.xpath("//*[@id=\"b\"]")).sendKeys(passwd);
-		// 페이지 로드될때까지 최대 5초 대기
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-		// 로그인버튼 클릭
-		driver.findElement(By.xpath("//*[@id=\"doLoginBtn\"]")).click();
-		// 페이지 로드될때까지 최대 5초 대기
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-		
-	}
-	
-	public void initContentStatus() {
-		crawlingDAO.updateContentStatus();
-	}
-	
-	@Override
-	public void crawlingTest_230625() {
-		chromeDriverInit();
-		tvingLogin("alltttv", "!allott1234");
-		//addContents(getTvingCrawlingDTOList(0));
-		initContentStatus();
-		startCrawlingAndInputDateToDB(2);
-		quit();
-	}
-	
-	// 작업중!!@@!@!@!@
-//	private List<CrawlingDTO> getTvingCrawlingDTOList (int platformId) {
-//		List<CrawlingDTO> crawlingDTOList = new ArrayList<CrawlingDTO>();
-//		
-//		//for (Genre_LinkDTO genre_LinkDTO : getGenreLinkList(2)) {
-//		for (GenreLinkDTO genre_LinkDTO : getTvingTestLink()) {// test 링크
-//			crawlingDTOList.addAll(getContents(genre_LinkDTO));
-//		}
-//		
-//		return crawlingDTOList;
-//	}
-	private void startCrawlingAndInputDateToDB (int platformId) {
-		
-		//for (GenreLinkDTO genreLinkDTO : getGenreLinkList(platformId)) {
-		for (GenreLinkDTO genreLinkDTO : getTvingTestLink()) {// test 링크
-			addContents(getContents(genreLinkDTO));
-		}
-		
-	}
-	
-	//alltt platform 별 크롤링 후 DB로넘기기
-	@Override
-	public void addContents(List<CrawlingDTO> crawlingDTOList) {
-		
-		//for (Genre_LinkDTO genre_LinkDTO : getGenreLinkList(2)) {
-//		for (GenreLinkDTO genre_LinkDTO : getTvingTestLink()) {// test 링크
-//			
-		for(CrawlingDTO crawlingDTO : crawlingDTOList) {
-			System.out.println(crawlingDTO.toString());
-			
-//				중복검사 플로우 start (C = content, G = genre , D= Detail, K=contentKey)
-
-			boolean isInsertContent = false;
-			boolean isInsertGenre = false;
-			boolean isInsertDetail = false;
-			boolean isInsertContentKey = false;
-			boolean isUpdateInfo = false;
-			
-			Set<String> contentKeyList = null;
-			Set<String> updateKeyList = null;
-			// img_url로 T:detail_link 검색
-			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
-			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
-				System.out.println("장르비교");
-				crawlingDTO.setContentId(contentLinkDTO.getContentId());
-				isInsertGenre = true; // G만 비교 후 G => UPDATE
-			}
-			else { //imgUrl 다르다 => 나머지 2개의 ott를 검사해야함 => 식별자가 필요!
-				contentKeyList = genContentKeyList(crawlingDTO);
-				System.out.println("contentKeyList : " + contentKeyList);
-				// title -> title_key -> T:content_key 검색 -> contentId 확인
-				List<Long> contentIdList = crawlingDAO.selectListContentId(genKorAlphaNumStr(crawlingDTO.getTitle()));
-				if (contentIdList.size() != 0) {
-					for ( long contentId : contentIdList) { // contentId가 있다 contentId로 T:content -> contentType 비교
-						String contentType = crawlingDAO.selectOneContentType(contentId);
-						if (contentType.equals(crawlingDTO.getContentType())) { // 제목과 타입이 같다
-							List<String> keyList_DB = crawlingDAO.selectListContentKey(contentId);
-							updateKeyList = contentKeyChecker(keyList_DB, contentKeyList); // 식별자 비교
-							if(updateKeyList != null) { // 식별자 n개 이상 중복 -> 동일 작품 => G, D, K => UPDATE
-								crawlingDTO.setContentId(contentId);
-								//isInsertContent = true;// DB의 content에 누락 정보가 있고 업데이트 할 정보가 있다면 업데이트 진행
-								isUpdateInfo = true;
-								isInsertGenre = true;
-								isInsertDetail = true;
-								isInsertContentKey = true;
-							}
-							else { // 다른 작품 => C, G, D, K => INSERT
-								isInsertContent = true;
-								isInsertGenre = true;
-								isInsertDetail = true;
-								isInsertContentKey = true;
-							}
-						}
-						else { // 제목만 같고 타입이 다르다 => 다른 작품 => C, G, D, K => INSERT
-							isInsertContent = true;
-							isInsertGenre = true;
-							isInsertDetail = true;
-							isInsertContentKey = true;
-						}
-					}
-				}	
-				else { // contentId가 없다 -> 다른 작품 => C, G, D, K => INSERT
-					isInsertContent = true;
-					isInsertGenre = true;
-					isInsertDetail = true;
-					isInsertContentKey = true;
-				}
-			}
-			
-			System.out.println("isInsertContent    : " + isInsertContent);
-			System.out.println("isInsertGenre      : " + isInsertGenre);
-			System.out.println("isInsertDetail     : " + isInsertDetail);
-			System.out.println("isInsertContentKey : " + isInsertContentKey);
-			// 데이터 입력단
-			if (isInsertContent) {
-				if (isUpdateInfo) { // 누락 정보업데이트
-//					long contentId = crawlingDTO.getContentId();
-					ContentDTO contentDTO = crawlingDAO.selectOneContent(crawlingDTO.getContentId());
-					if (contentDTO.getCreator().isEmpty() && !crawlingDTO.getCreator().isEmpty()) {
-//						crawlingDAO.updateCreator(crawlingDTO.getCreator());
-					}
-					if (contentDTO.getActors().isEmpty() && !crawlingDTO.getActors().isEmpty()) {
-//						crawlingDAO.updateActors(crawlingDTO.getActors());
-					}
-					if (contentDTO.getSummary().isEmpty() && !crawlingDTO.getSummary().isEmpty()) {
-//						crawlingDAO.updateSummary(crawlingDTO.getSummary());
-					}
-				}
-				else crawlingDAO.insertContent(crawlingDTO);
-				
-			}
-			if (isInsertGenre) {
-				boolean isExist = false;
-				for (int genreCd : crawlingDAO.selectListGenreId(crawlingDTO.getContentId())){
-					if (genreCd == crawlingDTO.getGenreId()) isExist = true;
-				}
-				if (!isExist) {
-					crawlingDAO.insertGenre(crawlingDTO);
-				}
-			}
-			if (isInsertDetail) {
-				boolean isExist = false;
-				for (int platformCd : crawlingDAO.selectListPlatformId(crawlingDTO.getContentId())) {
-					if (platformCd == crawlingDTO.getPlatformId()) isExist = true; 
-				}
-				if (!isExist) {
-					crawlingDTO.setContentStatus(true);
-					crawlingDAO.insertContentLink(crawlingDTO);
-				}
-			}
-			if (isInsertContentKey) {
-				if (updateKeyList != null) {
-					for (String key : updateKeyList) {
-						crawlingDAO.insertContentKey(new ContentKeyDTO(crawlingDTO.getContentId(),key));
-					}
-				}
-				else {
-					for (String key : contentKeyList) {
-						crawlingDAO.insertContentKey(new ContentKeyDTO(crawlingDTO.getContentId(),key));
-					}
-				}
-			}
-			
-		}
-			
-	}
-
-	// 링크리스트 가져오기 
-	@Override
-	public List<GenreLinkDTO> getGenreLinkList(int platformId) {
-		return crawlingDAO.selectListGenreLink(platformId);
-	}
-	
 	// 창닫기, WebDriver 종료
-	@Override
-	public void quit() {
+	private void quit() {
 		// WebDriver 종료
         driver.quit();
 	}
 	
-	public void showCrawlingDTO (CrawlingDTO crawlingDTO){
+	// ==================================== 
+	// ====== 크롤링 공통 메서드 End ====== 
+	// ==================================== 
+	
+	// ==================================== 
+	// ====== 기타 공통 메서드 Start ====== 
+	// ====================================
+	
+	// 삭제된 작품확인용 Status 초기화 메서드
+	private void initContentStatus() {
+		crawlingDAO.updateContentStatus();
+	}
+	
+	// DB에서 OTT플랫 폼별 GenreLinkList 가져오기
+	private List<GenreLinkDTO> getGenreLinkList(int platformId) {
+		return crawlingDAO.selectListGenreLink(platformId);
+	}
+	
+	// 크롤링 테스트 확인용
+	private void showCrawlingDTO (CrawlingDTO crawlingDTO){
 		System.out.println("CrawlingDTO " + " [contentId=" + crawlingDTO.getContentId() + 
 				", title=" + crawlingDTO.getTitle() + ", creator=" + crawlingDTO.getCreator() + 
 				", actors=" + crawlingDTO.getActors() + ", enrollDt=" + crawlingDTO.getEnrollDt() + 
@@ -326,12 +158,58 @@ public class CrawlingServiceImpl implements CrawlingService {
 				", platformId=" + crawlingDTO.getPlatformId() + ", contentStatus=" + crawlingDTO.isContentStatus() + "]");
 	}
 	
-	public void showGenreLinkDTO (List<WebElement> webElementTemp, GenreLinkDTO genreLinkDTO) {
+	// 크롤링 테스트 확인용
+	private void showGenreLinkDTO (List<WebElement> webElementTemp, GenreLinkDTO genreLinkDTO) {
 		System.out.println("Genre CNT=" + webElementTemp.size() + " [contentType=" + genreLinkDTO.getContentType() + ", genreId=" + genreLinkDTO.getGenreId()
 		+ ", platformId=" + genreLinkDTO.getPlatformId() + ", url=" + genreLinkDTO.getUrl() + "]");
 	}
 	
-	public List<CrawlingDTO> getContents(GenreLinkDTO genreLinkDTO) {
+	
+	// test 메서드 
+	private void readDBcontentTest() {
+		List<ContentDTO> dbContentList = new ArrayList<ContentDTO>();
+		dbContentList = crawlingDAO.selectListContent();
+		for (ContentDTO contentDTO : dbContentList) {
+			System.out.println(contentDTO.getContentId() + ", " + contentDTO.getTitle());
+		}
+	}
+	
+	
+	// ==================================== 
+	// ======= 기타 공통 메서드 End ======= 
+	// ==================================== 
+	
+	// ==================================== 
+	// ===== 티빙 크롤링 메서드 Start ===== 
+	// ====================================
+	
+	// 티빙 로그인 
+	private void tvingLogin(String tvingId, String passwd) {
+		
+		// 티빙 로그인 페이지 UR L이동
+		driver.get("https://user.tving.com/pc/user/login.tving?returnUrl=https%3A%2F%2Fwww.tving.com");
+		
+		//티빙 로그인 버튼 클릭   
+		driver.findElement(By.xpath("//*[@id=\"locLogin\"]")).click();
+		
+		// 로그인 아이디 입력
+		driver.findElement(By.xpath("//*[@id=\"a\"]")).sendKeys(tvingId);
+		
+		// 로그인 패스워드 입력
+		driver.findElement(By.xpath("//*[@id=\"b\"]")).sendKeys(passwd);
+
+		// 페이지가 로드될때까지 최대 5초 대기
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		
+		// 로그인버튼 클릭
+		driver.findElement(By.xpath("//*[@id=\"doLoginBtn\"]")).click();
+		
+		// 페이지 로드될때까지 최대 5초 대기
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+		
+	}
+	
+	private List<CrawlingDTO> crawlTvingContents(GenreLinkDTO genreLinkDTO) {
 		// CrawlingDTO 리스트 생성
 		List<CrawlingDTO> crawlingDTOList = new ArrayList<CrawlingDTO>();
 
@@ -381,12 +259,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 		for (CrawlingDTO crawlingDTO : crawlingDTOList) {
 			
 			// 조건문 detail 링크 안들어가기 imgUrl로 사전 확인 -> 있으면 아래코드 안들어가고 패스
-			ContentLinkDTO ContentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
-			if (ContentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
-				//if ()
-				continue;
+			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
+			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
+				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
+				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교
+					continue; // 같은 작품으로 분류 하고 디테일 정보입력은 패스
+				}
 			}
-			CrawlingDTO detailTemp = getDetailInfo(crawlingDTO.getUrl(), genreLinkDTO.getContentType());
+			CrawlingDTO detailTemp = getTvingContentDetailInfo(crawlingDTO.getUrl(), genreLinkDTO.getContentType());
 			crawlingDTO.setCreator(detailTemp.getCreator());
 			crawlingDTO.setActors(detailTemp.getActors());
 			crawlingDTO.setSummary(detailTemp.getSummary());
@@ -400,7 +280,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 	}
 	
-	public CrawlingDTO getDetailInfo(String url, String contentType) {
+	private CrawlingDTO getTvingContentDetailInfo(String url, String contentType) {
 		
 		CrawlingDTO crawlingDTO = new CrawlingDTO();
 
@@ -479,37 +359,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		crawlingDTO.setCreator(creator);
 		crawlingDTO.setActors(actors);
 		crawlingDTO.setSummary(summary);
-		System.out.println("creator : " + creator + ", actors : " + actors);
+//		System.out.println("creator : " + creator + ", actors : " + actors);
 		return crawlingDTO;
-		
-	}
-	
-	// 한글/영어/숫자로만 구성된 식별자 생성
-	private String genKorAlphaNumStr(String str) {
-		return str.replaceAll("[^가-힣a-zA-Z0-9]", "");
-	}
-	
-	// Creator,Actors KeyList 생성
-	// ","로 구분된 감독, 출연 List<String>으로 반환 
-	private List<String> genDataKeyList(String strData, int length) {
-		// strData 공백인 경우는 List<String> 사이즈 0
-		// strData에 creators, actors 입력
-		// length에는 원하는 데이터 수 입력 ex) dataKeyList(actors, 4);
-		List<String> dataKeyList = new ArrayList<>();
-		
-		if (!strData.isEmpty()) {
-			String[] strArr = strData.split(",");
-			int cnt = 0;
-			for(String str : strArr) {
-				dataKeyList.add(genKorAlphaNumStr(str));
-				if (strArr.length >= length) {
-					cnt++;
-					if(cnt == length) break;
-				}
-			}
-		}
-		
-		return dataKeyList;
 		
 	}
 	
@@ -535,46 +386,26 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return sb.toString();
 	}
 	
-	// CrawlingDTO로 만든 ContentKeyList, actors, creators, title, enrollDt 로 구성
-	private Set<String> genContentKeyList (CrawlingDTO crawlingDTO) {
-		// 중복요소를 포함하지않는 contentKeyList생성
-		Set<String> contentKeyList = new HashSet<>();
-		List<String> creatorKeyList = genDataKeyList(crawlingDTO.getCreator(),1);
-		List<String> actorKeyList = genDataKeyList(crawlingDTO.getActors(),4);
-		String title = genKorAlphaNumStr(crawlingDTO.getTitle());
-		String enrollDt = null;
+	
+	@Override
+	public void addTvingContent() {
 		
-		if (crawlingDTO.getEnrollDt() != 9999) {
-			enrollDt = "" + crawlingDTO.getEnrollDt();
-			contentKeyList.add(enrollDt);
+//		readDBcontentTest();
+		
+		chromeDriverInit();
+		tvingLogin("alltttv", "!allott1234");
+		//addContents(getTvingCrawlingDTOList(0));
+		initContentStatus();
+		
+		//for (GenreLinkDTO genreLinkDTO : getGenreLinkList(platformId)) {
+		for (GenreLinkDTO genreLinkDTO : getTvingTestLink()) {// test 링크
+			addContents(crawlTvingContents(genreLinkDTO));
 		}
 		
-		contentKeyList.addAll(creatorKeyList);
-		contentKeyList.addAll(actorKeyList);
-		contentKeyList.add(title);
-		
-		return contentKeyList;
-		
+		quit();
 	}
 	
-	// 식별자 key 확인 중복 checkDupl N개 이상이면 중복된 작품으로 처리
-	private Set<String> contentKeyChecker(List<String> keyList_DB, Set<String> contentKeyList) {
-	    int checkDupl = 2; // 중복 개수 확인 변수  
-	    int cntDupl = 0;
-	    
-	    // 중복된 요소를 찾기 retainAll
-	    Set<String> duplSet = new HashSet<>(contentKeyList);
-	    duplSet.retainAll(keyList_DB);
-	    cntDupl = duplSet.size();
-	    
-	    // 중복되지 않은 요소 찾기 removeAll
-	    Set<String> newKeySet = new HashSet<>(contentKeyList);
-	    newKeySet.removeAll(keyList_DB);
-	    
-	    return cntDupl >= checkDupl ? newKeySet : null;
-	}
-	
-	//테스트 링크
+	// 티빙 테스트 링크
 	public List<GenreLinkDTO> getTvingTestLink(){
 		// 장르별 크롤링 6:series 로맨스, 10:series 판타지 // test중
 		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
@@ -588,25 +419,34 @@ public class CrawlingServiceImpl implements CrawlingService {
 		testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCP&slug=program");
 		genreLinkList.add(testTempDTO);
 
-//		testTempDTO = new GenreLinkDTO();
-//		testTempDTO.setContentType("series");
-//		testTempDTO.setPlatformId(2);
-//		testTempDTO.setGenreId(10);
-//		testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCR&slug=program");
-//		genreLinkList.add(testTempDTO);
-//		
-//		testTempDTO = new GenreLinkDTO();
-//		testTempDTO.setContentType("series");
-//		testTempDTO.setPlatformId(2);
-//		testTempDTO.setGenreId(6);
-//		testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCO&slug=program");
-//		genreLinkList.add(testTempDTO);
+//			testTempDTO = new GenreLinkDTO();
+//			testTempDTO.setContentType("series");
+//			testTempDTO.setPlatformId(2);
+//			testTempDTO.setGenreId(10);
+//			testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCR&slug=program");
+//			genreLinkList.add(testTempDTO);
+//			
+//			testTempDTO = new GenreLinkDTO();
+//			testTempDTO.setContentType("series");
+//			testTempDTO.setPlatformId(2);
+//			testTempDTO.setGenreId(6);
+//			testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCO&slug=program");
+//			genreLinkList.add(testTempDTO);
 		
 		return genreLinkList;
 		
 	}
 	
-	////////////////넷플//////////////////
+	
+	// ==================================== 
+	// ====== 티빙 크롤링 메서드 End ====== 
+	// ====================================
+	
+	// ==================================== 
+	// === 넷플릭스 크롤링 메서드 Start === 
+	// ====================================
+	
+	// 넷플릭스 로그인
 	private void netflixLogin(String netflixId, String netflixPw) {
 		
 		// 넷플릭스 로그인 페이지 이동
@@ -630,54 +470,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 4번째 프로필 클릭 li[4]
 		driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[1]/div[2]/div/div/ul/li[1]/div/a/div/div")).click();
 		
-		
-	}
-	
-	@Override
-	public void contentsCrawling() {
-//		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
-		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
-	
-		GenreLinkDTO testTempDTO = null;
-		testTempDTO = new GenreLinkDTO();
-		testTempDTO.setContentType("series");
-		testTempDTO.setPlatformId(1);
-		testTempDTO.setGenreId(5); //코미디
-		testTempDTO.setUrl("https://www.netflix.com/browse/genre/10375?bc=83&so=yr");
-		genreLinkList.add(testTempDTO);
-		
-		// nerflix 장르별
-		// 크롬드라이버 초기화
-		chromeDriverInit();
-
-		// netflix 로그인
-		netflixLogin("hkiss7@naver.com","gkskfh1511");
-		
-		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
-			ArrayList<CrawlingDTO> netflixContentList = getNetflixContentList(genreLinkDTO);
-			netflixContentList = getNetflixDetail(netflixContentList);
-			addContents(netflixContentList);
-		}
-		
-//		for (int i = 0 ; i < genreLinkList.size(); i++) {
-//				// Netflix Main Crawling
-//				//ArrayList<CrawlingDTO> netflixContentList = getNetflixContentList(genreLinkList.get(i));
-//				ArrayList<CrawlingDTO> netflixContentList = getNetflixContentList(genreLinkList.get(i));
-//				
-//				// Nerflix Detail Crawling
-//				netflixContentList = getNetflixDetail(netflixContentList);
-//			
-//				// addContens
-//				addContents(netflixContentList);
-//				
-//		}
-		
-		// 드라이버 종료
-		quit();
-		
 	}
 
-	private ArrayList<CrawlingDTO> getNetflixContentList(GenreLinkDTO genreLinkDTO) {
+	private ArrayList<CrawlingDTO> crawlNetflixdContents(GenreLinkDTO genreLinkDTO) {
 		
 		ArrayList<CrawlingDTO> contentList = new ArrayList<CrawlingDTO>();
 		
@@ -739,7 +534,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 	}
 	
-	private ArrayList<CrawlingDTO> getNetflixDetail(ArrayList<CrawlingDTO> crawlingList) {
+	private ArrayList<CrawlingDTO> getNetflixDetailInfo(ArrayList<CrawlingDTO> crawlingList) {
 		int contentCnt = 1;
 		// enrollDt, creator , actors, summary, contentKey
 		for (CrawlingDTO crawlingDTO : crawlingList) {
@@ -843,21 +638,58 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return crawlingList;
 	}
 
-	/*
-	 * 			wavve crawling method add
-	 */
+	@Override
+	public void addNetflixContent() {
+//		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
+		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
+	
+		GenreLinkDTO testTempDTO = null;
+		testTempDTO = new GenreLinkDTO();
+		testTempDTO.setContentType("series");
+		testTempDTO.setPlatformId(1);
+		testTempDTO.setGenreId(5); //코미디
+		testTempDTO.setUrl("https://www.netflix.com/browse/genre/10375?bc=83&so=yr");
+		genreLinkList.add(testTempDTO);
+		
+		// nerflix 장르별
+		// 크롬드라이버 초기화
+		chromeDriverInit();
+
+		// netflix 로그인
+		netflixLogin("hkiss7@naver.com","gkskfh1511");
+		
+		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
+			ArrayList<CrawlingDTO> netflixContentList = crawlNetflixdContents(genreLinkDTO);
+			netflixContentList = getNetflixDetailInfo(netflixContentList);
+			addContents(netflixContentList);
+		}
+		
+		// 드라이버 종료
+		quit();
+		
+	}
+	
+	
+	// ==================================== 
+	// ==== 넷플릭스 크롤링 메서드 End ==== 
+	// ====================================
+	
+	// ==================================== 
+	// ==== 웨이브 크롤링 메서드 Start ==== 
+	// ====================================
+
 	@Override
 	public void addWavveContent() throws InterruptedException {
-		this.chromeDriverInit();
-		Set<Cookie> loginCookies = this.loginWavve(WAVVE_LOGIN_KEY);
+		chromeDriverInit();
+		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY);
 //		for (GenreLinkDTO genre : this.getGenreLinkList(3)) {
 //			this.addContents(this.crawlWavve(genre, loginCookies));
 //		}
 		// test genre
-		for (GenreLinkDTO genre : this.getGenreLinkTestWavve(3)) {
-			this.addContents(this.crawlWavve(genre, loginCookies));
+		for (GenreLinkDTO genre : getGenreLinkTestWavve(3)) {
+			addContents(ctrlWavveContentsPage(genre, loginCookies));
 		}
-		this.quit();
+		quit();
 	}
 	
 	// login wavve
@@ -875,7 +707,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return driver.manage().getCookies();
 	}
 	
-	// DB에 저장된 장르별 링크 리스트를 가져옴
+	// 웨이브 테스트 링크 메서드 DB에 저장된 장르별 링크 리스트를 가져옴
 	private List<GenreLinkDTO> getGenreLinkTestWavve(int platformId){
 		
 //		 test genres
@@ -904,7 +736,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// wavve 해당 장르로 들어가서, 장르 및 페이지 컨트롤
-	private List<CrawlingDTO> crawlWavve(GenreLinkDTO genre, Set<Cookie> loginCookies) throws InterruptedException{
+	private List<CrawlingDTO> ctrlWavveContentsPage(GenreLinkDTO genre, Set<Cookie> loginCookies) throws InterruptedException{
 		// 모든 정보를 담는 list
 		List<CrawlingDTO> wavveContentList = new ArrayList<CrawlingDTO>();
 		
@@ -987,7 +819,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			content.setPlatformId(genre.getPlatformId());
 			content.setGenreId(genre.getGenreId());
 			String imgTag = pageTotalContent.get(i).findElement(By.tagName("source")).getAttribute("srcset");
-			content.setImgUrl(this.getImageUrlByDensity(imgTag));
+			content.setImgUrl(getImageUrlByDensity(imgTag));
 			// imgUrl 으로 있는지 없는지 검색
 			long tempContentId = -1;
 			if (crawlingDAO.selectOneContentLink(content.getImgUrl()) != null) {
@@ -999,7 +831,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 				CrawlingDTO newContent = null;
 				try {
 					// 디테일 페이지로 들어가서 정보 긁어오기
-					newContent = this.crawlWavveContentDetail(currentUrl, loginCookies, i, content);
+					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
 				} catch (InterruptedException e) {System.out.println("FAIL TO CRAWL CONTENT DETAIL");}
 				if (newContent != null) wavveContentList.add(newContent);
 			}
@@ -1017,7 +849,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// 작품 상세정보 가져오기
-	private CrawlingDTO crawlWavveContentDetail(String url, Set<Cookie> loginCookies, int idx, CrawlingDTO crawlingDTO) throws InterruptedException {
+	private CrawlingDTO getWavveDetailInfo(String url, Set<Cookie> loginCookies, int idx, CrawlingDTO crawlingDTO) throws InterruptedException {
 		// 현재창의 핸들을 String으로 저장
 		String mainHandle = driver.getWindowHandle();
 		// 새창 열기
@@ -1112,8 +944,245 @@ public class CrawlingServiceImpl implements CrawlingService {
 
         if (matcher.find()) return matcher.group();
         else return "9999";
-    }	
+    }		
 	
+	// ==================================== 
+	// ===== 웨이브 크롤링 메서드 End ===== 
+	// ====================================
+    
+    // ==================================== 
+  	// ===== 식별자 관련 메서드 Start ===== 
+  	// ====================================
+    
+    // 한글/영어/숫자로만 구성된 식별자 생성
+ 	private String genKorAlphaNumStr(String str) {
+ 		return str.replaceAll("[^가-힣a-zA-Z0-9]", "");
+ 	}
+    
+ 	// 로마숫자를 일반숫자로 변경하는 메서드
+    private String convertRomanToNumber(String input) {
+    	
+    	String[] romanList = {"Ⅰ", "Ⅱ" ,"Ⅲ" , "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ"};
+    	
+    	for (int i = 0; i < romanList.length; i++) {
+    		input = input.replaceAll(romanList[i], "" + (i + 1));
+        }
+    	
+    	return input;
+    	
+    }
+
+    // Creator,Actors KeyList 생성 메서드, ","로 구분된 감독, 출연 List<String>으로 반환 
+ 	private List<String> genDataKeyList(String strData, int length) {
+ 		// strData 공백인 경우는 List<String> 사이즈 0
+ 		// strData에 creators, actors 입력
+ 		// length에는 원하는 데이터 수 입력 ex) dataKeyList(actors, 4);
+ 		List<String> dataKeyList = new ArrayList<>();
+ 		
+ 		if (!strData.isEmpty()) {
+ 			String[] strArr = strData.split(",");
+ 			int cnt = 0;
+ 			for(String str : strArr) {
+ 				dataKeyList.add(genKorAlphaNumStr(str));
+ 				if (strArr.length >= length) {
+ 					cnt++;
+ 					if(cnt == length) break;
+ 				}
+ 			}
+ 		}
+ 		
+ 		return dataKeyList;
+ 		
+ 	}
+ 	
+ 	// CrawlingDTO로 만든 ContentKeyList, actors, creators, title, enrollDt 로 구성
+ 	private Set<String> genContentKeyList (CrawlingDTO crawlingDTO) {
+ 		// 중복요소를 포함하지않는 contentKeyList생성
+ 		Set<String> contentKeyList = new HashSet<>();
+ 		List<String> creatorKeyList = genDataKeyList(crawlingDTO.getCreator(),1);
+ 		List<String> actorKeyList = genDataKeyList(crawlingDTO.getActors(),4);
+ 		String title = genKorAlphaNumStr(convertRomanToNumber(crawlingDTO.getTitle()));
+ 		String enrollDt = null;
+ 		
+ 		if (crawlingDTO.getEnrollDt() != 9999) {
+ 			enrollDt = "" + crawlingDTO.getEnrollDt();
+ 			contentKeyList.add(enrollDt);
+ 		}
+ 		
+ 		contentKeyList.addAll(creatorKeyList);
+ 		contentKeyList.addAll(actorKeyList);
+ 		contentKeyList.add(title);
+ 		
+ 		return contentKeyList;
+ 		
+ 	}
+    
+    // ==================================== 
+ 	// ====== 식별자 관련 메서드 End ====== 
+ 	// ====================================
+ 	
+ 	// ==================================== 
+   	// ==== 중복검사 관련 메서드 Start ==== 
+   	// ====================================
+ 	
+ 	// 크롤링한 데이터리스트 List<CrawlingDTO>의 작품 중복검사 후 DB로 넘기기
+	public void addContents(List<CrawlingDTO> crawlingDTOList) {
+		int contentCnt = 0;
+		
+		for(CrawlingDTO crawlingDTO : crawlingDTOList) {
+			contentCnt++;
+//			System.out.println(contentCnt++ + " " + crawlingDTO.toString());
+			
+// 			중복검사 플로우 start (C = content, G = genre , D= Detail, K=contentKey)
+			boolean isInsertContent = false;
+			boolean isInsertGenre = false;
+			boolean isInsertDetail = false;
+			boolean isInsertContentKey = false;
+			boolean isUpdateInfo = false;
+			
+			Set<String> contentKeyList = null;
+			Set<String> updateKeyList = null;
+			// img_url로 T:detail_link 검색
+			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
+			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
+				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
+				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교, 같은 작품
+					System.out.println("장르비교");
+					crawlingDTO.setContentId(contentLinkDTO.getContentId());
+					isInsertGenre = true; // G만 비교 후 G => UPDATE
+				}
+				else { // 다른 작품
+					isInsertContent = true;
+					isInsertGenre = true;
+					isInsertDetail = true;
+					isInsertContentKey = true;
+				}
+			}
+			else { //imgUrl 다르다 => 나머지 2개의 ott를 검사해야함 => 식별자가 필요!
+				contentKeyList = genContentKeyList(crawlingDTO);
+				System.out.println("contentKeyList : " + contentKeyList);
+				// title -> title_key -> T:content_key 검색 -> contentId 확인
+				List<Long> contentIdList = crawlingDAO.selectListContentId(genKorAlphaNumStr(crawlingDTO.getTitle()));
+				if (contentIdList.size() != 0) {
+					for ( long contentId : contentIdList) { // contentId가 있다 contentId로 T:content -> contentType 비교
+						String contentType = crawlingDAO.selectOneContentType(contentId);
+						if (contentType.equals(crawlingDTO.getContentType())) { // 제목과 타입이 같다
+							List<String> keyList_DB = crawlingDAO.selectListContentKey(contentId);
+							updateKeyList = contentKeyChecker(keyList_DB, contentKeyList); // 식별자 비교
+							if(updateKeyList != null) { // 식별자 n개 이상 중복 -> 동일 작품 => G, D, K => UPDATE
+								crawlingDTO.setContentId(contentId);
+								isInsertContent = true;// DB의 content에 누락 정보가 있고 업데이트 할 정보가 있다면 업데이트 진행
+								isUpdateInfo = true;
+								isInsertGenre = true;
+								isInsertDetail = true;
+								isInsertContentKey = true;
+							}
+							else { // 다른 작품 => C, G, D, K => INSERT
+								isInsertContent = true;
+								isInsertGenre = true;
+								isInsertDetail = true;
+								isInsertContentKey = true;
+							}
+						}
+						else { // 제목만 같고 타입이 다르다 => 다른 작품 => C, G, D, K => INSERT
+							isInsertContent = true;
+							isInsertGenre = true;
+							isInsertDetail = true;
+							isInsertContentKey = true;
+						}
+					}
+				}	
+				else { // contentId가 없다 -> 다른 작품 => C, G, D, K => INSERT
+					isInsertContent = true;
+					isInsertGenre = true;
+					isInsertDetail = true;
+					isInsertContentKey = true;
+				}
+			}
+			
+			System.out.println("isInsertContent    : " + isInsertContent);
+			System.out.println("isInsertGenre      : " + isInsertGenre);
+			System.out.println("isInsertDetail     : " + isInsertDetail);
+			System.out.println("isInsertContentKey : " + isInsertContentKey);
+			// 데이터 입력단
+			if (isInsertContent) {
+				System.out.println(contentCnt + " " + crawlingDTO.toString());
+				if (isUpdateInfo) { // 누락 정보업데이트
+					long contentId = crawlingDTO.getContentId();
+					ContentDTO contentDTO = crawlingDAO.selectOneContent(crawlingDTO.getContentId());
+					if (contentDTO.getCreator().isEmpty() && !crawlingDTO.getCreator().isEmpty()) {
+ 							crawlingDAO.updateCreator(crawlingDTO);
+					}
+					if (contentDTO.getActors().isEmpty() && !crawlingDTO.getActors().isEmpty()) {
+ 							crawlingDAO.updateActors(crawlingDTO);
+					}
+					if (contentDTO.getSummary().isEmpty() && !crawlingDTO.getSummary().isEmpty()) {
+ 							crawlingDAO.updateSummary(crawlingDTO);
+					}
+				}
+				else crawlingDAO.insertContent(crawlingDTO);
+				
+			}
+			else {
+				//test확인용 
+				System.out.println("누락 : " + contentCnt);
+			}
+			if (isInsertGenre) {
+				boolean isExist = false;
+				for (int genreCd : crawlingDAO.selectListGenreId(crawlingDTO.getContentId())){
+					if (genreCd == crawlingDTO.getGenreId()) isExist = true;
+				}
+				if (!isExist) {
+					crawlingDAO.insertGenre(crawlingDTO);
+				}
+			}
+			if (isInsertDetail) {
+				boolean isExist = false;
+				for (int platformCd : crawlingDAO.selectListPlatformId(crawlingDTO.getContentId())) {
+					if (platformCd == crawlingDTO.getPlatformId()) isExist = true; 
+				}
+				if (!isExist) {
+					crawlingDTO.setContentStatus(true);
+					crawlingDAO.insertContentLink(crawlingDTO);
+				}
+			}
+			if (isInsertContentKey) {
+				if (updateKeyList != null) {
+					for (String key : updateKeyList) {
+						crawlingDAO.insertContentKey(new ContentKeyDTO(crawlingDTO.getContentId(),key));
+					}
+				}
+				else {
+					for (String key : contentKeyList) {
+						crawlingDAO.insertContentKey(new ContentKeyDTO(crawlingDTO.getContentId(),key));
+					}
+				}
+			}
+			
+		}
+			
+	}
 	
+	// 식별자 key 확인 중복 checkDupl N개 이상이면 중복된 작품으로 처리
+	private Set<String> contentKeyChecker(List<String> keyList_DB, Set<String> contentKeyList) {
+	    
+		int checkDupl = 2; // 중복 개수 확인 변수  
+	    int cntDupl = 0;
+	    
+	    // 중복된 요소를 찾기 retainAll
+	    Set<String> duplSet = new HashSet<>(contentKeyList);
+	    duplSet.retainAll(keyList_DB);
+	    cntDupl = duplSet.size();
+	    
+	    // 중복되지 않은 요소 찾기 removeAll
+	    Set<String> newKeySet = new HashSet<>(contentKeyList);
+	    newKeySet.removeAll(keyList_DB);
+	    
+	    return cntDupl >= checkDupl ? newKeySet : null;
+	}
+ 	
+ 	// ==================================== 
+  	// ===== 중복검사 관련 메서드 End ===== 
+  	// ====================================
 
 }

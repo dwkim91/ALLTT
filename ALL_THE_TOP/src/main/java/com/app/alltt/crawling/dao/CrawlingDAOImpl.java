@@ -82,5 +82,31 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	public void updateContentStatus() {
 		sqlSession.update("crawlingMapper.updateContentStatus");
 	}
+
+	@Override
+	public String selectOneTitle(long contentId) {
+		return sqlSession.selectOne("crawlingMapper.selectOneTitle", contentId);
+	}
+
+	@Override
+	public void updateCreator(CrawlingDTO crawlingDTO) {
+		sqlSession.update("crawlingMapper.updateCreator", crawlingDTO);
+		
+	}
+
+	@Override
+	public void updateActors(CrawlingDTO crawlingDTO) {
+		sqlSession.update("crawlingMapper.updateActors", crawlingDTO);
+	}
+
+	@Override
+	public void updateSummary(CrawlingDTO crawlingDTO) {
+		sqlSession.update("crawlingMapper.updateSummary", crawlingDTO);		
+	}
+
+	@Override
+	public List<ContentDTO> selectListContent() {
+		return sqlSession.selectList("crawlingMapper.selectListContent");
+	}
 	
 }
