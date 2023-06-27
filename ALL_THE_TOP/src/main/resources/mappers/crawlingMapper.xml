@@ -143,4 +143,47 @@
 				CONTENT_STATUS = FALSE
 	</update>
 	
+	<select id="selectOneTitle" parameterType="Long" resultType="String">
+		SELECT
+				TITLE
+		FROM
+				CONTENT
+		WHERE
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<update id="updateCreator" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				CREATOR = #{creator}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<update id="updateActors" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				ACTORS = #{actors}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<update id="updateSummary" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				SUMMARY = #{summary}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<!-- DB 정보 가져오기 TEST -->
+	<select id="selectListContent" resultType="ContentDTO">
+		SELECT
+				*
+		FROM
+				CONTENT
+	</select>
 </mapper>

@@ -13,14 +13,12 @@ public class CrawlingController {
 	
 	@Autowired
 	private CrawlingService crawlingService;
-	
-	//private ChromeCrawling crawling = new ChromeCrawling();
-	
+
 	@GetMapping("/addNetflixContents")
 	@ResponseBody
 	public String addNetflixContents() {
 		
-		crawlingService.contentsCrawling();
+		crawlingService.addNetflixContent();
 		
 		return "<h1>Success</h1>";
 	}
@@ -28,8 +26,8 @@ public class CrawlingController {
 	@GetMapping("/addTvingContents")
 	@ResponseBody
 	public String addTvingContents() {
-
-		crawlingService.crawlingTest_230625();
+		
+		crawlingService.addTvingContent();
 		
 		return "<h1>Success</h1>";
 	}
