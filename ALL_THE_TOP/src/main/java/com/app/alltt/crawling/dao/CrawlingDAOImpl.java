@@ -108,5 +108,10 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	public List<ContentDTO> selectListContent() {
 		return sqlSession.selectList("crawlingMapper.selectListContent");
 	}
+
+	@Override
+	public List<CrawlingDTO> selectListScrollContent(int contentId) {
+		return sqlSession.selectList("crawlingMapper.selectListScrollContent", contentId);
+	}
 	
 }

@@ -37,7 +37,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	// properties 로 어떻게 해볼 수 있을 것 같은데
 	private String[] WAVVE_LOGIN_KEY = {"life4603@naver.com", "testwavve930!"};
-	
+	private String[] NETFLIX_LOGIN_KEY = {"hkiss7@naver.com", "gkskfh1511"};
 	private WebDriver driver;
 	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
 	private static final String WEB_DRIVER_PATH = "C:\\chromedriver\\chromedriver.exe";
@@ -545,48 +545,45 @@ public class CrawlingServiceImpl implements CrawlingService {
 					// 디테일 페이지 이동
 					moveToTargetUrl(crawlingDTO.getUrl());
 					
-					while(driver.getTitle().equals("www.netflix.com")) {
-						// 현재창의 핸들을 String으로 저장
-						String mainHandle = driver.getWindowHandle();
-
-						//새창 열기
-						driver.switchTo().newWindow(WindowType.WINDOW);
-
-						// 새창 핸들
-						String newWindowHandle = driver.getWindowHandles().stream()
-							    .filter(handle -> !handle.equals(mainHandle))
-							    .findFirst()
-							    .orElseThrow(() -> new NoSuchWindowException("새 창이 열리지 않았습니다."));
-						driver.switchTo().window(newWindowHandle);
-
-						// 쿠키삭제
-						driver.manage().deleteAllCookies();
-
-						// 로그인
-						netflixLogin("hkiss7@naver.com", "gkskfh1511");
-
-						// 새창 닫기
-						driver.close();
-
-						// 메인창 핸들로 전환
-						driver.switchTo().window(mainHandle);
-
+					if(driver.getTitle().equals("www.netflix.com")) {
+						
+						// 드라이버 종료
+						driver.quit();
+						
+						// 드라이버 재시작
+						chromeDriverInit();
+						
+						// 넷플릭스 로그인
+						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
+						
 						// 디테일 페이지 이동
 						moveToTargetUrl(crawlingDTO.getUrl());
 					}
-	
-					// 등록일자
+					
 					String year = null; 
-					try {
-						year = driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/div/div[1]/div[1]/div/div[1]/div/div[2]/div")).getText();
-					} catch (Exception e) {
-						System.out.println("year 애러" + crawlingDTO.toString());
-					}
-					crawlingDTO.setEnrollDt(Integer.parseInt(year));
-	
 					String creator = "";
 					String actors = "";
 					StringBuilder result = new StringBuilder();
+					
+					// 등록일자
+					year = driver.findElements(By.className("year")).get(0).getText();
+					if (year == null) {
+						
+						// 드라이버 종료
+						driver.quit();
+						
+						// 드라이버 재시작
+						chromeDriverInit();
+						
+						// 넷플릭스 로그인
+						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
+						
+						// 디테일 페이지 이동
+						moveToTargetUrl(crawlingDTO.getUrl());
+						
+						year = driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/div/div[1]/div[1]/div/div[1]/div/div[2]/div")).getText();
+						System.out.println("yearXpath : " + year);
+					}
 						
 					// 디테일 페이지내 상세정보가 담긴 요소
 					List<WebElement> aboutContainer = driver.findElement(By.className("about-container")).findElements(By.className("previewModal--tags"));
@@ -622,11 +619,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 						    }
 
 						}
+						
+						crawlingDTO.setEnrollDt(Integer.parseInt(year));
+						
 						//summary
 						crawlingDTO.setSummary(driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/div/div[1]/p/div")).getText());
+
 						// creator
 						crawlingDTO.setCreator(creator);
-					    // actors
+					    
+						// actors
 						crawlingDTO.setActors(result.toString());
 					    
 					}
@@ -641,23 +643,27 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 	@Override
 	public void addNetflixContent() {
-//		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
-		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
-	
-		GenreLinkDTO testTempDTO = null;
-		testTempDTO = new GenreLinkDTO();
-		testTempDTO.setContentType("series");
-		testTempDTO.setPlatformId(1);
-		testTempDTO.setGenreId(5); //코미디
-		testTempDTO.setUrl("https://www.netflix.com/browse/genre/10375?bc=83&so=yr");
-		genreLinkList.add(testTempDTO);
 		
-		// nerflix 장르별
+//		Netflix 단일장르 Test Start
+
+//		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
+//		GenreLinkDTO testTempDTO = null;
+//		testTempDTO = new GenreLinkDTO();
+//		testTempDTO.setContentType("series");
+//		testTempDTO.setPlatformId(1);
+//		testTempDTO.setGenreId(5); //코미디
+//		testTempDTO.setUrl("https://www.netflix.com/browse/genre/10375?bc=83&so=yr");
+//		genreLinkList.add(testTempDTO);
+
+//		Netflix 단일장르 Test End
+		
+		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
+
 		// 크롬드라이버 초기화
 		chromeDriverInit();
 
 		// netflix 로그인
-		netflixLogin("hkiss7@naver.com","gkskfh1511");
+		netflixLogin(NETFLIX_LOGIN_KEY[0],NETFLIX_LOGIN_KEY[1]);
 		
 		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
 			ArrayList<CrawlingDTO> netflixContentList = crawlNetflixdContents(genreLinkDTO);
@@ -1174,6 +1180,20 @@ public class CrawlingServiceImpl implements CrawlingService {
  	
  	// ==================================== 
   	// ===== 중복검사 관련 메서드 End ===== 
+  	// ====================================
+	
+ 	// ==================================== 
+  	// ===== 스크롤 관련 메서드 Start ===== 
+  	// ====================================
+	
+	@Override
+	public List<CrawlingDTO> getMoreContents(int contentId) {
+		
+		return crawlingDAO.selectListScrollContent(contentId);
+	}
+	
+ 	// ==================================== 
+  	// ===== 스크롤 관련 메서드 End ===== 
   	// ====================================
 
 }

@@ -186,4 +186,17 @@
 		FROM
 				CONTENT
 	</select>
+	
+	<!-- Scroll 데이터 TEST -->
+	<select id="selectListScrollContent" resultType="CrawlingDTO" parameterType="int">
+		SELECT
+				C.CONTENT_ID,
+		        C.TITLE,
+		        L.IMG_URL,
+		        L.URL
+		FROM
+				CONTENT C
+			INNER JOIN CONTENT_LINK L ON C.CONTENT_ID = L.CONTENT_ID
+		LIMIT #{contentId}, 42;
+	</select>
 </mapper>

@@ -32,5 +32,8 @@ public interface CrawlingDAO {
 	
 	//test가져오기
 	public List<ContentDTO> selectListContent();
+	
+	// scroll test
+	public List<CrawlingDTO> selectListScrollContent(int contentId);
 
 }
