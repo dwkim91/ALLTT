@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Keys;
@@ -718,7 +719,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 				break;
 			}
 		}
-
+		return testGenreLink;
 //		전체 장르
 //		return crawlingDAO.selectListGenreLink(platformId);
 	}
