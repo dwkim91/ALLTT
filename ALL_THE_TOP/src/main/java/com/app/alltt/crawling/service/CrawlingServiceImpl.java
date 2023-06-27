@@ -701,7 +701,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 			loginInput.get(i).sendKeys(wavveLoginKey[i]);
 		}
 		// click login
-//		driver.findElement(By.xpath("//*[@id=\"app\"]/div[1]/main/div/div[1]/form/fieldset/div/a")).click();
 		driver.findElement(By.className("btn-purple-dark")).click();
 		// save login cookies
 		return driver.manage().getCookies();
@@ -712,19 +711,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 //		 test genres
 		List<GenreLinkDTO> testGenreLink = new ArrayList<GenreLinkDTO>();
-//		
-		GenreLinkDTO testGenre1Comedy = new GenreLinkDTO();
-		testGenre1Comedy.setContentType("series");
-		testGenre1Comedy.setGenreId(5);
-		testGenre1Comedy.setLinkId(77);
-		testGenre1Comedy.setPlatformId(3);
-		testGenre1Comedy.setUrl("https://www.wavve.com/list/VN4?adult=n&api=apis.wavve.com%252Fcf%252Fvod%252Fpopularcontents%253FWeekDay%253Dall%2526broadcastid%253DVN4%2526contenttype%253Dvod%2526genre%253D01%2526limit%253D20%2526offset%253D0%2526orderby%253Dnew%2526subgenre%253Dvsgm01003%2526uicode%253DVN4%2526uiparent%253DGN56-VN4%2526uirank%253D5%2526uitype%253DVN4&came=BandViewGnbCode&orderby=new&page=1&subgenre=vsgm01003");
-//		
-		testGenreLink.add(testGenre1Comedy);
-		
+		for (GenreLinkDTO genre : crawlingDAO.selectListGenreLink(platformId)) {
+			// 장르가 바뀌면 숫자만 바뀌는걸로
+			if (genre.getGenreId() == 6) {
+				testGenreLink.add(genre);
+				break;
+			}
+		}
+
+//		전체 장르
 //		return crawlingDAO.selectListGenreLink(platformId);
-//		test code
-		return testGenreLink;
 	}
 
 	// 해당 url로 이동
@@ -755,8 +751,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 			Thread.sleep(1200);
 			// 크롤링 작업 진행
 			wavveContentList.addAll(this.crawlWavveCurrentPageContentList(genre, loginCookies));
-			// test를 위해 첫번째 페이지에서 끊기
-			// break;
 			// 페이지 리스트에서 다음 페이지가 있는지 확인
 			List<WebElement> pageList = driver.findElement(By.className("paging-type01")).findElements(By.tagName("a"));
 			boolean nextPageFound = false;
@@ -799,11 +793,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 새로운 창에서 열 현재 페이지 url 저장
 		String currentUrl = driver.getCurrentUrl();
 		// 각 컨텐츠의 정보 가져오기
-//		test code
-//		for (int i = 0; i < 7; i++) {
 		for (int i = 0; i < pageTotalContent.size(); i++) {
 			// 영화 개별구매 거르기
-//			WebElement outLier = null;
 			try {
 				if (pageTotalContent.get(i).findElement(By.className("left-top-area")).findElement(By.tagName("span")) != null) {
 					System.out.println("개별구매 content 입니다");
@@ -814,10 +805,17 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 			// title, contentType, platformId, imgUrl 가져옴
 			CrawlingDTO content = new CrawlingDTO();
-			content.setTitle(pageTotalContent.get(i).findElement(By.className("alt-text")).getAttribute("innerHTML"));
+			// 제목 특수문자 관련 가공해서 넣고
+			String title = pageTotalContent.get(i).findElement(By.className("alt-text")).getAttribute("innerHTML");
+			title = StringEscapeUtils.unescapeHtml4(title);
+			content.setTitle(title);
+			// 컨텐츠 타입 넣고
 			content.setContentType(genre.getContentType());
+			// 플랫폼 정보 넣고
 			content.setPlatformId(genre.getPlatformId());
+			// 장르 정보 넣고
 			content.setGenreId(genre.getGenreId());
+			// 이미지 정보 가공해서 넣고
 			String imgTag = pageTotalContent.get(i).findElement(By.tagName("source")).getAttribute("srcset");
 			content.setImgUrl(getImageUrlByDensity(imgTag));
 			// imgUrl 으로 있는지 없는지 검색
@@ -833,16 +831,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 					// 디테일 페이지로 들어가서 정보 긁어오기
 					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
 				} catch (InterruptedException e) {System.out.println("FAIL TO CRAWL CONTENT DETAIL");}
-				if (newContent != null) wavveContentList.add(newContent);
-			}
-			// DB에서 동일한 imgUrl이 확인되는 경우, 해당하는 contentId를 가지고 genre 비교 후 추가
-			else {
-				// 현재 저장된 genre 검색해서, 지금 조회중인 장르가 검색되지 않는다면,
-				if (!crawlingDAO.selectListGenreId(content.getContentId()).contains(content.getGenreId())) {
-					// 새로운 장르 추가
-					// 요기 dao 확인 필요
-					crawlingDAO.insertGenre(content);
-				}
+				// 컨텐츠를 못 가져왔거나, 페이지 리로드되며 디테일 정보를 못 가져오는 경우가 아니면 리스트에 넣기
+				if (newContent != null && newContent.getCreator() != null) wavveContentList.add(newContent);
 			}
 		}
 		return wavveContentList;
@@ -1166,7 +1156,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 식별자 key 확인 중복 checkDupl N개 이상이면 중복된 작품으로 처리
 	private Set<String> contentKeyChecker(List<String> keyList_DB, Set<String> contentKeyList) {
 	    
-		int checkDupl = 2; // 중복 개수 확인 변수  
+		int checkDupl = 3; // 중복 개수 확인 변수  
 	    int cntDupl = 0;
 	    
 	    // 중복된 요소를 찾기 retainAll
