@@ -12,7 +12,8 @@ public interface CrawlingService {
 	public void addNetflixContent();
 	// 웨이브
 	public void addWavveContent() throws InterruptedException;
-	
+	// 통합 크롤링
+	public void addAllttContent() throws InterruptedException;
 	// scroll test
 	public List<CrawlingDTO> getMoreContents(int contentId);
 	

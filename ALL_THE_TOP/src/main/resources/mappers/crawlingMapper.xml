@@ -179,12 +179,33 @@
 				CONTENT_ID = #{contentId}
 	</update>
 	
+	<update id="updateEnrollDt" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				ENROLL_DT = #{enrollDt}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
 	<!-- DB 정보 가져오기 TEST -->
 	<select id="selectListContent" resultType="ContentDTO">
 		SELECT
 				*
 		FROM
 				CONTENT
+	</select>
+
+	<select id="selectListGenreLinkByGenreId" resultType="GenreLinkDTO">
+		SELECT 
+				*
+		FROM 
+				GENRE_LINK
+		WHERE 
+				CONTENT_TYPE = #{contentType} AND GENRE_ID = #{genreId}
+		ORDER BY 
+				GENRE_ID ASC,
+				PLATFORM_ID ASC;
 	</select>
 	
 	<!-- Scroll 데이터 TEST -->

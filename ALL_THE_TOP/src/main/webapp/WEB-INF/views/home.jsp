@@ -18,6 +18,9 @@
 	<tr>
 		<td><a href="${contextPath}/crawling/addWavveContents">wavve Crawling Start</a></td>
 	</tr>
+	<tr>
+		<td><a href="${contextPath}/crawling/addAllttContent">ALLTT Crawling Start</a></td>
+	</tr>
 </table>
 
 </body>

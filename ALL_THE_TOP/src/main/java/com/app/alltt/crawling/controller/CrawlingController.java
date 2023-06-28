@@ -41,5 +41,14 @@ public class CrawlingController {
 		return "<h1>Success</h1>";
 	}
 	
+	@GetMapping("/addAllttContent")
+	@ResponseBody
+	public String addAllttContent() throws InterruptedException {
+		
+		crawlingService.addAllttContent();
+		
+		return "<h1>Success</h1>";
+	}
+	
 }
 
