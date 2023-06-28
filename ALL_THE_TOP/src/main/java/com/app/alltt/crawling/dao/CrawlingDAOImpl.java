@@ -103,6 +103,11 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	public void updateSummary(CrawlingDTO crawlingDTO) {
 		sqlSession.update("crawlingMapper.updateSummary", crawlingDTO);		
 	}
+	
+	@Override
+	public void updateEnrollDt(CrawlingDTO crawlingDTO) {
+		sqlSession.update("crawlingMapper.updateEnrollDt", crawlingDTO);		
+	}
 
 	@Override
 	public List<ContentDTO> selectListContent() {
@@ -113,5 +118,12 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	public List<CrawlingDTO> selectListScrollContent(int contentId) {
 		return sqlSession.selectList("crawlingMapper.selectListScrollContent", contentId);
 	}
+
+	@Override
+	public List<GenreLinkDTO> selectListGenreLinkByGenreId(GenreLinkDTO genreLinkDTO) {
+		return sqlSession.selectList("crawlingMapper.selectListGenreLinkByGenreId", genreLinkDTO);
+	}
+
+	
 	
 }

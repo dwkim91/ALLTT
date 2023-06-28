@@ -29,11 +29,15 @@ public interface CrawlingDAO {
 	public void updateCreator(CrawlingDTO crawlingDTO);
 	public void updateActors(CrawlingDTO crawlingDTO);
 	public void updateSummary(CrawlingDTO crawlingDTO);
+	public void updateEnrollDt(CrawlingDTO crawlingDTO);
 	
 	//test가져오기
 	public List<ContentDTO> selectListContent();
 	
 	// scroll test
 	public List<CrawlingDTO> selectListScrollContent(int contentId);
+	
+	//전체크롤링용 장르ID 별 플랫폼 별로 링크 가져오기 
+	public List<GenreLinkDTO> selectListGenreLinkByGenreId(GenreLinkDTO genreLinkDTO);
 
 }
