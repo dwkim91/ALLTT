@@ -333,7 +333,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			String title = titleElement.getText();
 			String url = urlElement.getAttribute("href");
 			String rawImgUrl = imgElement.getAttribute("src");
-			String imgUrl = rawImgUrl.replace("https://", "").replace("/dims/resize/400", ""); // https:// 제거, jpg 뒷부분 제거
+			String imgUrl = rawImgUrl.replace("/dims/resize/400", ""); // jpg 뒷부분 제거
 			
 			crawlingDTO.setImgUrl(imgUrl);
 			crawlingDTO.setTitle(title);
