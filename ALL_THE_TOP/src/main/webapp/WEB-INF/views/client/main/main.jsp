@@ -87,5 +87,59 @@
 			</div>
 		</div>
 	</div>
+	<div style="background-color: black;">
+		<div class="section-title" style="margin-top: 1rem;">
+			<h5 style="padding-bottom: 20px;">액션 최신 컨텐츠</h5>
+			<div class="detailList">
+				<c:forEach var="actionContent" items="${actionContentList}">
+					<div class="item" data-id="${actionContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${actionContent.contentId}">
+							<div class="item__thumb item__thumb-25x36">
+								<div class="item__tags">
+									<div class="item__tags-left"></div>
+									<div class="item__tags-right"></div>
+								</div>
+								<div class="item__image lazy">
+									<img class="loaded css-1doy9ip euf32k22"
+										src="${actionContent.imgUrl}"
+										alt="${actionContent.title}">
+								</div>
+							</div>
+							<div class="item__info ">
+								<p class="item__title">${actionContent.title}</p>
+							</div>
+						</a>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+	</div>
+	<div style="background-color: black;">
+		<div class="section-title" style="margin-top: 1rem;">
+			<h5 style="padding-bottom: 20px;">드라마 최신 컨텐츠</h5>
+			<div class="detailList">
+				<c:forEach var="dramaContent" items="${dramaContentList}">
+					<div class="item" data-id="${dramaContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${dramaContent.contentId}">
+							<div class="item__thumb item__thumb-25x36">
+								<div class="item__tags">
+									<div class="item__tags-left"></div>
+									<div class="item__tags-right"></div>
+								</div>
+								<div class="item__image lazy">
+									<img class="loaded css-1doy9ip euf32k22"
+										src="${dramaContent.imgUrl}"
+										alt="${dramaContent.title}">
+								</div>
+							</div>
+							<div class="item__info ">
+								<p class="item__title">${dramaContent.title}</p>
+							</div>
+						</a>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
