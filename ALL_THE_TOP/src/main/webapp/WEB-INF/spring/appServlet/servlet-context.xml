@@ -50,4 +50,70 @@
 	
 	<task:annotation-driven />
 	
+	<!-- NAVER/KAKAO Oauth 로그인을 위한 설정 -->
+	<context:property-placeholder location="classpath:properties/sns.properties"/>
+	
+	<beans:bean id="naverClientID" class="java.lang.String">
+		<beans:constructor-arg value="${naver_id}"/>
+	</beans:bean>
+	<beans:bean id="naverClientSecret" class="java.lang.String">
+		<beans:constructor-arg value="${naver_secret_key}"/>
+	</beans:bean>
+	<beans:bean id="naverRedirectUrl" class="java.lang.String">
+		<beans:constructor-arg value="${callback}"/>	
+	</beans:bean>
+	
+	<!-- 해당 설정들을 받아주는 class -->
+	<beans:bean id="naverSns" class="com.app.alltt.member.sns.SnsValue">
+		<beans:constructor-arg value="naver"/>
+		<beans:constructor-arg ref="naverClientID"/>
+		<beans:constructor-arg ref="naverClientSecret"/>
+		<beans:constructor-arg ref="naverRedirectUrl"/>
+	</beans:bean>
+	
+	<beans:bean id="kakaoClientID" class="java.lang.String">
+		<beans:constructor-arg value="${kakao_id}"/>
+	</beans:bean>
+	<beans:bean id="kakaoClientSecret" class="java.lang.String">
+		<beans:constructor-arg value="${kakao_secret_key}"/>
+	</beans:bean>
+	<beans:bean id="kakaoRedirectUrl" class="java.lang.String">
+		<beans:constructor-arg value="${kakao_callback}"/>	
+	</beans:bean>
+	
+	<!-- 해당 설정들을 받아주는 class -->
+	<beans:bean id="kakaoSns" class="com.app.alltt.member.sns.SnsValue">
+		<beans:constructor-arg value="kakao"/>
+		<beans:constructor-arg ref="kakaoClientID"/>
+		<beans:constructor-arg ref="kakaoClientSecret"/>
+		<beans:constructor-arg ref="kakaoRedirectUrl"/>
+	</beans:bean>
+	
+	<!-- crawling 시 사용할 계정 정보 삽입을 위한 설정 -->
+	<context:property-placeholder location="classpath:properties/platform.properties"/>
+	
+	<!-- platform 정보 넘기는 bean 설정, 안됨 나중에 6.29 -->
+	<!-- 
+	<beans:bean id="netflixId" class="java.lang.String">
+		<beans:constructor-arg value="${netflix.id}"/>
+	</beans:bean>
+	<beans:bean id="netflixPw" class="java.lang.String">
+		<beans:constructor-arg value="${netflix.pw}"/>
+	</beans:bean>
+	
+	네이버와 똑같은 방식
+	<beans:bean id="netflixInfo" class="com.app.alltt.crawling.platform.PlatformValue">
+		<beans:constructor-arg ref="netflixId"/>
+		<beans:constructor-arg ref="netflixPw"/>
+	</beans:bean>
+	 
+	JDBC 와 똑같은 방식
+	<beans:bean id="netflixInfo" class="com.app.alltt.crawling.platform.PlatformValue">
+		<beans:property name="id"   value="${netflix.id}" />
+		<beans:property name="pw"   value="${netflix.pw}" />
+	</beans:bean>
+	-->
+	
+	
+	
 </beans:beans>

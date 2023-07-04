@@ -1,0 +1,92 @@
+@mixin header_height {
+    margin-left: 5.083rem;
+    @media screen and(max-width: 768px) {
+        padding-left: 1.333rem;
+    }
+}
+@mixin wrap_margin_L {
+    margin-left: 3.888rem;
+    @media screen and(max-width: 767px) {
+        padding-left: 1.333rem;
+    }
+}
+@mixin wrap_margin_R {
+    margin-right: 3.888rem;
+    @media screen and(max-width: 767px) {
+        padding-right: 1.333rem;
+    }
+}
+@mixin wrap_padding_L {
+    padding-left: 3.888rem;
+    @media screen and(max-width: 767px) {
+        padding-left: 1.333rem;
+    }
+}
+@mixin wrap_padding_R {
+    padding-right: 3.888rem;
+    @media screen and(max-width: 767px) {
+        padding-right: 1.333rem;
+    }
+}
+
+@mixin movie_thum($row_count, $row_height, $column_count, $column_width, $gap) {
+    margin-left: 2.5vw;
+    // padding-top: calc(591.44 / 1127.34 * 100%);
+    width: calc(100% - 0px);
+    display: grid;
+    grid-template: repeat($row_count, $row_height) / repeat($column_count, $column_width); //row/column
+    gap: $gap;
+    grid-auto-flow: row dense;
+    .item {
+        // min-height: 180px;
+        // height: 100%;
+        // padding-top: calc(591.44 / 1127.34 * 100%);
+        padding-top: calc(290 / 201 * 100%);
+        position: relative;
+        transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.35s;
+        background-color: black;
+        color: rgba(255, 255, 255, 1);
+        grid-column: span 2;
+        &_info {
+            position: absolute;
+            top: 0;
+        }
+    }
+}
+
+@mixin tag_circle {
+    left: auto;
+    right: 2px;
+    width: 1.85rem;
+    height: 1.85rem;
+    padding: 0;
+    border-radius: 100px;
+    background-color: #ea0a0a;
+    font-size: 0.625em; //10px;
+    // letter-spacing: -1px;
+    text-align: center;
+    line-height: 1.85rem;
+    word-break: keep-all;
+}
+
+@mixin grid_long {
+    grid-column: 1 / span 12;
+}
+
+@mixin background {
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% auto;
+}
+
+// 1rem=16px
+// rem    px vw
+// 0.625 =10 =0.5
+// 0.688 =11 =
+// 0.750 =12 =1
+// 0.813 =13 =1.083
+// 0.875 =14 =1.125
+// 0.938 =15 =1.25
+// 1     =16 =1.33
+// 1.063 =17 =1.416
+// 1.125 =18 =1.5

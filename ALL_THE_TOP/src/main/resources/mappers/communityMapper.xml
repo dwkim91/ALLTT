@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="communityMapper">
+
+<!-- 새 게시글 삽입 -->
+<insert id="insertNewPost" parameterType="PostDTO">
+	INSERT INTO
+		POST (POST_TITLE,
+			   MEMBER_ID,
+			   PASSWD,
+			   CONTENT,
+			   CONTENT_ID)
+		VALUES (
+				#{postTitle},
+				#{memberId},
+				#{passwd},
+				#{content},
+				#{contentId}
+		)
+</insert>
+
+<!-- 새 게시글에 연결할 content 가져오기 -->
+<select id="selectListContent" parameterType="String" resultType="ContentDTO">
+	SELECT
+		*
+	FROM
+		CONTENT
+	WHERE
+		TITLE LIKE CONCAT('%', #{searchTitle}, '%')
+</select>
+
+<!-- community feed 로 들어갈 때, 전체 게시글 리스트 가져오기 -->
+<select id="selectListAllPost" resultType="PostDTO">
+	SELECT
+		p.POST_ID AS POST_ID,
+		p.POST_TITLE AS POST_TITLE,
+		p.MEMBER_ID AS MEMBER_ID,
+		p.CONTENT AS CONTENT,
+		p.READ_CNT AS READ_CNT,
+		p.ENROLL_DT AS ENROLL_DT,
+		count(re.RECMND_ID) AS RECMND_CNT,
+		p.CONTENT_ID AS CONTENT_ID,
+		m.NICK_NAME AS NICK_NAME,
+		c.TITLE AS POST_TAG,
+        count(r.REPLY_ID) AS REPLY_CNT
+	FROM
+		POST p
+	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
+	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
+	LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
+	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
+    GROUP BY p.POST_ID
+   	ORDER BY ENROLL_DT DESC;
+</select>
+
+<!-- 게시글 디테일 페이지 가져오기 -->
+<select id="selectPostDetail" parameterType="long" resultType="PostDTO">
+	SELECT
+	p.POST_ID AS POST_ID,
+    p.POST_TITLE AS POST_TITLE,
+    p.PASSWD AS PASSWD,
+    p.CONTENT AS CONTENT,
+    p.READ_CNT AS READ_CNT,
+    p.ENROLL_DT AS ENROLL_DT,
+    count(re.RECMND_ID) AS RECMND_CNT,
+    p.CONTENT_ID AS CONTENT_ID,
+    C.TITLE AS POST_TAG,
+    M.NICK_NAME AS NICK_NAME
+	FROM
+		POST p
+	LEFT JOIN MEMBER M ON p.MEMBER_ID = M.MEMBER_ID
+	LEFT JOIN CONTENT C ON p.CONTENT_ID = C.CONTENT_ID
+	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
+	WHERE
+		p.POST_ID = #{postId};
+</select>
+
+<!-- 게시글 디테일 페이지 들어갈 때, 조회수 늘리기 -->
+<update id="updateReadCnt" parameterType="long">
+	UPDATE
+		POST
+	SET
+		READ_CNT = READ_CNT + 1
+	WHERE
+		POST_ID = #{postId}
+</update>
+
+<!-- 게시글 디테일 페이지 들어갈 떄, 댓글 리스트 가져오기 -->
+<select id="selectListReply" parameterType="long" resultType="ReplyDTO">
+	SELECT
+		R.*,
+		M.NICK_NAME AS NICK_NAME
+	FROM
+		REPLY R
+	LEFT JOIN MEMBER M ON R.MEMBER_ID = M.MEMBER_ID
+	WHERE
+		POST_ID = #{postId}
+</select>
+
+<!-- 게시글 디테일 페이지에서, content 정보를 가져오기 위해 -->
+<select id="selectOneContent" parameterType="long" resultType="ContentDTO">
+	SELECT
+		C.*
+	FROM
+		POST p
+	    LEFT JOIN CONTENT C ON p.CONTENT_ID = C.CONTENT_ID
+	WHERE
+		POST_ID = #{postId};
+</select>
+
+<!-- 게시글 디테일 페이지에 들어가는 content image를 가져오기 위해 -->
+<select id="selectContentImg" parameterType="long" resultType="ContentLinkDTO">
+	SELECT
+		CONTENT_ID,
+	    MAX(PLATFORM_ID) AS PLATFORM_ID,
+	    IMG_URL,
+	    URL
+	FROM
+		CONTENT_LINK
+	WHERE
+		CONTENT_ID = #{contentId};
+</select>
+
+<!-- 디테일 페이지에서, 동일한 태그를 가진 게시글 리스트 가져오기 -->
+<select id="selectPostListByContentId" parameterType="long" resultType="PostDTO">
+	SELECT
+		P.*,
+	    M.NICK_NAME AS NICK_NAME,
+        count(RECMND_ID) AS RECMND_CNT
+	FROM
+		POST P
+	LEFT JOIN MEMBER M ON P.MEMBER_ID = M.MEMBER_ID
+	LEFT JOIN POST_RECMND RE ON P.POST_ID = RE.POST_ID
+	WHERE
+		CONTENT_ID = #{contentId}
+	AND CONTENT_ID != 0
+    GROUP BY P.POST_ID
+	ORDER BY RECMND_CNT DESC
+	LIMIT 0, 4;
+</select>
+
+<!-- 게시글 디테일에서 댓글 추가하기 -->
+<insert id="insertReply" parameterType="ReplyDTO">
+	INSERT INTO
+		REPLY (
+			POST_ID,
+			MEMBER_ID,
+			CONTENT
+		)
+	VALUES (
+			#{postId},
+			#{memberId},
+			#{content}
+	)
+</insert>
+
+<!-- 커뮤니티에 들어갈 때, 멤버 이름을 출력하기 위해 -->
+<select id="selectMemberId" parameterType="long" resultType="MemberDTO">
+	SELECT
+		*
+	FROM
+		MEMBER
+	WHERE
+		MEMBER_ID = #{memberId}
+</select>
+
+<!-- 현재 로그인한 멤버가 쓴 글과 댓글 수 -->
+<select id="selectPostCntByMemberId" parameterType="long" resultType="int">
+	SELECT
+		count(*)
+	FROM
+		POST
+	WHERE
+		MEMBER_ID = #{memberId}
+</select>
+
+<select id="selectReplyCntByMemberId" parameterType="long" resultType="int">
+	SELECT
+		count(*)
+	FROM
+		REPLY
+	WHERE
+		MEMBER_ID = #{memberId}
+</select>
+
+<!-- 게시글 추천 -->
+<insert id="">
+
+</insert>
+
+</mapper>
