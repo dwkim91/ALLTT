@@ -51,20 +51,17 @@
 							<!-- 기본 42개 -->
 							<c:forEach var="crawlingDTO" items="${contentList}">
 								<div class="item" data-id="${crawlingDTO.contentId}">
-									<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${crawlingDTO.contentId}">
-										<div class="item__thumb item__thumb-25x36" id="wishContent">
-											<div class="item__tags">
-												<div class="item__tags-left"></div>
-												<div class="item__tags-right"></div>
-											</div>
-											<div class="item__image lazy">
-													<img class="loaded css-1doy9ip euf32k22" src="${crawlingDTO.imgUrl}" alt="${crawlingDTO.title}">
-											</div>
+									<div class="item__thumb item__thumb-25x36" id="wishContent">
+										<div class="item__tags"></div>
+										<div class="item__image lazy">
+											<img class="loaded css-1doy9ip euf32k22"
+												src="${crawlingDTO.imgUrl}" alt="${crawlingDTO.title}">
 										</div>
-										<div class="item__info ">
-											<p class="item__title false">${crawlingDTO.title}</p>
-										</div>
-									</a>
+									</div>
+									<div class="item__info ">
+										<a class="item__title"
+											href="/detail?contentId=${crawlingDTO.contentId}">${crawlingDTO.title}</a>
+									</div>
 								</div>
 							</c:forEach>
 						</div>
