@@ -67,13 +67,6 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/wavveTest")
-	public void wavveTest(@ModelAttribute List<String> wavveTest) {
-		
-		System.out.println(wavveTest);
-		
-	}
-	
 	@GetMapping("/detail")
 	public ModelAndView detilContent(@RequestParam("contentId") long contentId) {
 		
@@ -157,16 +150,6 @@ public class MainController {
 	@GetMapping("/wish")
 	public String wish() {
 		return "/alltt/wish";
-	}
-	
-	@GetMapping("/community")
-	public String community() {
-		return "/alltt/community";
-	}
-	
-	@GetMapping("/write")
-	public String write() {
-		return "/alltt/write";
 	}
 	
 }
