@@ -3,6 +3,7 @@ package com.app.alltt.main.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -68,9 +69,14 @@ public class MainController {
 	}
 	
 	@GetMapping("/detail")
-	public ModelAndView detilContent(@RequestParam("contentId") long contentId) {
-		
+	public ModelAndView detilContent(@RequestParam("contentId") long contentId, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/detail");
 		
 		// 컨텐츠의 모든정보 (1개씩)
@@ -99,9 +105,14 @@ public class MainController {
 	}
 	
 	@GetMapping("/series")
-	public ModelAndView series(HttpServletRequest request) {
+	public ModelAndView series(HttpServletRequest request, HttpSession session) {
 		
 		ModelAndView mv = new ModelAndView();
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/series");
 		
 		// 기본필터
@@ -121,9 +132,14 @@ public class MainController {
 	}
 	
 	@GetMapping("/movie")
-	public ModelAndView movie(HttpServletRequest request) {
+	public ModelAndView movie(HttpServletRequest request, HttpSession session) {
 		
 		ModelAndView mv = new ModelAndView();
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/movie");
 		
 		// 기본필터
@@ -148,8 +164,18 @@ public class MainController {
 	}
 	
 	@GetMapping("/wish")
-	public String wish() {
-		return "/alltt/wish";
+	public ModelAndView wish(HttpSession session) {
+		
+		ModelAndView mv = new ModelAndView();
+
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
+		mv.setViewName("/alltt/wish");
+		
+		return mv;
 	}
 	
 }

@@ -12,7 +12,8 @@
 			<div class="detailList">
 				<c:forEach var="netflixContent" items="${netflixContentList}">
 					<div class="item" data-id="${netflixContent.contentId}">
-						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${netflixContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0"
+							href="/detail?contentId=${netflixContent.contentId}">
 							<div class="item__thumb item__thumb-25x36">
 								<div class="item__tags">
 									<div class="item__tags-left"></div>
@@ -20,8 +21,7 @@
 								</div>
 								<div class="item__image lazy">
 									<img class="loaded css-1doy9ip euf32k22"
-										src="${netflixContent.imgUrl}"
-										alt="${netflixContent.title}">
+										src="${netflixContent.imgUrl}" alt="${netflixContent.title}">
 								</div>
 							</div>
 							<div class="item__info ">
@@ -39,7 +39,8 @@
 			<div class="detailList">
 				<c:forEach var="tvingContent" items="${tvingContentList}">
 					<div class="item" data-id="${tvingContent.contentId}">
-						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${tvingContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0"
+							href="/detail?contentId=${tvingContent.contentId}">
 							<div class="item__thumb item__thumb-25x36">
 								<div class="item__tags">
 									<div class="item__tags-left"></div>
@@ -47,8 +48,7 @@
 								</div>
 								<div class="item__image lazy">
 									<img class="loaded css-1doy9ip euf32k22"
-										src="${tvingContent.imgUrl}"
-										alt="${tvingContent.title}">
+										src="${tvingContent.imgUrl}" alt="${tvingContent.title}">
 								</div>
 							</div>
 							<div class="item__info ">
@@ -66,7 +66,8 @@
 			<div class="detailList">
 				<c:forEach var="wavveContent" items="${wavveContentList}">
 					<div class="item" data-id="${wavveContent.contentId}">
-						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${wavveContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0"
+							href="/detail?contentId=${wavveContent.contentId}">
 							<div class="item__thumb item__thumb-25x36">
 								<div class="item__tags">
 									<div class="item__tags-left"></div>
@@ -74,8 +75,7 @@
 								</div>
 								<div class="item__image lazy">
 									<img class="loaded css-1doy9ip euf32k22"
-										src="${wavveContent.imgUrl}"
-										alt="${wavveContent.title}">
+										src="${wavveContent.imgUrl}" alt="${wavveContent.title}">
 								</div>
 							</div>
 							<div class="item__info ">
@@ -93,7 +93,8 @@
 			<div class="detailList">
 				<c:forEach var="actionContent" items="${actionContentList}">
 					<div class="item" data-id="${actionContent.contentId}">
-						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${actionContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0"
+							href="/detail?contentId=${actionContent.contentId}">
 							<div class="item__thumb item__thumb-25x36">
 								<div class="item__tags">
 									<div class="item__tags-left"></div>
@@ -101,8 +102,7 @@
 								</div>
 								<div class="item__image lazy">
 									<img class="loaded css-1doy9ip euf32k22"
-										src="${actionContent.imgUrl}"
-										alt="${actionContent.title}">
+										src="${actionContent.imgUrl}" alt="${actionContent.title}">
 								</div>
 							</div>
 							<div class="item__info ">
@@ -120,7 +120,8 @@
 			<div class="detailList">
 				<c:forEach var="dramaContent" items="${dramaContentList}">
 					<div class="item" data-id="${dramaContent.contentId}">
-						<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${dramaContent.contentId}">
+						<a class="false css-1djwytu e2ri0zb0"
+							href="/detail?contentId=${dramaContent.contentId}">
 							<div class="item__thumb item__thumb-25x36">
 								<div class="item__tags">
 									<div class="item__tags-left"></div>
@@ -128,8 +129,7 @@
 								</div>
 								<div class="item__image lazy">
 									<img class="loaded css-1doy9ip euf32k22"
-										src="${dramaContent.imgUrl}"
-										alt="${dramaContent.title}">
+										src="${dramaContent.imgUrl}" alt="${dramaContent.title}">
 								</div>
 							</div>
 							<div class="item__info ">

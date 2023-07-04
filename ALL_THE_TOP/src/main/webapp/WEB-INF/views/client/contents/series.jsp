@@ -3,68 +3,67 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/contents.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/contents.js"
+	type="module"></script>
 </head>
 <body>
 	<main class="is-desktop css-p5l6tq eeennqe0">
 		<section class="contents_wrap">
 			<section class="contents_wrap wrap_margin">
-				<div data-v-a0912140="" class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
+				<div data-v-a0912140=""
+					class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
 				<div class="hidden-horizontal-scrollbar__items"></div>
-				<div data-v-a0912140="" class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
+				<div data-v-a0912140=""
+					class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
 				<!-- checkbox -->
 				<div class="hidden-horizontal-scrollbar__items"></div>
-					<div>
-						<div class="checkbox-container">
-							<label class="checkbox-label">
-								<input type="checkbox" checked id="netflixCheckbox" value="1">
-								<span class="checkbox-custom" style="background-image: url('${contextPath}/resources/bootstrap/img/n100.jpeg');"></span>
-							</label>
-							<label class="checkbox-label">
-								<input type="checkbox" checked id="tvingCheckbox" value="2">
-								<span class="checkbox-custom" style="background-image: url('${contextPath}/resources/bootstrap/img/t100.jpeg');"></span>
-							</label>
-							<label class="checkbox-label">
-								<input type="checkbox" checked id="wavveCheckbox" value="3">
-								<span class="checkbox-custom" style="background-image: url('${contextPath}/resources/bootstrap/img/w100.jpeg');"></span>
-							</label>
-						</div>
+				<div>
+					<div class="checkbox-container">
+						<label class="checkbox-label"> <input type="checkbox"
+							checked id="netflixCheckbox" value="1"> <span
+							class="checkbox-custom"
+							style="background-image: url('${contextPath}/resources/bootstrap/img/n100.jpeg');"></span>
+						</label> <label class="checkbox-label"> <input type="checkbox"
+							checked id="tvingCheckbox" value="2"> <span
+							class="checkbox-custom"
+							style="background-image: url('${contextPath}/resources/bootstrap/img/t100.jpeg');"></span>
+						</label> <label class="checkbox-label"> <input type="checkbox"
+							checked id="wavveCheckbox" value="3"> <span
+							class="checkbox-custom"
+							style="background-image: url('${contextPath}/resources/bootstrap/img/w100.jpeg');"></span>
+						</label>
+					</div>
 					<div class="select-container">
 						<select id="genreId">
-								<option value="0">전체</option>
+							<option value="0">전체</option>
 							<c:forEach var="genreDTO" items="${genreList}">
 								<option value="${genreDTO.genreId}">${genreDTO.genreNm}</option>
 							</c:forEach>
-						</select>
-						<select id="isWish">
+						</select> <select id="isWish">
 							<option value="true">찜 포함</option>
 							<option value="false">찜 제외</option>
-						</select>
-						<select id="sortType">
+						</select> <select id="sortType">
 							<option value="latest">최신순</option>
 							<option value="title">이름순</option>
-						</select>
-						<input type="hidden" value="series" id="contentType">
+						</select> <input type="hidden" value="series" id="contentType">
 					</div>
 					<section class="lists lists__noneLazy">
-						<div class="lists__columns lists__columns-vertical css-0 enth0yz0" id="container">
+						<div class="lists__columns lists__columns-vertical css-0 enth0yz0"
+							id="container">
 							<!-- 기본 42개 -->
 							<c:forEach var="crawlingDTO" items="${contentList}">
 								<div class="item" data-id="${crawlingDTO.contentId}">
-									<a class="false css-1djwytu e2ri0zb0" href="/detail?contentId=${crawlingDTO.contentId}">
-										<div class="item__thumb item__thumb-25x36" id="wishContent">
-											<div class="item__tags">
-												<div class="item__tags-left"></div>
-												<div class="item__tags-right"></div>
-											</div>
-											<div class="item__image lazy">
-													<img class="loaded css-1doy9ip euf32k22" src="${crawlingDTO.imgUrl}" alt="${crawlingDTO.title}">
-											</div>
+									<div class="item__thumb item__thumb-25x36" id="wishContent">
+										<div class="item__tags"></div>
+										<div class="item__image lazy">
+											<img class="loaded css-1doy9ip euf32k22"
+												src="${crawlingDTO.imgUrl}" alt="${crawlingDTO.title}">
 										</div>
-										<div class="item__info ">
-											<p class="item__title false">${crawlingDTO.title}</p>
-										</div>
-									</a>
+									</div>
+									<div class="item__info ">
+										<a class="item__title"
+											href="/detail?contentId=${crawlingDTO.contentId}">${crawlingDTO.title}</a>
+									</div>
 								</div>
 							</c:forEach>
 						</div>
