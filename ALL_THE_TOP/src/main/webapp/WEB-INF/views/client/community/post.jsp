@@ -130,7 +130,7 @@ $(function() {
 			<c:if test="${content != null}">
 			<div data-v-af062606="" class="post-content-wrap section-divider">
 				<h2 data-v-af062606="" class="post-content-subtitle subtitle">${post.nickName}님이 연결한 작품</h2>
-				<a data-v-5c10ad9e="" data-v-af062606="" href="/title/15474" class="" id="seasonList-15474">
+				<a data-v-5c10ad9e="" data-v-af062606="" href="${contextPath}/detail?contentId=${content.contentId}" class="" id="seasonList-15474">
 				<div data-v-5c10ad9e="" class="movie_item">
 					<div data-v-5c10ad9e="" class="movie_item__poster">
 						<img data-v-7874c524="" data-v-3090f2a6="" data-v-5c10ad9e="" alt="${content.title}" class="poster__img" data-src="${contentLink.imgUrl}" src="${contentLink.imgUrl}" lazy="loaded">
@@ -138,7 +138,7 @@ $(function() {
 					<div data-v-5c10ad9e="" class="movie_item__description">
 						<h5 data-v-5c10ad9e="" class="description__title">${content.title}</h5>
 						<p data-v-5c10ad9e="" class="description__subtitle">
-							${content.contentType} · <c:if test="content.enrollDt != 9999">${content.enrollDt}</c:if>
+							${content.contentType} · <c:if test="${content.enrollDt != 9999}"><span data-v-5c10ad9e="" class="description__subtitle">${content.enrollDt}</span></c:if>
 						</p>
 						<div data-v-5c10ad9e="" class="description__bottom">
 							<img data-v-5c10ad9e="" src="https://static.kinolights.com/icon/light-green.svg" alt="light-green" class="light"><span data-v-5c10ad9e="" class="kino_score__percent green">

@@ -1,4 +1,4 @@
-package com.app.alltt.community.comtroller;
+package com.app.alltt.community.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +23,7 @@ import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.crawling.dto.ContentDTO;
 import com.app.alltt.crawling.dto.ContentLinkDTO;
+import com.app.alltt.member.service.MemberService;
 
 @Controller
 @RequestMapping("/community")
@@ -126,6 +127,33 @@ public class CommunityController {
 		communityService.addReply(reply);
 		
 		return "inserted";
+	}
+	
+	// 내가 작성한 글, 댓글 보여주는 페이지
+	@GetMapping("/my")
+	public String myPage(@RequestParam String tab, Model model, HttpSession session, HttpServletResponse response, HttpServletRequest request) throws IOException {
+		
+		// 로그인한 멤버만 들어올 수 있음
+		long memberId = -1;
+		memberId = (Long) session.getAttribute("memberId");
+		
+		if (memberId != -1) {
+			// 내가 작성한 게시글 리스트 넘기기
+			if (tab.equals("post")) {
+				
+				model.addAttribute("myList", communityService.getPostListByMemberId(memberId));
+			}
+			// 내가 작성한 댓글 리스트 넘기기
+			else {
+				model.addAttribute("myList", communityService.getReplyListByMemberId(memberId));
+			}
+		}
+		// 로그인 안한 멤버가 넘어오면 돌려보내기
+		else {
+			response.sendRedirect(request.getContextPath() + "/main");
+		}
+		
+		return "/alltt/my";
 	}
 	
 }
