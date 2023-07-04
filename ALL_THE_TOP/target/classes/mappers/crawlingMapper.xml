@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="crawlingMapper">
+	
+	<insert id="insertContent" parameterType="CrawlingDTO" useGeneratedKeys="true" keyProperty="contentId">
+		INSERT INTO CONTENT (
+	      		TITLE,
+	      		CREATOR,
+	      		ACTORS,
+	      		SUMMARY,
+	      		ENROLL_DT,
+	       		CONTENT_TYPE
+		)
+		VALUES (
+				#{title},	
+				#{creator},	
+				#{actors},	
+				#{summary},	
+				#{enrollDt},	
+				#{contentType}			
+		)
+	</insert>
+	
+	<insert id="insertContentLink" parameterType="CrawlingDTO">
+		INSERT INTO CONTENT_LINK (
+				CONTENT_ID,
+				PLATFORM_ID,
+				IMG_URL,
+				URL,
+				CONTENT_STATUS
+		)
+		VALUES (
+				#{contentId},		
+				#{platformId},	
+				#{imgUrl},	
+				#{url},
+				#{contentStatus}		
+		)
+	</insert>
+	
+	<insert id="insertGenre" parameterType="CrawlingDTO">
+		INSERT INTO CONTENT_GENRE (
+				CONTENT_ID,
+				GENRE_ID
+		)
+		VALUES (
+				#{contentId},		
+				#{genreId}	
+		)
+	</insert>
+	
+	<insert id="insertContentKey" parameterType="ContentKeyDTO">
+		INSERT INTO CONTENT_KEY (
+				CONTENT_ID,
+				CONTENT_KEY
+		)
+		VALUES (
+				#{contentId},
+				#{contentKey}
+		)
+	</insert>
+	
+	<select id="selectListGenreId" parameterType="long" resultType="Integer">
+		SELECT
+				GENRE_ID
+		FROM
+				CONTENT_GENRE
+		WHERE
+				CONTENT_ID = #{contentId}
+	</select>
+
+	<select id="selectListGenreLink" parameterType="int" resultType="GenreLinkDTO">
+		SELECT
+				CONTENT_TYPE,
+				GENRE_ID,
+				PLATFORM_ID,
+				URL
+		FROM
+				GENRE_LINK
+		WHERE
+				PLATFORM_ID = #{platformId}
+	</select>
+	
+	<select id="selectOneContentLink" parameterType="String" resultType="ContentLinkDTO">
+		SELECT 
+				*
+		FROM
+				CONTENT_LINK
+		WHERE
+				IMG_URL = #{imgUrl}
+	</select>
+	
+	<select id="selectListContentId" parameterType="String" resultType="Long">
+		SELECT 
+				CONTENT_ID
+		FROM 
+				CONTENT_KEY
+		WHERE 
+				CONTENT_KEY = #{contentKey}
+	</select>
+	
+	<select id="selectOneContentType" parameterType="Long" resultType="String">
+		SELECT
+       			CONTENT_TYPE
+		FROM
+				CONTENT
+		WHERE	
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<select id="selectListContentKey" parameterType="Long" resultType="String">
+		SELECT 
+				CONTENT_KEY
+		FROM 
+				CONTENT_KEY
+		WHERE 
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<select id="selectListPlatformId" parameterType="Long" resultType="Integer">
+		SELECT
+       			PLATFORM_ID
+		FROM
+				CONTENT_LINK
+		WHERE	
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<select id="selectOneContent" parameterType="Long" resultType="ContentDTO">
+		SELECT
+				*
+		FROM
+				CONTENT
+		WHERE
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<update id="updateContentStatus">
+		UPDATE 
+				CONTENT_LINK
+		SET
+				CONTENT_STATUS = FALSE
+	</update>
+	
+	<select id="selectOneTitle" parameterType="Long" resultType="String">
+		SELECT
+				TITLE
+		FROM
+				CONTENT
+		WHERE
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<update id="updateCreator" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				CREATOR = #{creator}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<update id="updateActors" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				ACTORS = #{actors}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<update id="updateSummary" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				SUMMARY = #{summary}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<update id="updateEnrollDt" parameterType="CrawlingDTO">
+		UPDATE
+				CONTENT
+		SET
+				ENROLL_DT = #{enrollDt}
+		WHERE
+				CONTENT_ID = #{contentId}
+	</update>
+	
+	<!-- DB 정보 가져오기 TEST -->
+	<select id="selectListContent" resultType="ContentDTO">
+		SELECT
+				*
+		FROM
+				CONTENT
+	</select>
+
+	<select id="selectListGenreLinkByGenreId" resultType="GenreLinkDTO">
+		SELECT 
+				*
+		FROM 
+				GENRE_LINK
+		WHERE 
+				CONTENT_TYPE = #{contentType} AND GENRE_ID = #{genreId}
+		ORDER BY 
+				GENRE_ID ASC,
+				PLATFORM_ID ASC;
+	</select>
+	
+	<!-- Scroll 데이터 TEST -->
+	<select id="selectListScrollContent" resultType="CrawlingDTO" parameterType="int">
+		SELECT
+				C.CONTENT_ID,
+		        C.TITLE,
+		        L.IMG_URL,
+		        L.URL
+		FROM
+				CONTENT C
+			INNER JOIN CONTENT_LINK L ON C.CONTENT_ID = L.CONTENT_ID
+		LIMIT #{contentId}, 42;
+	</select>
+</mapper>

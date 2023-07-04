@@ -1,0 +1,36 @@
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    overflow-x: hidden;
+    cursor: default;
+    width: 100%;
+}
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+p {
+    word-break: break-all;
+}
+// picture {
+//     img {
+//         // opacity: 0;
+//         &.loaded {
+//             opacity: 1;
+//         }
+//         &.error {
+//             opacity: 0;
+//         }
+//     }
+// }
+
+#nprogress .spinner {
+    display: none !important;
+}
+
+@import '../src/styles/app.scss';
+@import '../src/styles/player/player.scss';
+@import '../src/styles/reset.scss';
+@import '~swiper/css';
+@import '~swiper/css/scrollbar';
+@import '~swiper/css/effect-fade';
