@@ -61,15 +61,3 @@ $('.select-container').change(function() {
 		}
 	contentsLoadAjax(filterData);
 });
-
-$(".item__thumb.item__thumb-25x36").on("click", function(event) {
-	var element = $(this);
-	var id = element.attr("id");
-	
-	if (id == "wishContent") {
-		element.attr("id", "");
-	}
-	else {
-		element.attr("id", "wishContent");
-  	}
-});

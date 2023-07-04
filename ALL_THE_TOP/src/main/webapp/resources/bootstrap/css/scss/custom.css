@@ -144,24 +144,3 @@
     text-overflow: ellipsis;
     max-width: 400px;
 }
-
-.heart-button {
-	position: relative;
-	z-index: 1;
-	background-image: url("../../img/wish_true.png");
-	border: none;
-	cursor: pointer;
-	padding: 0;
-	width: 30px;
-	height: 30px;
-      
-}
-
-.heart-button img {
-	width: 100%;
-	height: 100%;
-}
-
-.heart-button.checked img {
-		filter: invert(50%) sepia(100%) saturate(1000%) hue-rotate(330deg);
-}
