@@ -18,6 +18,10 @@ public interface CommunityService {
 	public ContentLinkDTO getContentImg(long contentId);
 	public List<PostDTO> getPostListByContent(long contentId);
 	
+	// 멤버 마이페이지를 위한 전달
+	public List<PostDTO> getPostListByMemberId(long memberId);
+	public List<ReplyDTO> getReplyListByMemberId(long memberId);
+	
 	public boolean modifyPost(PostDTO post);
 	public boolean removePost(PostDTO post);
 	public List<PostDTO> getAllPostList();
