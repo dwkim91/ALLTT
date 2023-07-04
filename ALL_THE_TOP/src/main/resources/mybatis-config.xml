@@ -9,10 +9,17 @@
 	
 	<typeAliases>
 		<typeAlias type="com.app.alltt.crawling.dto.CrawlingDTO"		alias="CrawlingDTO"/>
-		<typeAlias type="com.app.alltt.content.dto.ContentDTO"			alias="ContentDTO"/>
-		<typeAlias type="com.app.alltt.genrelink.dto.GenreLinkDTO"		alias="GenreLinkDTO"/>
-		<typeAlias type="com.app.alltt.contentkey.dto.ContentKeyDTO"	alias="ContentKeyDTO"/>
-		<typeAlias type="com.app.alltt.contentlink.dto.ContentLinkDTO"	alias="ContentLinkDTO"/>
+		<typeAlias type="com.app.alltt.crawling.dto.ContentDTO"			alias="ContentDTO"/>
+		<typeAlias type="com.app.alltt.crawling.dto.GenreLinkDTO"		alias="GenreLinkDTO"/>
+		<typeAlias type="com.app.alltt.crawling.dto.ContentKeyDTO"		alias="ContentKeyDTO"/>
+		<typeAlias type="com.app.alltt.crawling.dto.ContentLinkDTO"		alias="ContentLinkDTO"/>
+		<typeAlias type="com.app.alltt.member.dto.MemberDTO"			alias="MemberDTO"/>
+		<typeAlias type="com.app.alltt.main.dto.FilterDTO"				alias="FilterDTO"/>
+		<typeAlias type="com.app.alltt.main.dto.FilteredDTO"			alias="FilteredDTO"/>
+		<typeAlias type="com.app.alltt.community.dto.PostDTO"			alias="PostDTO"/>
+		<typeAlias type="com.app.alltt.community.dto.ReplyDTO"			alias="ReplyDTO"/>
+		<typeAlias type="com.app.alltt.community.dto.RecmndDTO"			alias="RecmndDTO"/>
+		
 	</typeAliases>
 
 </configuration>

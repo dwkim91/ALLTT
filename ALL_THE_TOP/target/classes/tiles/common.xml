@@ -3,24 +3,73 @@
 
 <tiles-definitions>
 	
-	<definition name="alltt"     template="/WEB-INF/views/common/layout/layout.jsp"> 		
-		<put-attribute name="header" 	value="/WEB-INF/views/common/layout/header.jsp" />			
-		<put-attribute name="footer" 	value="/WEB-INF/views/common/layout/footer.jsp" />			
+	<definition name="alltt"     	 template="/WEB-INF/views/common/layout/layout.jsp"> 		
+		<put-attribute name="header" value="/WEB-INF/views/common/layout/header.jsp" />			
+		<put-attribute name="footer" value="/WEB-INF/views/common/layout/footer.jsp" />			
 	</definition>
 	
+	<!-- 메인 -->
 	<definition name="/alltt/main" extends="alltt">												
-		<put-attribute name="body" value="/WEB-INF/views/client/index/index.jsp"/> 					
+		<put-attribute name="body"	value="/WEB-INF/views/client/main/main.jsp"/> 					
+		<put-attribute name="title"	value="main"/> 											
+	</definition>
+	
+	<!-- Content 상세 -->
+	<definition name="/alltt/detail" extends="alltt">												
+		<put-attribute name="body" value="/WEB-INF/views/client/contents/contents_details.jsp"/> 					
+		<put-attribute name="title"   value="main"/> 											
+	</definition>
+
+	<!-- 찜목록 -->
+	<definition name="/alltt/wish" extends="alltt">												
+		<put-attribute name="body" value="/WEB-INF/views/client/contents/wish.jsp"/> 					
+		<put-attribute name="title"   value="main"/>					
+	</definition>
+	
+	<!-- 시리즈 -->
+	<definition name="/alltt/series" extends="alltt">												
+		<put-attribute name="body" value="/WEB-INF/views/client/contents/series.jsp"/> 					
+		<put-attribute name="title"   value="main"/>					
+	</definition>
+
+	<!-- 영화 -->	
+	<definition name="/alltt/movie" extends="alltt">												
+		<put-attribute name="body" value="/WEB-INF/views/client/contents/movie.jsp"/> 					
 		<put-attribute name="title"   value="main"/> 											
 	</definition>
 	
+	<!-- 로그인 -->
 	<definition name="/alltt/login" extends="alltt">												
-		<put-attribute name="body" value="/WEB-INF/views/client/login/login.jsp"/> 					
-		<put-attribute name="title"   value="login"/> 											
+		<put-attribute name="body"	value="/WEB-INF/views/client/login/login.jsp"/> 					
+		<put-attribute name="title"	value="login"/> 											
 	</definition>
 	
-	<definition name="/alltt/categories" extends="alltt">												
-		<put-attribute name="body" value="/WEB-INF/views/client/categories/categories.jsp"/> 					
-		<put-attribute name="title"   value="categories"/> 											
+	<!-- 마이페이지 -->
+	<definition name="/alltt/mypage" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/client/mypage/mypage.jsp"/>	
+		<put-attribute name="title" value="mypage"/>	
 	</definition>
+	
+	<!-- 커뮤니티 -->
+	<definition name="/alltt/community" extends="alltt">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body"	value="/WEB-INF/views/client/community/community.jsp"/>	
+		<put-attribute name="title" value="community"/>	
+	</definition>
+	
+	<!-- 게시글 작성 -->
+	<definition name="/alltt/write" extends="alltt">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body"	value="/WEB-INF/views/client/community/write.jsp"/>	
+		<put-attribute name="title" value="write"/>	
+	</definition>
+	
+	<!-- 게시글 디테일 페이지 -->
+	<definition name="/alltt/post" extends="alltt">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body"	value="/WEB-INF/views/client/community/post.jsp"/>	
+		<put-attribute name="title" value="post"/>	
+	</definition>
+	
 	
 </tiles-definitions>

@@ -26,8 +26,8 @@ public class CrawlingController {
 	@GetMapping("/addTvingContents")
 	@ResponseBody
 	public String addTvingContents() {
-		
 		crawlingService.addTvingContent();
+		//crawlingService.addTestTvingContent();
 		
 		return "<h1>Success</h1>";
 	}

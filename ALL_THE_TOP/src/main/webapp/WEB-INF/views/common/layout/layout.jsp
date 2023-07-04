@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/swiper.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/c958e41d94d69c7e.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/custom.css" type="text/css">
+    <style data-emotion="css" data-s=""></style>
     <script src="${contextPath}/resources/bootstrap/js/jquery-3.3.1.min.js"></script>
 <style class="vjs-styles-defaults">
 .video-js {
@@ -205,7 +206,7 @@ transform
 	z-index: 200;
 	left: 0;
 	right: 0;
-	width: calc(100vw - var(- -scrollbar-width));
+	width: calc(100vw - var(--scrollbar-width));
 	height: 5rem;
 	display: -webkit-box;
 	display: -webkit-flex;
@@ -311,7 +312,6 @@ transform
 	margin-right: 0.417rem;
 	width: 2rem;
 	height: 2rem;
-	background-image: url('/img/icon_menu_live.svg');
 	background-repeat: no-repeat;
 	-webkit-background-size: contain;
 	background-size: contain;
@@ -355,7 +355,7 @@ transform
 	align-self: right;
 }
 
-@media ( min-width : 411px) {
+@media ( min-width : 280px) {
 	.css-13co1xy {
 		display: -webkit-box;
 		display: -webkit-flex;
@@ -607,7 +607,6 @@ transform
 	margin-right: 2.333rem;
 	width: 2.333rem;
 	height: 2.333rem;
-	background-image: url('/img/icon_search.svg');
 	-webkit-background-size: 100%;
 	background-size: 100%;
 	background-repeat: no-repeat;
@@ -1062,7 +1061,7 @@ transform
     </div>
 
     <!-- Header Section Begin -->
-    <tiles:insertAttribute name="header"/>
+	<tiles:insertAttribute name="header"/>
     <!-- Header End -->
 
 	<!-- Content Section Begin -->
