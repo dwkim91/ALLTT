@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.alltt.community.dao.CommunityDAO;
 import com.app.alltt.community.dto.PostDTO;
@@ -31,6 +32,7 @@ public class CommunityServiceImpl implements CommunityService {
 	}
 
 	@Override
+	@Transactional
 	public PostDTO getPostDetail(long postId, boolean read) {
 		
 		// 디테일 페이지를 들어가느거라면 조회수 늘리기
@@ -42,15 +44,28 @@ public class CommunityServiceImpl implements CommunityService {
 	}
 
 	@Override
+	@Transactional
 	public boolean modifyPost(PostDTO post) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isModified = false;
+		// 설정해두었던 비밀번호 확인
+		if (bCryptPasswordEncoder.matches(post.getPasswd(), communityDAO.selectPostPasswd(post.getPostId()))) {
+			communityDAO.updatePost(post);
+			isModified = true;
+		}
+		return isModified;
 	}
 
 	@Override
+	@Transactional
 	public boolean removePost(PostDTO post) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isRemoved = false;
+		// 비밀번호 확인
+		if (bCryptPasswordEncoder.matches(post.getPasswd(), communityDAO.selectPostPasswd(post.getPostId()))) {
+			communityDAO.deletePost(post.getPostId());
+			isRemoved = true;
+		}
+		
+		return isRemoved;
 	}
 
 	@Override
