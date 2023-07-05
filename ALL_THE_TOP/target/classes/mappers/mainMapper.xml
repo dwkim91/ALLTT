@@ -46,38 +46,33 @@
 		    	MAX(CL.PLATFORM_ID) AS PLATFORM_ID,
 		    	MAX(CL.IMG_URL) 	AS IMG_URL,
 		    	MAX(CL.URL) 		AS URL,
-		    	MAX(CG.GENRE_ID) 	AS GENRE_ID
+		    	MAX(CG.GENRE_ID) 	AS GENRE_ID,
+		    	WL.MEMBER_ID		AS MEMBER_ID
 		FROM
 			    CONTENT C
 			JOIN CONTENT_LINK CL
 			  ON C.CONTENT_ID = CL.CONTENT_ID
 			JOIN CONTENT_GENRE CG
 			  ON C.CONTENT_ID = CG.CONTENT_ID   
+		    LEFT JOIN WISH_LIST WL 
+				   ON C.CONTENT_ID = WL.CONTENT_ID AND WL.MEMBER_ID = #{memberId}
+		WHERE
+			CONTENT_TYPE = #{contentType} 	AND
 			<choose>
-			    <when test="isWish">
-			    </when>
-			    <otherwise>
-		    		LEFT JOIN WISH_LIST WL 
-					       ON C.CONTENT_ID = WL.CONTENT_ID AND WL.MEMBER_ID = #{memberId}
-			    </otherwise>
-		    </choose>
-			WHERE
-				CONTENT_TYPE = #{contentType} 	AND
-				<choose>
-					<when test="genreId != 0">
-						GENRE_ID = #{genreId} 	AND
-					</when>
-					<otherwise></otherwise>
-				</choose>
-		        PLATFORM_ID IN (#{netflixId},#{tvingId},#{wavveId}) AND
-		        NOT(ENROLL_DT = 9999)
-		        <choose>
-		        	<when test="isWish">
-		        	</when>
-		        	<otherwise>
-		        		AND	WL.CONTENT_ID IS NULL
-		        	</otherwise>
-		        </choose>
+				<when test="genreId != 0">
+					GENRE_ID = #{genreId} 	AND
+				</when>
+				<otherwise></otherwise>
+			</choose>
+	        PLATFORM_ID IN (#{netflixId},#{tvingId},#{wavveId}) AND
+	        NOT(ENROLL_DT = 9999)
+	        <choose>
+	        	<when test="isWishInclude">
+	        	</when>
+	        	<otherwise>
+	        		AND	WL.CONTENT_ID IS NULL
+	        	</otherwise>
+	        </choose>
 		GROUP BY C.CONTENT_ID
 		ORDER BY
 			<choose>
@@ -89,7 +84,7 @@
 				</otherwise>
 			</choose>
 		LIMIT #{lastItemCnt}, 42
-	</select>
+</select>
 	<select id="selectListGenreList" resultType="FilterDTO" parameterType="FilterDTO">
 			SELECT
 					F_G.GENRE_ID,

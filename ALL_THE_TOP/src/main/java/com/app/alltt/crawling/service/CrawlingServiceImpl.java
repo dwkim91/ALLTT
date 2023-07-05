@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -650,16 +651,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 					moveToTargetUrl(crawlingDTO.getUrl());
 					
 					if(driver.getTitle().equals("www.netflix.com")) {
-						
+						while(!driver.getTitle().equals("홈 - 넷플릭스")) {
 						// 드라이버 종료
-						driver.quit();
+						quit();
 						
 						// 드라이버 재시작
 						chromeDriverInit();
 						
-						// 넷플릭스 로그인
 						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
-						
+
+						}
 						// 디테일 페이지 이동
 						moveToTargetUrl(crawlingDTO.getUrl());
 					}
@@ -671,22 +672,25 @@ public class CrawlingServiceImpl implements CrawlingService {
 					
 					// 등록일자
 					year = driver.findElements(By.className("year")).get(0).getText();
-					if (year == null) {
+					while (year == null) {
 						
+						while(!driver.getTitle().equals("홈 - 넷플릭스")) {
 						// 드라이버 종료
-						driver.quit();
+						quit();
 						
 						// 드라이버 재시작
 						chromeDriverInit();
 						
-						// 넷플릭스 로그인
 						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
+
+						}
 						
 						// 디테일 페이지 이동
 						moveToTargetUrl(crawlingDTO.getUrl());
 						
 						year = driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/div/div[1]/div[1]/div/div[1]/div/div[2]/div")).getText();
-						System.out.println("yearXpath : " + year);
+						
+						if (year == null) year = driver.findElements(By.className("year")).get(0).getText();
 					}
 						
 					// 디테일 페이지내 상세정보가 담긴 요소
@@ -761,6 +765,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 //		Netflix 단일장르 Test End
 		
+		Scanner scan = new Scanner(System.in);
+		
 		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
 
 		// 크롬드라이버 초기화
@@ -768,13 +774,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// netflix 로그인
 		netflixLogin(NETFLIX_LOGIN_KEY[0],NETFLIX_LOGIN_KEY[1]);
+		ArrayList<CrawlingDTO> netflixContentList = new ArrayList<>();
 		
 		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
-			ArrayList<CrawlingDTO> netflixContentList = crawlNetflixdContents(genreLinkDTO);
-			netflixContentList = getNetflixDetailInfo(netflixContentList);
-			addContents(netflixContentList);
+			netflixContentList = crawlNetflixdContents(genreLinkDTO);
 		}
 		
+		netflixContentList = getNetflixDetailInfo(netflixContentList);
+		
+		scan.nextInt();
+		
+		scan.close();
+		
+		addContents(netflixContentList);
 		// 드라이버 종료
 		quit();
 		
