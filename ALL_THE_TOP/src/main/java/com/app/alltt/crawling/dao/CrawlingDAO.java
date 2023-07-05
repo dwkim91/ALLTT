@@ -23,7 +23,7 @@ public interface CrawlingDAO {
 	public List<String> selectListContentKey(long conteneId);
 	public List<Integer> selectListPlatformId(long contentId);
 	public ContentDTO selectOneContent(long contentId);
-	public void updateContentStatus();
+	public void updateExistYn();
 	
 	public String selectOneTitle(long contentId);
 	public void updateCreator(CrawlingDTO crawlingDTO);
