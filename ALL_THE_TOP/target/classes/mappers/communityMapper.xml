@@ -59,6 +59,7 @@
 	SELECT
 	p.POST_ID AS POST_ID,
     p.POST_TITLE AS POST_TITLE,
+    p.MEMBER_ID AS MEMBER_ID,
     p.PASSWD AS PASSWD,
     p.CONTENT AS CONTENT,
     p.READ_CNT AS READ_CNT,
@@ -219,5 +220,35 @@
 	WHERE
 		R.MEMBER_ID = #{memberId};
 </select>
+
+<!-- 게시글 수정을 위한 비밀번호 체크 -->
+<select id="selectPostPasswd" parameterType="long" resultType="String">
+	SELECT
+		PASSWD
+	FROM
+		POST
+	WHERE
+		POST_ID = #{postId}
+</select>
+
+<!-- 게시글 수정 -->
+<update id="updatePost" parameterType="PostDTO">
+	UPDATE
+		POST
+	SET
+		POST_TITLE = #{postTitle},
+		CONTENT = #{content},
+		CONTENT_ID = #{contentId},
+		MODIFY_DT = NOW()
+	WHERE
+		POST_ID = #{postId}
+</update>
+
+<delete id="deletePost" parameterType="long">
+	DELETE FROM
+		POST
+	WHERE
+		POST_ID = #{postId}
+</delete>
 
 </mapper>

@@ -23,7 +23,8 @@ import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.crawling.dto.ContentDTO;
 import com.app.alltt.crawling.dto.ContentLinkDTO;
-import com.app.alltt.member.service.MemberService;
+import com.app.alltt.main.dto.FilteredDTO;
+import com.app.alltt.main.service.MainService;
 
 @Controller
 @RequestMapping("/community")
@@ -31,6 +32,9 @@ public class CommunityController {
 	
 	@Autowired
 	private CommunityService communityService;
+	
+	@Autowired
+	private MainService mainService;
 	
 	// 리다이렉트
 	@RequestMapping(value = {"/", ""}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -85,6 +89,12 @@ public class CommunityController {
 		else {
 			return null;
 		}
+	}
+	
+	// 태그를 누르면, 해당 content의 정보를 가져와야 함 (이름, contenttype, 연도, imgurl)
+	@GetMapping("getContentInfo")
+	public @ResponseBody FilteredDTO getContentInfo(@RequestParam long contentId) {
+		return mainService.getContentDetail(contentId);
 	}
 	
 	// 게시글 디테일 페이지
@@ -154,6 +164,69 @@ public class CommunityController {
 		}
 		
 		return "/alltt/my";
+	}
+	
+	// 게시글 수정
+	@GetMapping("/modify")
+	public String modify(@RequestParam long postId, Model model) {
+		
+		// 수정 대상 게시글
+		PostDTO post = communityService.getPostDetail(postId, false);
+		FilteredDTO content = null;
+		if (post.getContentId() > 0) {
+			content = mainService.getContentDetail(post.getContentId());
+		}
+		
+		model.addAttribute("post", post);
+		model.addAttribute("content", content);
+		
+		return "/alltt/modify";
+	}
+	
+	@PostMapping("/modifyPost")
+	public @ResponseBody String modifyPost(@ModelAttribute PostDTO post) {
+		
+		if (communityService.modifyPost(post)) {
+			return "modified";
+		}
+		else {
+			return "false";
+		}
+	}
+	
+	@GetMapping("/delete")
+	public String delete(@RequestParam long postId, Model model) {
+
+		PostDTO post = communityService.getPostDetail(postId, false);
+		FilteredDTO content = null;
+		if (post.getContentId() > 0) {
+			content = mainService.getContentDetail(post.getContentId());
+		}
+		model.addAttribute("post", post);
+		model.addAttribute("content", content);
+		
+		return "/alltt/delete";
+	}
+	
+	@PostMapping("/deletePost")
+	public @ResponseBody String deletePost(@ModelAttribute PostDTO post) {
+		
+		if (communityService.removePost(post)) {
+			return "deleted";
+		}
+		else {
+			return "false";
+		}
+	}
+	
+	@PostMapping("/deleteReply")
+	public @ResponseBody String deleteReply(@RequestParam long replyId) {
+		if (communityService.removeReply(replyId) ) {
+			return "deleted";
+		}
+		else {
+			return "false";
+		}
 	}
 	
 }

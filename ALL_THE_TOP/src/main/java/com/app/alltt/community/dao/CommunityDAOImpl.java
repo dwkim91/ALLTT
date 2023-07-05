@@ -45,14 +45,12 @@ public class CommunityDAOImpl implements CommunityDAO {
 
 	@Override
 	public void updatePost(PostDTO post) {
-		// TODO Auto-generated method stub
-		
+		sqlSession.update("communityMapper.updatePost", post);
 	}
 
 	@Override
 	public void deletePost(long postId) {
-		// TODO Auto-generated method stub
-		
+		sqlSession.delete("communityMapper.deletePost", postId);
 	}
 
 	@Override
@@ -132,5 +130,10 @@ public class CommunityDAOImpl implements CommunityDAO {
 	@Override
 	public List<ReplyDTO> selectReplyListByMemberId(long memberId) {
 		return sqlSession.selectList("communityMapper.selectReplyListByMemberId", memberId);
+	}
+
+	@Override
+	public String selectPostPasswd(long postId) {
+		return sqlSession.selectOne("communityMapper.selectPostPasswd", postId);
 	}
 }
