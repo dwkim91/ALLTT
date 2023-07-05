@@ -2,10 +2,17 @@ package com.app.alltt.member.service;
 
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.app.alltt.member.dao.MemberDAO;
+import com.app.alltt.member.dto.MemberDTO;
 
 @Service
 public class MemberServiceImpl implements MemberService {
+	
+	@Autowired
+	private MemberDAO memberDAO;
 	
 	// 랜덤 닉네임 생성 메소드
 	@Override
@@ -98,5 +105,28 @@ public class MemberServiceImpl implements MemberService {
         return ranIndex;
         
     }
+	
+	@Override
+	public MemberDTO getMemberByUserId(String userId) {
+		return memberDAO.selectMemberByUsrId(userId);
+	}
+	
+	@Override
+	public void addNewMember(MemberDTO member) {
+		
+		memberDAO.insertMember(member);
+	}
+	
+	@Override
+	public void removeMember(long memberId) {
+		
+		memberDAO.deleteMember(memberId);
+	}
+	@Override
+	public MemberDTO getMemberByMemberId(long memberId) {
+		
+		return memberDAO.selectOneMemberByMemberId(memberId);
+		
+	}
 	
 }

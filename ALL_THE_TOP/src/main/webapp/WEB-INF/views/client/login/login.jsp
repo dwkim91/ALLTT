@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,13 +34,13 @@
 						<div class="login__social__links">
 							<ul>
 								<li>
-									<a href="#" class="naver" style="font-size: 45px">
+									<a href="${contextPath}/member/naver/login" class="naver" style="font-size: 45px">
   										<img src="resources/bootstrap/img/icon-id-naver.svg">
   										NAVER
 									</a>
 								</li>
 								<li>
-									<a href="#" class="kakao" style="font-size: 45px">
+									<a href="${contextPath}/member/kakao/login" class="kakao" style="font-size: 45px">
   										<img src="resources/bootstrap/img/icon-id-kakao.svg">
   										KAKAO
 									</a>

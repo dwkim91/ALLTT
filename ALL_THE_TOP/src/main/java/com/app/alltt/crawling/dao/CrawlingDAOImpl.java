@@ -6,11 +6,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.app.alltt.content.dto.ContentDTO;
-import com.app.alltt.contentkey.dto.ContentKeyDTO;
-import com.app.alltt.contentlink.dto.ContentLinkDTO;
+import com.app.alltt.crawling.dto.ContentDTO;
+import com.app.alltt.crawling.dto.ContentKeyDTO;
+import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
-import com.app.alltt.genrelink.dto.GenreLinkDTO;
+import com.app.alltt.crawling.dto.GenreLinkDTO;
 
 @Repository
 public class CrawlingDAOImpl implements CrawlingDAO {
@@ -79,7 +79,8 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public void updateContentStatus() {
+	public void updateExistYn() {
+		//sqlSession.update("crawlingMapper.updateExistYn");
 		sqlSession.update("crawlingMapper.updateContentStatus");
 	}
 

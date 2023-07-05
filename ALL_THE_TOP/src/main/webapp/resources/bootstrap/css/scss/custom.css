@@ -1,7 +1,7 @@
 .checkbox-container {
   display: flex;
   align-items: center;
-  padding-bottom: 24px;
+  padding-bottom: 15px;
   padding-top: 10px;
 }
 
@@ -12,13 +12,15 @@
 }
 
 .checkbox-custom {
-  display: inline-block;
+  display: flex;
   width: 50px;
   height: 50px;
   border-radius: 10px;
   background-size: cover;
   transition: opacity 0.3s ease-in-out;
   cursor: pointer;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -31,4 +33,114 @@
 
 .checkbox-label input[type="checkbox"]:not(:checked) + .checkbox-custom {
   opacity: 0.5;
+}
+
+.platform-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  padding-top: 10px;
+}
+
+.platform-label {
+  display: flex;
+  align-items: center;
+  margin: 0 7px;
+}
+
+.platform-custom {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  background-size: cover;
+  transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.platform-label input[type="checkbox"] {
+  display: none;
+}
+
+.platform-label input[type="checkbox"]:checked + .checkbox-custom {
+  opacity: 1;
+}
+
+.platform-label input[type="checkbox"]:not(:checked) + .checkbox-custom {
+  opacity: 0.5;
+}
+
+@keyframes blink {
+  0% {
+    border-color: yellow;
+  }
+  25% {
+  	border-color: green;
+  }
+  50% {
+    border-color: purple;
+  }
+  75% {
+  	border-color: orange;
+  }
+  100% {
+    border-color: skyblue;
+  }
+}
+
+#wishContent {
+  border: 2px solid black;
+  animation: blink 1s linear infinite;
+}
+
+@media screen and (max-width: 500px) {
+	.checkbox-label {
+		transform: scale(0.8);
+	}
+	.nice-select {
+		transform: scale(0.8);
+	}
+}
+
+.anime__details__content {
+	padding-top: 10rem;
+	
+}
+.detailList {
+	display: grid;
+	 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.detailList > .item {
+	padding-right: 10px;
+}
+
+#__next {
+	background-color: black;
+}
+
+.post-info-wrap {
+	background-color: #172036;
+}
+.post-footer {
+	background-color: #172036;
+}
+
+.boardlist-low {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    justify-content: space-evenly;
+    justify-items: center;
+}
+
+.list-item list-area list-area--home {
+	padding-top: 8rem;
+}
+
+.subject_over {
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
 }

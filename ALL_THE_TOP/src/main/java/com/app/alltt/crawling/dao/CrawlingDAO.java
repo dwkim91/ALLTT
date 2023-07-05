@@ -2,11 +2,11 @@ package com.app.alltt.crawling.dao;
 
 import java.util.List;
 
-import com.app.alltt.content.dto.ContentDTO;
-import com.app.alltt.contentkey.dto.ContentKeyDTO;
-import com.app.alltt.contentlink.dto.ContentLinkDTO;
+import com.app.alltt.crawling.dto.ContentDTO;
+import com.app.alltt.crawling.dto.ContentKeyDTO;
+import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
-import com.app.alltt.genrelink.dto.GenreLinkDTO;
+import com.app.alltt.crawling.dto.GenreLinkDTO;
 
 public interface CrawlingDAO {
 	
@@ -23,7 +23,7 @@ public interface CrawlingDAO {
 	public List<String> selectListContentKey(long conteneId);
 	public List<Integer> selectListPlatformId(long contentId);
 	public ContentDTO selectOneContent(long contentId);
-	public void updateContentStatus();
+	public void updateExistYn();
 	
 	public String selectOneTitle(long contentId);
 	public void updateCreator(CrawlingDTO crawlingDTO);

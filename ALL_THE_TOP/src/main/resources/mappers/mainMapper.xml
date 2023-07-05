@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mainMapper">
+	<select id="selectListPlatformContent" parameterType="FilterDTO" resultType="FilteredDTO">
+		SELECT
+				CL.CONTENT_ID		AS CONTENT_ID,
+				C.TITLE 			AS TITLE,
+				MAX(CL.IMG_URL)		AS IMG_URL,
+				MAX(CL.URL)			AS URL,
+				MAX(CL.PLATFORM_ID)	AS PLATFORM_ID,
+				C.ENROLL_DT 		AS ENROLL_DT,
+				C.CONTENT_TYPE 		AS CONTENT_TYPE,
+				COUNT(*) 			AS COUNT,
+                CG.GENRE_ID
+		FROM
+				CONTENT_LINK CL
+		JOIN
+				CONTENT C ON CL.CONTENT_ID = C.CONTENT_ID
+		LEFT JOIN CONTENT_GENRE CG ON C.CONTENT_ID = CG.CONTENT_ID
+		GROUP BY
+				CL.CONTENT_ID,
+                CG.GENRE_ID
+		HAVING
+				CONTENT_TYPE = #{contentType} AND
+				COUNT = 1 AND
+		        <choose>
+		        	<when test="genreId != 0">
+		        		GENRE_ID = #{genreId} AND
+		        	</when>
+		        	<otherwise>
+		        		PLATFORM_ID = #{platformId} AND
+		        	</otherwise>
+		        </choose>
+		        NOT(ENROLL_DT = 9999)
+		ORDER BY
+				ENROLL_DT DESC
+		LIMIT 7
+	</select>
+	<select id="selectListFilteredContent" parameterType="FilterDTO" resultType="FilteredDTO">
+		SELECT
+		    	C.CONTENT_ID,
+		    	C.TITLE 			AS TITLE,
+		    	C.SUMMARY 			AS SUMMARY,
+		    	C.ENROLL_DT 		AS ENROLL_DT,
+		    	MAX(CL.PLATFORM_ID) AS PLATFORM_ID,
+		    	MAX(CL.IMG_URL) 	AS IMG_URL,
+		    	MAX(CL.URL) 		AS URL,
+		    	MAX(CG.GENRE_ID) 	AS GENRE_ID
+		FROM
+			    CONTENT C
+			JOIN CONTENT_LINK CL
+			  ON C.CONTENT_ID = CL.CONTENT_ID
+			JOIN CONTENT_GENRE CG
+			  ON C.CONTENT_ID = CG.CONTENT_ID   
+			<choose>
+			    <when test="isWish">
+			    </when>
+			    <otherwise>
+		    		LEFT JOIN WISH_LIST WL 
+					       ON C.CONTENT_ID = WL.CONTENT_ID AND WL.MEMBER_ID = #{memberId}
+			    </otherwise>
+		    </choose>
+			WHERE
+				CONTENT_TYPE = #{contentType} 	AND
+				<choose>
+					<when test="genreId != 0">
+						GENRE_ID = #{genreId} 	AND
+					</when>
+					<otherwise></otherwise>
+				</choose>
+		        PLATFORM_ID IN (#{netflixId},#{tvingId},#{wavveId}) AND
+		        NOT(ENROLL_DT = 9999)
+		        <choose>
+		        	<when test="isWish">
+		        	</when>
+		        	<otherwise>
+		        		AND	WL.CONTENT_ID IS NULL
+		        	</otherwise>
+		        </choose>
+		GROUP BY C.CONTENT_ID
+		ORDER BY
+			<choose>
+				<when test="sortType == 'title'">
+					TITLE ASC
+				</when>
+				<otherwise>
+					ENROLL_DT DESC
+				</otherwise>
+			</choose>
+		LIMIT #{lastItemCnt}, 42
+	</select>
+	<select id="selectListGenreList" resultType="FilterDTO" parameterType="FilterDTO">
+			SELECT
+					F_G.GENRE_ID,
+					GENRE_NM
+			FROM
+					(
+			SELECT DISTINCT
+			        G.GENRE_ID
+			FROM
+					(
+						SELECT
+								L.CONTENT_ID,
+								C.TITLE AS TITLE,
+								MAX(L.IMG_URL) AS IMG_URL,
+								MAX(L.URL) AS URL,
+								MAX(L.PLATFORM_ID) AS PLATFORM_ID,
+								C.ENROLL_DT AS ENROLL_DT,
+								C.CONTENT_TYPE
+						FROM
+								CONTENT_LINK AS L
+						JOIN
+								CONTENT AS C ON L.CONTENT_ID = C.CONTENT_ID
+						GROUP BY
+								L.CONTENT_ID
+						HAVING
+								CONTENT_TYPE = #{contentType} AND
+								PLATFORM_ID IN (#{netflixId} , #{tvingId} ,#{wavveId})
+					) AS F
+			LEFT JOIN CONTENT_GENRE G 
+				   ON G.CONTENT_ID = F.CONTENT_ID) AS F_G
+			LEFT JOIN GENRE_LIST AS GL 
+				   ON GL.GENRE_ID = F_G.GENRE_ID
+	</select>
+	<select id="selectOneContentDetail" parameterType="long" resultType="FilteredDTO">
+		SELECT
+				C.CONTENT_ID,
+				C.TITLE,
+				C.CREATOR,
+				C.ACTORS,
+				C.SUMMARY,
+				C.ENROLL_DT,
+				C.CONTENT_TYPE,
+				CL.IMG_URL,
+				CL.URL,
+				GL.GENRE_NM,
+				GL.GENRE_ID,
+				CL.PLATFORM_ID
+		FROM
+				CONTENT C
+		LEFT JOIN CONTENT_LINK CL
+				ON C.CONTENT_ID = CL.CONTENT_ID
+		LEFT JOIN CONTENT_GENRE CG
+				ON C.CONTENT_ID = CG.CONTENT_ID
+		LEFT JOIN GENRE_LIST GL
+				ON CG.GENRE_ID = GL.GENRE_ID 
+		WHERE
+				C.CONTENT_ID = #{contentId}
+		GROUP BY
+				CL.PLATFORM_ID,
+				CL.IMG_URL,
+				CL.URL,
+				GL.GENRE_NM,
+				GL.GENRE_ID
+		ORDER BY
+				CL.PLATFORM_ID DESC
+		LIMIT 1
+	</select>
+	<select id="selectListGenreNm" parameterType="long" resultType="String">
+		SELECT
+				GENRE_NM
+		FROM
+				CONTENT C
+			JOIN CONTENT_GENRE CG
+				ON C.CONTENT_ID = CG.CONTENT_ID
+			JOIN GENRE_LIST GL 
+				ON CG.GENRE_ID = GL.GENRE_ID
+		WHERE
+				C.CONTENT_ID=#{contentId}
+	</select>
+	<select id="selectListGenreLatestContent" parameterType="FilteredDTO" resultType="FilteredDTO">
+		SELECT
+				L.CONTENT_ID,
+				C.TITLE AS TITLE,
+				MAX(L.IMG_URL) AS IMG_URL,
+				MAX(L.URL) AS URL,
+				MAX(L.PLATFORM_ID) AS PLATFORM_ID,
+		        C.ENROLL_DT AS ENROLL_DT,
+		        C.CONTENT_TYPE AS CONTENT_TYPE,
+		        CG.GENRE_ID
+		FROM
+				CONTENT_LINK L
+			JOIN CONTENT C 
+			  ON L.CONTENT_ID = C.CONTENT_ID
+			JOIN CONTENT_GENRE CG
+			  ON L.CONTENT_ID = CG.CONTENT_ID
+		GROUP BY
+				L.CONTENT_ID,
+		        CG.GENRE_ID
+		HAVING
+				CONTENT_TYPE = #{contentType}	AND
+				NOT(ENROLL_DT =  9999)			AND
+		        NOT(TITLE = #{title})			AND
+		        CG.GENRE_ID = #{genreId}
+		ORDER BY ENROLL_DT DESC
+		LIMIT 10
+	</select>
+	<select id="selectListGenreSimilarContent" parameterType="FilteredDTO" resultType="FilteredDTO">
+		SELECT
+				L.CONTENT_ID,
+				C.TITLE AS TITLE,
+				MAX(L.IMG_URL) AS IMG_URL,
+				MAX(L.URL) AS URL,
+				MAX(L.PLATFORM_ID) AS PLATFORM_ID,
+		        C.ENROLL_DT AS ENROLL_DT,
+		        C.CONTENT_TYPE AS CONTENT_TYPE,
+		        CG.GENRE_ID
+		FROM
+				CONTENT_LINK L
+			JOIN CONTENT C 
+			  ON L.CONTENT_ID = C.CONTENT_ID
+			JOIN CONTENT_GENRE CG
+			  ON L.CONTENT_ID = CG.CONTENT_ID
+		GROUP BY
+				L.CONTENT_ID,
+		        CG.GENRE_ID
+		HAVING
+				CONTENT_TYPE = #{contentType}	AND
+				NOT(ENROLL_DT =  9999)			AND
+		        NOT(TITLE = #{title})			AND
+		        CG.GENRE_ID = #{genreId}
+		ORDER BY ENROLL_DT DESC
+		LIMIT 10
+	</select>
+	
+	<select id="selectOnePlatformByDetailUrl" parameterType="FilteredDTO" resultType="String">
+		SELECT
+				URL
+		FROM
+				CONTENT_LINK
+		WHERE
+				PLATFORM_ID = #{platformId}	AND
+				CONTENT_ID = #{contentId}
+	</select>
+</mapper>
