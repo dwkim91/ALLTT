@@ -123,4 +123,14 @@ public class CommunityDAOImpl implements CommunityDAO {
 	public List<PostDTO> selectPostListByContentId(long contentId) {
 		return sqlSession.selectList("communityMapper.selectPostListByContentId", contentId);
 	}
+
+	@Override
+	public List<PostDTO> selectPostListByMemberId(long memberId) {
+		return sqlSession.selectList("communityMapper.selectPostListByMemberId", memberId);
+	}
+
+	@Override
+	public List<ReplyDTO> selectReplyListByMemberId(long memberId) {
+		return sqlSession.selectList("communityMapper.selectReplyListByMemberId", memberId);
+	}
 }

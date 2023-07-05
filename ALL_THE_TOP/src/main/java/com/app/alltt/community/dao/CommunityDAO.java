@@ -19,6 +19,9 @@ public interface CommunityDAO {
 	public ContentLinkDTO selectContentLink(long postId);
 	public List<PostDTO> selectPostListByContentId(long contentId);
 	
+	public List<PostDTO> selectPostListByMemberId(long memberId);
+	public List<ReplyDTO> selectReplyListByMemberId(long memberId);
+	
 	public void insertPost(PostDTO post);
 	public void updatePost(PostDTO post);
 	public void deletePost(long postId);

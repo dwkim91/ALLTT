@@ -114,8 +114,7 @@
 	SELECT
 		CONTENT_ID,
 	    MAX(PLATFORM_ID) AS PLATFORM_ID,
-	    IMG_URL,
-	    URL
+	    MAX(IMG_URL) AS IMG_URL
 	FROM
 		CONTENT_LINK
 	WHERE
@@ -184,9 +183,41 @@
 		MEMBER_ID = #{memberId}
 </select>
 
-<!-- 게시글 추천 -->
-<insert id="">
+<!-- 내가 쓴 글 목록 가져오기 -->
+<select id="selectPostListByMemberId" parameterType="long" resultType="PostDTO">
+	SELECT
+		p.POST_ID AS POST_ID,
+		p.POST_TITLE AS POST_TITLE,
+		p.MEMBER_ID AS MEMBER_ID,
+		p.CONTENT AS CONTENT,
+		p.READ_CNT AS READ_CNT,
+		p.ENROLL_DT AS ENROLL_DT,
+		count(re.RECMND_ID) AS RECMND_CNT,
+		p.CONTENT_ID AS CONTENT_ID,
+		m.NICK_NAME AS NICK_NAME,
+		c.TITLE AS POST_TAG,
+        count(r.REPLY_ID) AS REPLY_CNT
+	FROM
+		POST p
+	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
+	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
+	LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
+	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
+	WHERE p.MEMBER_ID = #{memberId}
+    GROUP BY p.POST_ID
+   	ORDER BY ENROLL_DT DESC;
+</select>
 
-</insert>
+<!-- 내가 쓴 댓글 목록 가져오기 -->
+<select id="selectReplyListByMemberId" parameterType="long" resultType="ReplyDTO">
+	SELECT
+		R.*,
+	    P.POST_TITLE AS POST_TITLE
+	FROM
+		REPLY R
+	    JOIN POST P ON R.POST_ID = P.POST_ID
+	WHERE
+		R.MEMBER_ID = #{memberId};
+</select>
 
 </mapper>

@@ -1,5 +1,7 @@
 package com.app.alltt.member.dao;
 
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -30,6 +32,16 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public MemberDTO selectOneMemberByMemberId(long memberId) {
 		return sqlSession.selectOne("memberMapper.selectOneMemberByMemberId", memberId);
+	}
+
+	@Override
+	public void insertWishContent(Map<String, Long> wishMap) {
+		sqlSession.insert("memberMapper.insertWishContent", wishMap);
+	}
+
+	@Override
+	public void deleteWishContent(Map<String, Long> wishMap) {
+		sqlSession.delete("memberMapper.deleteWishContent", wishMap);
 	}
 	
 }

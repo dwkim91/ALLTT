@@ -12,8 +12,8 @@ public class ReplyDTO {
 	private long memberId;
 	private String nickName;
 	private String content;
-	private long recmndCnt;
 	private Date enrollDt;
+	private String postTitle;
 	public long getReplyId() {
 		return replyId;
 	}
@@ -38,12 +38,6 @@ public class ReplyDTO {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public long getRecmndCnt() {
-		return recmndCnt;
-	}
-	public void setRecmndCnt(long recmndCnt) {
-		this.recmndCnt = recmndCnt;
-	}
 	public Date getEnrollDt() {
 		return enrollDt;
 	}
@@ -56,10 +50,16 @@ public class ReplyDTO {
 	public void setPostId(long postId) {
 		this.postId = postId;
 	}
+	public String getPostTitle() {
+		return postTitle;
+	}
+	public void setPostTitle(String postTitle) {
+		this.postTitle = postTitle;
+	}
 	@Override
 	public String toString() {
 		return "ReplyDTO [replyId=" + replyId + ", postId=" + postId + ", memberId=" + memberId + ", nickName="
-				+ nickName + ", content=" + content + ", recmndCnt=" + recmndCnt + ", enrollDt=" + enrollDt + "]";
+				+ nickName + ", content=" + content + ", enrollDt=" + enrollDt + ", postTitle=" + postTitle + "]";
 	}
 	
 	

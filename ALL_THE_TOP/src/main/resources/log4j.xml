@@ -31,11 +31,6 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
-	
-	<logger name="jdbc.resultsettable" additivity="false"> 
-		<level value="warn"/>  
-		<appender-ref ref="console"/> 
-	</logger> 
 
 	<!-- Root Logger -->
 	<root>

@@ -133,4 +133,14 @@ public class CommunityServiceImpl implements CommunityService {
 		return communityDAO.selectPostListByContentId(contentId);
 	}
 
+	@Override
+	public List<PostDTO> getPostListByMemberId(long memberId) {
+		return communityDAO.selectPostListByMemberId(memberId);
+	}
+
+	@Override
+	public List<ReplyDTO> getReplyListByMemberId(long memberId) {
+		return communityDAO.selectReplyListByMemberId(memberId);
+	}
+
 }
