@@ -79,7 +79,8 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public void updateContentStatus() {
+	public void updateExistYn() {
+		//sqlSession.update("crawlingMapper.updateExistYn");
 		sqlSession.update("crawlingMapper.updateContentStatus");
 	}
 
