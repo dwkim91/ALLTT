@@ -1,5 +1,6 @@
 package com.app.alltt.member.service;
 
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,14 @@ public class MemberServiceImpl implements MemberService {
 		
 		return memberDAO.selectOneMemberByMemberId(memberId);
 		
+	}
+	@Override
+	public void addWishContentByMemberId(Map<String, Long> wishMap) {
+		memberDAO.insertWishContent(wishMap);
+	}
+	@Override
+	public void deleteWishContentByMemberId(Map<String, Long> wishMap) {
+		memberDAO.deleteWishContent(wishMap);
 	}
 	
 }

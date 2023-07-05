@@ -13,18 +13,16 @@ public class FilteredDTO {
 	private String genreNm;
 	private int genreId;
 	private int platformId;
-	private boolean wishContent;
-	private boolean isWish;
-	private long memeberId;
-
+	private long memberId;
+	
 	@Override
 	public String toString() {
-		return "FilteredDataDTO [contentId=" + contentId + ", title=" + title + ", creator=" + creator + ", actors="
+		return "FilteredDTO [contentId=" + contentId + ", title=" + title + ", creator=" + creator + ", actors="
 				+ actors + ", summary=" + summary + ", enrollDt=" + enrollDt + ", contentType=" + contentType
 				+ ", imgUrl=" + imgUrl + ", url=" + url + ", genreNm=" + genreNm + ", genreId=" + genreId
-				+ ", platformId=" + platformId + ", wishContent=" + wishContent + ", isWish=" + isWish + ", memeberId="
-				+ memeberId + "]";
+				+ ", platformId=" + platformId + ", memberId=" + memberId + "]";
 	}
+	
 	public long getContentId() {
 		return contentId;
 	}
@@ -97,22 +95,12 @@ public class FilteredDTO {
 	public void setPlatformId(int platformId) {
 		this.platformId = platformId;
 	}
-	public boolean isWishContent() {
-		return wishContent;
+	public long getMemberId() {
+		return memberId;
 	}
-	public void setWishContent(boolean wishContent) {
-		this.wishContent = wishContent;
+	public void setMemberId(long memberId) {
+		this.memberId = memberId;
 	}
-	public boolean isWish() {
-		return isWish;
-	}
-	public void setWish(boolean isWish) {
-		this.isWish = isWish;
-	}
-	public long getMemeberId() {
-		return memeberId;
-	}
-	public void setMemeberId(long memeberId) {
-		this.memeberId = memeberId;
-	}
+	
 }
+	

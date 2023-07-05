@@ -3,6 +3,7 @@ package com.app.alltt.main.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public class MainController {
 		filterDTO.setSortType("latest");
 		filterDTO.setContentType("series");
 		filterDTO.setLastItemCnt(0);
-		filterDTO.setWish(false);
+		filterDTO.setIsWishInclude(false);
 		
 		// 플랫폼별 독점작 7선
 		filterDTO.setPlatformId(1);
@@ -47,10 +48,12 @@ public class MainController {
 		// 플랫폼별 독점작 7선
 		filterDTO.setPlatformId(3);
 		mv.addObject("wavveContentList", mainService.getMorePlatformContent(filterDTO));
-		
+
+		// 액션 7선
 		filterDTO.setGenreId(8);
 		mv.addObject("actionContentList", mainService.getMorePlatformContent(filterDTO));
 		
+		// 드라마장르 7선
 		filterDTO.setGenreId(7);
 		mv.addObject("dramaContentList", mainService.getMorePlatformContent(filterDTO));
 		return mv;
@@ -58,11 +61,14 @@ public class MainController {
 	
 	@PostMapping("/contentLoad")
 	@ResponseBody
-	public List<FilteredDTO> mainFilter(@ModelAttribute FilterDTO filterDTO) {
+	public List<FilteredDTO> mainFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+		
+		if (session.getAttribute("memberId") != null) filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
 		// AJAX : 스크롤, 체크박스, 셀렉트
 		List<FilteredDTO> responseData = mainService.getMoreFilteredContent(filterDTO);
 		
+		System.out.println(responseData);
 		return responseData;
 		
 	}
@@ -99,11 +105,17 @@ public class MainController {
 	}
 	
 	@GetMapping("/series")
-	public ModelAndView series(HttpServletRequest request) {
+	public ModelAndView series(HttpServletRequest request, HttpSession session) {
 		
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/alltt/series");
 		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
+		mv.setViewName("/alltt/series");
+
 		// 기본필터
 		FilterDTO filterDTO = new FilterDTO();
 		filterDTO.setNetflixId(1);
@@ -112,7 +124,8 @@ public class MainController {
 		filterDTO.setSortType("latest");
 		filterDTO.setContentType("series");
 		filterDTO.setLastItemCnt(0);
-		filterDTO.setWish(true);
+		filterDTO.setIsWishInclude(true);
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
 		mv.addObject("contentList", mainService.getMoreFilteredContent(filterDTO));
 		mv.addObject("genreList"  , mainService.getMoreGenreList(filterDTO));
@@ -121,9 +134,15 @@ public class MainController {
 	}
 	
 	@GetMapping("/movie")
-	public ModelAndView movie(HttpServletRequest request) {
+	public ModelAndView movie(HttpServletRequest request, HttpSession session) {
 		
 		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/movie");
 		
 		// 기본필터
@@ -134,7 +153,8 @@ public class MainController {
 		filterDTO.setSortType("latest");
 		filterDTO.setContentType("movie");
 		filterDTO.setLastItemCnt(0);
-		filterDTO.setWish(true);
+		filterDTO.setIsWishInclude(true);
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
 		mv.addObject("contentList", mainService.getMoreFilteredContent(filterDTO));
 		mv.addObject("genreList"  , mainService.getMoreGenreList(filterDTO));
