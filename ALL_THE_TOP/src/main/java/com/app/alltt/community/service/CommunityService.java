@@ -24,8 +24,7 @@ public interface CommunityService {
 	
 	public boolean modifyPost(PostDTO post);
 	public boolean removePost(PostDTO post);
-	public List<PostDTO> getAllPostList();
-	public int getBoardCnt();
+	public List<PostDTO> getAllPostList(long memberId);
 	
 	// 로그인한 멤버의 정보를 넘겨주기 위해
 	public MemberDTO getMemberId(long memberId);
