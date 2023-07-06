@@ -59,7 +59,7 @@ public class CommunityController {
 		// 로그인한 멤버가 쓴 댓글 수를 보여주기 위해
 		model.addAttribute("replyCnt", communityService.getReplyCntByMemberId(memberId));
 		// 모든 게시글 리스트
-		model.addAttribute("postList", communityService.getAllPostList());
+		model.addAttribute("postList", communityService.getAllPostList(memberId));
 		
 		return "/alltt/community";
 	}
@@ -150,11 +150,12 @@ public class CommunityController {
 		if (memberId != -1) {
 			// 내가 작성한 게시글 리스트 넘기기
 			if (tab.equals("post")) {
-				
+				model.addAttribute("tab", tab);
 				model.addAttribute("myList", communityService.getPostListByMemberId(memberId));
 			}
 			// 내가 작성한 댓글 리스트 넘기기
 			else {
+				model.addAttribute("tab", tab);
 				model.addAttribute("myList", communityService.getReplyListByMemberId(memberId));
 			}
 		}
@@ -227,6 +228,11 @@ public class CommunityController {
 		else {
 			return "false";
 		}
+	}
+	
+	@PostMapping("/postRecmnd")
+	public @ResponseBody String changeRecmnd() {
+		return "";
 	}
 	
 }
