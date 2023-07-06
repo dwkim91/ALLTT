@@ -38,7 +38,7 @@ $(function() {
 			var title = $("#title").val();
 			var content = $("#content").val();
 			var passwd = $("#passwd").val();
-			var contentId = $(".selectedContent").attr("id");
+			var contentId = $(".movie_item__poster").attr("id");
 			
 			var param = {
 				"postTitle" : title,
@@ -65,14 +65,31 @@ $(function() {
 
 	// 태그 검색창 띄우기
 	$("#tagBtn").click(function() {
-		$("#addContentId").css("display", "block");
-	    $("body").css("overflow", "hidden"); // 스크롤바 제거
+
+		if($(".movie_list").children().length > 0) {
+			alert("이미 태그된 컨텐츠가 있습니다.");
+		}
+		else {
+			$("#addContentId").css("display", "block");
+			$("body").css("overflow", "hidden"); // 스크롤바 제거
+			
+			// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
+			$("#addContentId").on("click", "#addContentId", function() {
+				$("#addContentId").css("display", "none");
+				$("body").css("overflow", "auto");
+			});
+		}
 	});
+	
+	// 태그 검색 삭제
+	$(".form__clear").click(function() {
+		$("#input-search").val("");
+	})
 
 	// 태그 검색
 	$("#input-search").keyup(function() {
 		var searchTitle = $(this).val();
-
+		
 		$.ajax({
 			url : "${contextPath}/community/getContent",
 			type : "POST",
@@ -119,23 +136,58 @@ $(function() {
 	// 검색된 content 의 제목을 클릭했을 때, content의 id와 제목을 넘겨주기
 	$("#tag_list").on("click", "li", function() {
 
-		const selectedContent = $(this).find("span");
+		var selectedContent = $(this).find("span");
+		var contentInfo = null;
+		var contentImgUrl = null;
 
+		// 모달창 닫기
+		$("#input-search").val("");
 		$("#addContentId").css("display", "none");
 		$("body").css("overflow", "auto"); // 스크롤바 보이기
-		$(".selectedContent").attr("id", selectedContent.attr("contentId")).text(selectedContent.text());
-	});
-	
-	// 검색창 옆의 x 표시를 누르면 입력된 내용 삭제
-	$(".form__clear").click(function() {
-		$("#input-search").val("");
+		
+		// 선택된 content 추가
+		$.ajax({
+			url : "${contextPath}/community/getContentInfo",
+			type : "GET",
+			async : true,
+			data : { "contentId" : selectedContent.attr("contentId")},
+			success : function(content) {
+
+				var html = '<div data-v-5dec5019="" data-v-4179835d="" class="movie_item">';
+					html += '<div data-v-5dec5019="" class="movie_item__poster" id=' + content.contentId + '>';
+					html += '<img data-v-7874c524="" data-v-3090f2a6="" data-v-5dec5019="" alt="' + content.title + '" class="poster__img" data-src="' + content.imgUrl + '" src="' + content.imgUrl + '" lazy="loaded">';
+					html += '</div>';
+					html += '<div data-v-5dec5019="" class="movie_item__description">';
+					html += '<h5 data-v-5dec5019="" class="description__title">' + content.title + '</h5>';
+					html += '<p data-v-5dec5019="" class="description__subtitle">' + content.contentType + '</p>';
+					if (content.enrollDt != 9999) {
+						html += '<span data-v-5c10ad9e="" class="description__subtitle">' + content.enrollDt + '</span>';
+					}
+					html += '<div data-v-5dec5019="" class="description__bottom">';
+					html += '<img data-v-5dec5019="" src="" class="light">';
+					html += '<!---->';
+					html += '</div>';
+					html += '</div>';
+					html += '<div data-v-5dec5019="" class="movie_item__more">';
+					html += '<button data-v-5dec5019="" class="more__btn" id="deleteBtn">삭제</button>';
+					html += '</div>';
+					html += '</div>';
+
+					// 생성된 HTML 코드를 movie_list 요소의 자식 태그로 추가
+					$('.movie_list').append(html);
+			}
+		});
 	});
 
+	// 추가된 tag 삭제
+	$(document).on('click', '#deleteBtn', function() {
+		$(".movie_list").empty();
+	});
+	
 });
 </script>
 </head>
 <body>
-	<noscript data-n-head="ssr" data-hid="gtm-noscript" data-pbody="true"></noscript>
 	<div id="__nuxt">
 		<div id="__layout">
 			<div id="root" data-v-75f0040c="">
@@ -177,40 +229,28 @@ $(function() {
 											<path fill-rule="evenodd" clip-rule="evenodd"
 												d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z"
 												fill="#98A4B7" data-v-4179835d=""></path></svg>
-										<div data-v-4ddcaa90="" data-v-4179835d="" class="tooltip hash-tag-button__tooltip tooltip--left-top">
-											<i data-v-4ddcaa90=""
-												class="kino-icon tooltip__close mask kino-icon--close-normal"></i>
-										</div>
 									</button>
-									<span class="selectedContent"></span>
-									<div data-v-4179835d="">
-										<input data-v-4179835d="" type="password" id="passwd" data-v-0c949614="" placeholder="게시글의 비밀번호를 입력하세요.">
-									</div>
+								</div>
+								<div data-v-4179835d="" class="post_editor__footer">
+									<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
 								</div>
 							</div>
-							<div class="movie_list" data-v-4179835d=""></div>
+							<div data-v-4179835d="" class="movie_list">
+							</div>
 							<!---->
 							<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId">
 								<div data-v-2e4bbd00="" class="modal">
-									<div data-v-2e4bbd00="" class="modal__header">
-										<h3 data-v-2e4bbd00="" class="header__title">태그 등록</h3>
-										<button data-v-2e4bbd00="" class="header__close">
-											<i data-v-2e4bbd00="" class="kino-icon close__icon kino-icon--filter-close"></i>
-										</button>
-									</div>
 									<div data-v-2e4bbd00="" class="modal__body">
 										<form data-v-2e4bbd00="" class="body__form mx">
-											<label data-v-2e4bbd00="" for="input-search"><svg
-													data-v-2e4bbd00="" width="16" height="16" fill="none"
-													xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-													class="">
-													<path data-v-2e4bbd00=""
+											<label data-v-2e4bbd00="" for="input-search">
+											<svg data-v-2e4bbd00="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="">
+												<path data-v-2e4bbd00=""
 														d="M5.432 7.256h1.36l-.336 2.048H5v1.072h1.296l-.544 3.36H6.76l.528-3.36h1.76l-.528 3.36h.992l.528-3.36h1.472V9.304h-1.296l.32-2.048h1.408V6.2h-1.216L11.24 3h-.992l-.512 3.2H7.96L8.472 3H7.48l-.512 3.2H5.432v1.056zm2.352 0h1.76l-.32 2.048H7.448l.336-2.048z"
-														fill="#637DEA"></path></svg></label><input data-v-2e4bbd00=""
-												id="input-search" placeholder="태그 검색" type="text"
-												class="form__input">
-											<button data-v-2e4bbd00="" type="button" class="form__clear"
-												style="">
+														fill="#637DEA"></path>
+											</svg>
+											</label>
+											<input data-v-2e4bbd00="" id="input-search" placeholder="태그 검색" type="text" class="form__input">
+											<button data-v-2e4bbd00="" type="button" class="form__clear" style="">
 												<svg data-v-2e4bbd00="" width="24" height="24" fill="none"
 													xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
 													class="clear__icon">

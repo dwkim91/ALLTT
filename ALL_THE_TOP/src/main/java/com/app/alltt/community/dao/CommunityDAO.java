@@ -23,7 +23,10 @@ public interface CommunityDAO {
 	public List<ReplyDTO> selectReplyListByMemberId(long memberId);
 	
 	public void insertPost(PostDTO post);
+	
 	public void updatePost(PostDTO post);
+	public String selectPostPasswd(long postId);
+	
 	public void deletePost(long postId);
 	
 	public MemberDTO selectMember(long memberId);
