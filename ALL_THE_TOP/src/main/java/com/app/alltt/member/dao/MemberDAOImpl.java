@@ -1,5 +1,6 @@
 package com.app.alltt.member.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -42,6 +43,11 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public void deleteWishContent(Map<String, Long> wishMap) {
 		sqlSession.delete("memberMapper.deleteWishContent", wishMap);
+	}
+
+	@Override
+	public List<MemberDTO> selectListNickName(String nickName) {
+		return sqlSession.selectList("memberMapper.selectListNickName", nickName);
 	}
 	
 }
