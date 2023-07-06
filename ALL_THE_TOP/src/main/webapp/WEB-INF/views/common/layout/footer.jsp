@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<footer class="footer">
+<footer class="footer floating-footer">
     <div class="page-up">
         <a href="#" id="scrollToTopButton"><span class="arrow_carrot-up"></span></a>
     </div>
@@ -20,18 +20,12 @@
             <div class="col-lg-6">
                 <div class="footer__nav">
                     <ul>
-                        <li class="active"><a href="/main">Homepage</a></li>
-                        <li><a href="./categories.html">Categories</a></li>
-                        <li><a href="./blog.html">Our Blog</a></li>
-                        <li><a href="#">Contacts</a></li>
+                        <li class="menu"><a href="/main">메인</a></li>
+                        <li class="menu"><a href="/series">시리즈</a></li>
+                        <li class="menu"><a href="/movie">영화</a></li>
+                        <li class="menu"><a href="/member/mypage">My</a></li>
                     </ul>
                 </div>
-            </div>
-            <div class="col-lg-3">
-                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-
             </div>
         </div>
     </div>

@@ -20,6 +20,7 @@ public class PostDTO {
 	private long readCnt;
 	private long recmndCnt;
 	private long replyCnt;
+	private int myRecmnd;
 	public long getPostId() {
 		return postId;
 	}
@@ -98,13 +99,17 @@ public class PostDTO {
 	public void setReplyCnt(long replyCnt) {
 		this.replyCnt = replyCnt;
 	}
+	public int getMyRecmnd() {
+		return myRecmnd;
+	}
+	public void setMyRecmnd(int myRecmnd) {
+		this.myRecmnd = myRecmnd;
+	}
 	@Override
 	public String toString() {
 		return "PostDTO [postId=" + postId + ", postTitle=" + postTitle + ", memberId=" + memberId + ", nickName="
 				+ nickName + ", passwd=" + passwd + ", content=" + content + ", enrollDt=" + enrollDt + ", modifyDt="
 				+ modifyDt + ", postTag=" + postTag + ", contentId=" + contentId + ", readCnt=" + readCnt
-				+ ", recmndCnt=" + recmndCnt + ", replyCnt=" + replyCnt + "]";
+				+ ", recmndCnt=" + recmndCnt + ", replyCnt=" + replyCnt + ", myRecmnd=" + myRecmnd + "]";
 	}
-	
-	
 }

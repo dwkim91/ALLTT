@@ -19,13 +19,8 @@ public class CommunityDAOImpl implements CommunityDAO {
 	private SqlSession sqlSession;
 
 	@Override
-	public int selectOneAllBoardCnt() {
-		return 0;
-	}
-
-	@Override
-	public List<PostDTO> selectListAllPost() {
-		return sqlSession.selectList("communityMapper.selectListAllPost");
+	public List<PostDTO> selectListAllPost(long memberId) {
+		return sqlSession.selectList("communityMapper.selectListAllPost", memberId);
 	}
 
 	@Override
