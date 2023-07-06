@@ -189,7 +189,7 @@
 		        NOT(TITLE = #{title})			AND
 		        CG.GENRE_ID = #{genreId}
 		ORDER BY ENROLL_DT DESC
-		LIMIT 10
+		LIMIT 14
 	</select>
 	<select id="selectListGenreSimilarContent" parameterType="FilteredDTO" resultType="FilteredDTO">
 		SELECT
@@ -216,7 +216,7 @@
 		        NOT(TITLE = #{title})			AND
 		        CG.GENRE_ID = #{genreId}
 		ORDER BY ENROLL_DT DESC
-		LIMIT 10
+		LIMIT 14
 	</select>
 	
 	<select id="selectOnePlatformByDetailUrl" parameterType="FilteredDTO" resultType="String">
