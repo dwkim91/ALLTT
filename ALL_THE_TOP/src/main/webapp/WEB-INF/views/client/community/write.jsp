@@ -74,7 +74,6 @@ $(function() {
 			$("body").css("overflow", "hidden"); // 스크롤바 제거
 			
 			// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
-<<<<<<< .merge_file_6gRBDW
 			$(document).on("click", ".post-modal", function(event) {
 				  var target = $(event.target);
 				  if (!target.closest(".modal__body").length) {
