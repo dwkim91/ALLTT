@@ -36,56 +36,35 @@ $(function() {
 });
 </script>
 <script>
-
-	var dateStr = "Tue Jul 04 17:28:34 KST 2023";
-	var inputFormat = "ddd MMM DD HH:mm:ss zzz YYYY";
-	var outputFormat = "YYYY-MM-DD HH:mm:ss";
-
-	var date = new Date(dateStr);
-	var formattedDate = date.toLocaleString("en-US", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
-
-	console.log(formattedDate);
-
-	function getTimeDiff(timestamp) {
-
-		var beforeDate = new Date(timestamp);
-		var formattedDate = beforeDate.toLocaleString("en-US", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
-
-		var currentTime = new Date();
-		var targetTime = new Date(formattedDate);
-
-		var timeDiff = Math.floor((currentTime - targetTime) / 1000); // 시간 차이를 초 단위로 계산
-
-		if (timeDiff < 60) {
-			return timeDiff + '초 전';
-		} else if (timeDiff < 3600) {
-			var minutes = Math.floor(timeDiff / 60);
-			return minutes + '분 전';
-		} else {
-			var hours = Math.floor(timeDiff / 3600);
-			return hours + '시간 전';
-		}
-	}
-
 	// 좋아요 표시
 	function likePostBtn(postId){
-		  // 클릭된 버튼에만 클래스 변경을 적용하기 위해 id 값을 사용
+		  	// 클릭된 버튼에만 클래스 변경을 적용하기 위해 id 값을 사용
 		  	var btnId = "likeBtn" + postId;
 			$("#" + btnId).toggleClass("active");
+			
+			// 좋아요를 DB에 반영
+			//$.ajax({
+				// url : "${contextPath}/community/postRecmnd"
+				// insert 혹은 delete 를 진행
+				// select를 해서 다시 가져오고
+				// myRecmnd가 있다면 버튼 active
+			//});
 	}
-	
 </script>
 </head>
 <body>
 
-	<main data-v-f04faaa6="" data-v-75f0040c="" id="contents"><section data-v-f04faaa6="" class="fixed-area"><header data-v-36d2ff30="" data-v-f04faaa6="" class="header-wrap left-title header-main">
+	<main data-v-f04faaa6="" data-v-75f0040c="" id="contents">
+		<section data-v-f04faaa6="" class="fixed-area">
+		<header data-v-36d2ff30="" data-v-f04faaa6="" class="header-wrap left-title header-main">
 		<h1 data-v-36d2ff30="" class="header-title beta"> 커뮤니티 </h1>
 		<!---->
-		<a data-v-f04faaa6="" href="/search" class="header-right-button search" id="searchButton" data-v-36d2ff30=""><img data-v-f04faaa6="" src="https://static.kinolights.com/icon/ic-search.svg" alt="검색"></a><button data-v-f04faaa6="" data-v-36d2ff30="" id="myCommunityButton" class="header-right-button my">
-		내 활동 </button></header></section>
+		<a data-v-f04faaa6="" href="/search" class="header-right-button search" id="searchButton" data-v-36d2ff30=""><img data-v-f04faaa6="" src="https://static.kinolights.com/icon/ic-search.svg" alt="검색"></a>
+		</header>
+		</section>
 		<div data-v-f04faaa6="" class="content-area">
 			<div data-v-f04faaa6="" class="grid-container mainContent">
-				</section><section data-v-f04faaa6="" class="list-item list-area list-area--home">
+				<section data-v-f04faaa6="" class="list-item list-area list-area--home">
 				<div data-v-f04faaa6="" class="list-inner-wrap">
 					<ul data-v-f04faaa6="" id="postList">
 					<c:forEach var="post" items="${postList}">
@@ -120,10 +99,22 @@ $(function() {
 							</div>
 						</div>
 						<div data-v-b0785d82="" class="badge-wrap">
+						<c:choose>
+						<c:when test="${post.myRecmnd != 0}">
+							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary active">
+								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
+								</div>
+								<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+							</button>
+						</c:when>
+						<c:otherwise>
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary">
 								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
 								</div>
-								<span data-v-de3ba2dc="">${post.recmndCnt}</span></button>
+								<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+							</button>
+						</c:otherwise>
+						</c:choose>
 						</div>
 						</footer></article></li>
 					</c:forEach>

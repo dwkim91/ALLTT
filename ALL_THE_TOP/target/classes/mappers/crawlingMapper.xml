@@ -28,14 +28,14 @@
 				PLATFORM_ID,
 				IMG_URL,
 				URL,
-				CONTENT_STATUS
+				EXIST_YN
 		)
 		VALUES (
 				#{contentId},		
 				#{platformId},	
 				#{imgUrl},	
 				#{url},
-				#{contentStatus}		
+				#{existYn}		
 		)
 	</insert>
 	
@@ -136,11 +136,11 @@
 				CONTENT_ID = #{contentId}
 	</select>
 	
-	<update id="updateContentStatus">
+	<update id="updateExistYn">
 		UPDATE 
 				CONTENT_LINK
 		SET
-				CONTENT_STATUS = FALSE
+				EXIST_YN = 'N'
 	</update>
 	
 	<select id="selectOneTitle" parameterType="Long" resultType="String">

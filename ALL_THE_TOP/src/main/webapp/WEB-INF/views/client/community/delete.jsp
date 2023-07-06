@@ -12,6 +12,8 @@
 <script>
 $(function() {
 	
+	$("#passwd").focus();
+	
 	$(".back-btn").click(function() {
 		location.href="${contextPath}/community/post?postId=${post.postId}";
 	});

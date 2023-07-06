@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="${contextPath}/resources/css/post.css" type="text/css">
 <link data-n-head="ssr" rel="icon" type="image/png" sizes="32x32" href="https://nujhrcqkiwag1408085.cdn.ntruss.com/static/common/icon/favicon-33x33.png">
-<script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
+<script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js" type="text/javascript"></script>
 <script>
 $(function() {
 	
@@ -18,6 +18,10 @@ $(function() {
 		$("#postModal").css("display", "none");
 		$("#replyModal").css("display", "none");
 		$("#confirmModal").css("display", "none");
+	});
+	
+	$(".back-btn").click(function() {
+		history.go(-1);
 	});
 	
 	$("#communityHomeBtn").click(function() {
@@ -149,7 +153,7 @@ $(function() {
 				// 삭제하기
 				$("#confirmButton").click(function() {
 					$.post("${contextPath}/community/deleteReply", replyId, function(data) {
-						// 등록이 완료되면 게시판으로 이동
+						// 완료되면 게시판으로 이동
 						if (data == "deleted") {
 							alert("댓글이 삭제되었습니다.");
 							location.reload();
@@ -232,10 +236,22 @@ $(function() {
 						</div>
 					</div>
 					<div data-v-af062606="" class="badge-wrap">
+					<c:choose>
+					<c:when test="${post.myRecmnd != 0}">
+						<button data-v-de3ba2dc="" data-v-af062606="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary active">
+							<div data-v-6a12716b="" data-v-af062606="" class="icon like" data-v-de3ba2dc="">
+							</div>
+							<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+						</button>
+					</c:when>
+					<c:otherwise>
 						<button data-v-de3ba2dc="" data-v-af062606="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary">
-						<div data-v-6a12716b="" data-v-af062606="" class="icon like" data-v-de3ba2dc="">
-						</div>
-						<span data-v-de3ba2dc="">${post.recmndCnt}</span></button>
+							<div data-v-6a12716b="" data-v-af062606="" class="icon like" data-v-de3ba2dc="">
+							</div>
+							<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+						</button>
+					</c:otherwise>
+					</c:choose>
 					</div>
 				</div>
 			</div>
