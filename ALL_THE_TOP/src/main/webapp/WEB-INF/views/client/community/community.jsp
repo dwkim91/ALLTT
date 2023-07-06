@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>커뮤니티</title>
 <link rel="stylesheet" href="${contextPath}/resources/css/community.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/css/footerCustom.css" type="text/css">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
 <script>
 $(function() {

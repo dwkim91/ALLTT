@@ -6,6 +6,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<style>
+.contents_wrap.wrap_margin {
+	padding: 0;
+}
+.col-lg-5.col-md-5 li::before {
+	display:none;
+}
+</style>
 </head>
 <body>
 	<div class="container">
@@ -39,17 +47,19 @@
 										</div>
 										<ul>
 											<li><a href="">
-												<div class="anime__review__item">
-													<div class="anime__review__item__text">
-														<h6>
-															닉네임<span> - 1시간 전</span><span class="subject_over" style="width: 100%;">게시글 제목이길때는 어찌되는지 확인해보아자아자아자아자아장장자</span>
-														</h6>
+													<div class="anime__review__item">
+														<div class="anime__review__item__text">
+															<h6>
+																닉네임<span> - 1시간 전</span><span class="subject_over"
+																	style="width: 100%;">게시글 제목이길때는 어찌되는지
+																	확인해보아자아자아자아자아장장자</span>
+															</h6>
+														</div>
 													</div>
-												</div>
-												</a>
-										</div>
-										<li>
-									</ul>
+											</a>
+									</div>
+									<li>
+										</ul>
 								</div>
 							</div>
 						</div>
@@ -85,62 +95,91 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row" style="margin-top:-8rem">
 			<div class="col-lg-12 col-md-12">
 				<div class="anime__details__form">
-					<div class="section-title">
-						<div class="section-title">
-							<h5 style="padding-bottom: 20px;">${filteredDataDTO.genreNm}
-								최신 컨텐츠</h5>
-							<div class="detailList">
-								<c:forEach var="latestList" items="${latestList}">
-									<div class="item" data-id="${latestList.contentId}">
-										<a class="false css-1djwytu e2ri0zb0"
-											href="?contentId=${latestList.contentId}">
-											<div class="item__thumb item__thumb-25x36">
-												<div class="item__tags">
-													<div class="item__tags-left"></div>
-													<div class="item__tags-right"></div>
-												</div>
-												<div class="item__image lazy">
-													<img class="loaded css-1doy9ip euf32k22"
-														src="${latestList.imgUrl}" alt="${latestList.title}">
-												</div>
-											</div>
-											<div class="item__info ">
-												<p class="item__title">${latestList.title}</p>
-											</div>
-										</a>
+					<main class="is-desktop css-p5l6tq eeennqe0">
+						<section class="contents_wrap">
+							<section class="contents_wrap wrap_margin">
+								<div data-v-a0912140=""
+									class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
+								<div class="hidden-horizontal-scrollbar__items"></div>
+								<div data-v-a0912140=""
+									class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
+								<div class="hidden-horizontal-scrollbar__items"></div>
+								<div>
+									<div class="section-title" style="margin-bottom: 20px;">
+										<h5>${filteredDataDTO.genreNm} 최신 컨텐츠</h5>
 									</div>
-								</c:forEach>
-							</div>
-						</div>
-						<div class="section-title">
-							<h5 style="padding-bottom: 20px;">비슷한 컨텐츠</h5>
-							<div class="detailList">
-								<c:forEach var="similarList" items="${similarList}">
-									<div class="item" data-id="${similarList.contentId}">
-										<a class="false css-1djwytu e2ri0zb0"
-											href="?contentId=${similarList.contentId}">
-											<div class="item__thumb item__thumb-25x36">
-												<div class="item__tags">
-													<div class="item__tags-left"></div>
-													<div class="item__tags-right"></div>
+									<section class="lists lists__noneLazy">
+										<div
+											class="lists__columns lists__columns-vertical css-0 enth0yz0"
+											id="container">
+											<!-- 기본 42개 -->
+											<c:forEach var="latestContent" items="${latestList}">
+												<div class="item" data-id="${latestContent.contentId}">
+													<c:choose>
+														<c:when test="${latestContent.memberId == 0}">
+															<div class="item__thumb item__thumb-25x36">
+														</c:when>
+														<c:otherwise>
+															<div class="item__thumb item__thumb-25x36"
+																id="wishContent">
+														</c:otherwise>
+													</c:choose>
+													<div class="item__tags"></div>
+													<div class="item__image lazy">
+														<img class="loaded css-1doy9ip euf32k22"
+															src="${latestContent.imgUrl}"
+															alt="${latestContent.title}">
+													</div>
 												</div>
-												<div class="item__image lazy">
-													<img class="loaded css-1doy9ip euf32k22"
-														src="${similarList.imgUrl}" alt="${similarList.title}">
+												<div class="item__info ">
+													<a class="item__title"
+														href="/detail?contentId=${latestContent.contentId}">${latestContent.title}</a>
 												</div>
-											</div>
-											<div class="item__info ">
-												<p class="item__title">${similarList.title}</p>
-											</div>
-										</a>
+										</div>
+										</c:forEach>
+									</section>
+								</div>
+								<div>
+									<div class="section-title" style="margin-bottom: 20px;">
+										<h5>넷플릭스 최신 컨텐츠</h5>
 									</div>
-								</c:forEach>
-							</div>
-						</div>
-					</div>
+									<section class="lists lists__noneLazy">
+										<div
+											class="lists__columns lists__columns-vertical css-0 enth0yz0"
+											id="container">
+											<!-- 기본 42개 -->
+											<c:forEach var="similarContent" items="${similarList}">
+												<div class="item" data-id="${similarContent.contentId}">
+													<c:choose>
+														<c:when test="${similarContent.memberId == 0}">
+															<div class="item__thumb item__thumb-25x36">
+														</c:when>
+														<c:otherwise>
+															<div class="item__thumb item__thumb-25x36"
+																id="wishContent">
+														</c:otherwise>
+													</c:choose>
+													<div class="item__tags"></div>
+													<div class="item__image lazy">
+														<img class="loaded css-1doy9ip euf32k22"
+															src="${similarContent.imgUrl}"
+															alt="${similarContent.title}">
+													</div>
+												</div>
+												<div class="item__info ">
+													<a class="item__title"
+														href="/detail?contentId=${similarContent.contentId}">${similarContent.title}</a>
+												</div>
+										</div>
+										</c:forEach>
+									</section>
+								</div>
+							</section>
+						</section>
+					</main>
 				</div>
 			</div>
 		</div>
