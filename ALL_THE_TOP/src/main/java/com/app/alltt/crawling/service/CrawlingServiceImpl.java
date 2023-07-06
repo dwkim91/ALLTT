@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -368,8 +369,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			crawlingDTO.setActors(detailTemp.getActors());
 			crawlingDTO.setSummary(detailTemp.getSummary());
 			crawlingDTO.setEnrollDt(detailTemp.getEnrollDt());
-			System.out.print(contentCnt++ +" ");
-			showCrawlingDTO(crawlingDTO);
+//@@@@@@			System.out.print(contentCnt++ +" ");
+//@@@@@@			showCrawlingDTO(crawlingDTO);
 
 		}
 			
@@ -499,11 +500,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 		//addContents(getTvingCrawlingDTOList(0));
 		initExistYn();
 		//getTvingContentDetailInfo("https://www.tving.com/contents/P001635813", "series");
-		//for (GenreLinkDTO genreLinkDTO : getTvingTestLink()) {// test 링크
 		
-		String contentType = "series";
-		int str = 2;
-		int end = 2;
+		String contentType = "movie";
+		int str = 8;
+		int end = 10;
 		
 		for (GenreLinkDTO genreLinkDTO : getGenreLinkList(2)) {
 			if (genreLinkDTO.getContentType().equals(contentType)) {
@@ -515,47 +515,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 		}
 		
-		
 		quit();
-	}
-	
-	// 티빙 테스트 링크
-	public List<GenreLinkDTO> getTvingTestLink(){
-		// 장르별 크롤링 6:series 로맨스, 10:series 판타지 // test중
-		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
-		
-		GenreLinkDTO testTempDTO = null;
-		
-		testTempDTO = new GenreLinkDTO();
-		testTempDTO.setContentType("movie");
-		testTempDTO.setPlatformId(2);
-		testTempDTO.setGenreId(5); //코미디
-		testTempDTO.setUrl("https://www.tving.com/list/movie?slug=movie&genre=MG110");
-		genreLinkList.add(testTempDTO);
-
-//		testTempDTO = new GenreLinkDTO();
-//		testTempDTO.setContentType("series");
-//		testTempDTO.setPlatformId(2);
-//		testTempDTO.setGenreId(5); //코미디
-//		testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCP&slug=program");
-//		genreLinkList.add(testTempDTO);
-
-//			testTempDTO = new GenreLinkDTO();
-//			testTempDTO.setContentType("series");
-//			testTempDTO.setPlatformId(2);
-//			testTempDTO.setGenreId(10);
-//			testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCR&slug=program");
-//			genreLinkList.add(testTempDTO);
-//			
-//			testTempDTO = new GenreLinkDTO();
-//			testTempDTO.setContentType("series");
-//			testTempDTO.setPlatformId(2);
-//			testTempDTO.setGenreId(6);
-//			testTempDTO.setUrl("https://www.tving.com/list/program?genre=PCO&slug=program");
-//			genreLinkList.add(testTempDTO);
-		
-		return genreLinkList;
-		
 	}
 	
 	
@@ -666,16 +626,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 					moveToTargetUrl(crawlingDTO.getUrl());
 					
 					if(driver.getTitle().equals("www.netflix.com")) {
-						
+						while(!driver.getTitle().equals("홈 - 넷플릭스")) {
 						// 드라이버 종료
-						driver.quit();
+						quit();
 						
 						// 드라이버 재시작
 						chromeDriverInit();
 						
-						// 넷플릭스 로그인
 						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
-						
+
+						}
 						// 디테일 페이지 이동
 						moveToTargetUrl(crawlingDTO.getUrl());
 					}
@@ -687,22 +647,25 @@ public class CrawlingServiceImpl implements CrawlingService {
 					
 					// 등록일자
 					year = driver.findElements(By.className("year")).get(0).getText();
-					if (year == null) {
+					while (year == null) {
 						
+						while(!driver.getTitle().equals("홈 - 넷플릭스")) {
 						// 드라이버 종료
-						driver.quit();
+						quit();
 						
 						// 드라이버 재시작
 						chromeDriverInit();
 						
-						// 넷플릭스 로그인
 						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
+
+						}
 						
 						// 디테일 페이지 이동
 						moveToTargetUrl(crawlingDTO.getUrl());
 						
 						year = driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/div/div[1]/div[1]/div/div[1]/div/div[2]/div")).getText();
-						System.out.println("yearXpath : " + year);
+						
+						if (year == null) year = driver.findElements(By.className("year")).get(0).getText();
 					}
 						
 					// 디테일 페이지내 상세정보가 담긴 요소
@@ -777,6 +740,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 //		Netflix 단일장르 Test End
 		
+		Scanner scan = new Scanner(System.in);
+		
 		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
 
 		// 크롬드라이버 초기화
@@ -784,13 +749,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// netflix 로그인
 		netflixLogin(NETFLIX_LOGIN_KEY[0],NETFLIX_LOGIN_KEY[1]);
+		ArrayList<CrawlingDTO> netflixContentList = new ArrayList<>();
 		
 		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
-			ArrayList<CrawlingDTO> netflixContentList = crawlNetflixdContents(genreLinkDTO);
-			netflixContentList = getNetflixDetailInfo(netflixContentList);
-			addContents(netflixContentList);
+			netflixContentList = crawlNetflixdContents(genreLinkDTO);
 		}
 		
+		netflixContentList = getNetflixDetailInfo(netflixContentList);
+		
+		scan.nextInt();
+		
+		scan.close();
+		
+		addContents(netflixContentList);
 		// 드라이버 종료
 		quit();
 		
@@ -1168,7 +1139,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
 			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
 //				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
-				System.out.println("장르비교");
+//				System.out.println("장르비교");
 				crawlingDTO.setContentId(contentLinkDTO.getContentId());
 				isInsertGenre = true; // G만 비교 후 G => UPDATE
 //				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교, 같은 작품
@@ -1185,7 +1156,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 			else { //imgUrl 다르다 => 나머지 2개의 ott를 검사해야함 => 식별자가 필요!
 				contentKeyList = genContentKeyList(crawlingDTO);
-				System.out.println("contentKeyList : " + contentKeyList);
+//				System.out.println("contentKeyList : " + contentKeyList);
 				// title -> title_key -> T:content_key 검색 -> contentId 확인
 				String title_key = genKorAlphaNumStr(convertRomanToNumber(crawlingDTO.getTitle()));
 				List<Long> contentIdList = crawlingDAO.selectListContentId(title_key);
@@ -1226,14 +1197,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 			
-			System.out.println("isInsertContent    : " + isInsertContent);
-			System.out.println("isInsertGenre      : " + isInsertGenre);
-			System.out.println("isInsertDetail     : " + isInsertDetail);
-			System.out.println("isInsertContentKey : " + isInsertContentKey);
+//			System.out.println("isInsertContent    : " + isInsertContent);
+//			System.out.println("isInsertGenre      : " + isInsertGenre);
+//			System.out.println("isInsertDetail     : " + isInsertDetail);
+//			System.out.println("isInsertContentKey : " + isInsertContentKey);
 			// 데이터 입력단
 			if (isInsertContent) {
 				insertCnt++;// insert 개수 확인용
-				System.out.println(contentCnt + " " + crawlingDTO.toString());
+//				System.out.println(contentCnt + " " + crawlingDTO.toString());
 				if (isUpdateInfo) { // 누락 정보업데이트
 					long contentId = crawlingDTO.getContentId();
 					ContentDTO contentDTO = crawlingDAO.selectOneContent(crawlingDTO.getContentId());
@@ -1255,7 +1226,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 			else {
 				//test확인용 
-				System.out.println("중복컨텐츠 : " + ++duplCnt);
+				duplCnt++;
+//				System.out.println("중복컨텐츠 : " + duplCnt);
 			}
 			if (isInsertGenre) {
 				boolean isExist = false;

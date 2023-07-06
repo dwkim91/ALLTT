@@ -35,5 +35,33 @@
 		WHERE
 				MEMBER_ID = #{memberId}
 	</select>
-
+	
+	<insert id="insertWishContent" parameterType="Map">
+		INSERT INTO WISH_LIST (
+				MEMBER_ID,
+				CONTENT_ID
+		)
+		VALUES (
+				#{memberId},
+				#{contentId}
+		)
+	</insert>
+	
+	<delete id="deleteWishContent" parameterType="Map">
+		DELETE FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId} 	AND
+				CONTENT_ID = #{contentId}
+	</delete>
+	
+	<select id="selectListNickName" parameterType="String" resultType="MemberDTO">
+		SELECT
+				*
+		FROM
+				MEMBER
+		WHERE
+				NICK_NAME = #{nickName}	
+	</select>
+	
 </mapper>

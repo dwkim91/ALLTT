@@ -18,12 +18,12 @@ $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실
 				"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 				"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 				"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
-				"isWish"		:	$('#isWish').val(),
+				"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 				"contentType"	:	$('#contentType').val(),
 				"searchKey"		:	$('#searchKey').val(),
 				"sortType"		:	$('#sortType').val(),
 				"genreId"		:	Number($('#genreId').val()),
-				"lastItemCnt"	:	document.querySelectorAll('.item').length
+				"lastItemCnt"	:	document.querySelectorAll('.item').length,
 			}
 			contentsLoadAjax(filterData);
         }
@@ -36,7 +36,7 @@ $('.checkbox-container').change(function() {
 			"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 			"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 			"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
-			"isWish"		:	$('#isWish').val(),
+			"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 			"contentType"	:	$('#contentType').val(),
 			"searchKey"		:	$('#searchKey').val(),
 			"sortType"		:	$('#sortType').val(),
@@ -52,7 +52,7 @@ $('.select-container').change(function() {
 			"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 			"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 			"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
-			"isWish"		:	$('#isWish').val(),
+			"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 			"contentType"	:	$('#contentType').val(),
 			"searchKey"		:	$('#searchKey').val(),
 			"sortType"		:	$('#sortType').val(),
@@ -60,16 +60,4 @@ $('.select-container').change(function() {
 			"lastItemCnt"	:	document.querySelectorAll('.item').length
 		}
 	contentsLoadAjax(filterData);
-});
-
-$(".item__thumb.item__thumb-25x36").on("click", function(event) {
-	var element = $(this);
-	var id = element.attr("id");
-	
-	if (id == "wishContent") {
-		element.attr("id", "");
-	}
-	else {
-		element.attr("id", "wishContent");
-  	}
 });

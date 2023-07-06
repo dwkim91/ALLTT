@@ -1,5 +1,7 @@
 package com.app.alltt.member.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,10 +95,21 @@ public class MemberServiceImpl implements MemberService {
             "!", "@", "#", "$", "%", "^", "&", "*", "-", "+"
 	    };
 		
-		return adverbs[getRandomIdx(adverbs.length)] + "_" + adjectives[getRandomIdx(adjectives.length)] + "_" + 
-				nouns[getRandomIdx(nouns.length)] + "_" + alphabets[getRandomIdx(alphabets.length)] + 
-				specialChar[getRandomIdx(specialChar.length)] + getRandomIdx(100);
+		
+		boolean isDupl = true;
+		String ranNickName = null;
+		
+		while(isDupl) {
+			ranNickName = adverbs[getRandomIdx(adverbs.length)] + "_" + adjectives[getRandomIdx(adjectives.length)] + "_" + 
+					nouns[getRandomIdx(nouns.length)] + "_" + alphabets[getRandomIdx(alphabets.length)] + 
+					specialChar[getRandomIdx(specialChar.length)] + getRandomIdx(100);
+			List<MemberDTO> member = memberDAO.selectListNickName(ranNickName);
+			if(member.size() == 0) isDupl = false;
+		}
+		
+		return ranNickName;
 	}
+	
 	// 랜덤값 생성 메서드
 	private int getRandomIdx(int range) {
 		
@@ -127,6 +140,14 @@ public class MemberServiceImpl implements MemberService {
 		
 		return memberDAO.selectOneMemberByMemberId(memberId);
 		
+	}
+	@Override
+	public void addWishContentByMemberId(Map<String, Long> wishMap) {
+		memberDAO.insertWishContent(wishMap);
+	}
+	@Override
+	public void deleteWishContentByMemberId(Map<String, Long> wishMap) {
+		memberDAO.deleteWishContent(wishMap);
 	}
 	
 }

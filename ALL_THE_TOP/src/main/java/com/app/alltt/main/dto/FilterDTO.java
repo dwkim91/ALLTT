@@ -2,24 +2,24 @@ package com.app.alltt.main.dto;
 
 public class FilterDTO {
 	private int platformId;
-	private int netflixId;		// 체크시 1 아닐시 0
-	private int tvingId;		// 체크시 2 아닐시 0
-	private int wavveId;		// 체크시 3 아닐시 0
-	private boolean isWish;		// 찜 포함여부
+	private int netflixId;				// 체크시 1 아닐시 0
+	private int tvingId;				// 체크시 2 아닐시 0
+	private int wavveId;				// 체크시 3 아닐시 0
+	private boolean isWishInclude;		// 찜 포함여부
 	private String contentType;
-	private String searchKey; 	// 검색어
-	private String sortType;	// 정렬
-	private String genreNm;		// 장르명
-	private int lastItemCnt;	// 현재페이지 로드된 item 개수
+	private String searchKey; 			// 검색어
+	private String sortType;			// 정렬
+	private String genreNm;				// 장르명
+	private int lastItemCnt;			// 현재페이지 로드된 item 개수
 	private int genreId;
-	private long memberId;		// 현재로그인된 계정아이디
+	private long memberId;				// 현재로그인된 계정아이디
 	
 	@Override
 	public String toString() {
 		return "FilterDTO [platformId=" + platformId + ", netflixId=" + netflixId + ", tvingId=" + tvingId
-				+ ", wavveId=" + wavveId + ", isWish=" + isWish + ", contentType=" + contentType + ", searchKey="
-				+ searchKey + ", sortType=" + sortType + ", genreNm=" + genreNm + ", lastItemCnt=" + lastItemCnt
-				+ ", genreId=" + genreId + ", memberId=" + memberId + "]";
+				+ ", wavveId=" + wavveId + ", isWishInclude=" + isWishInclude + ", contentType=" + contentType
+				+ ", searchKey=" + searchKey + ", sortType=" + sortType + ", genreNm=" + genreNm + ", lastItemCnt="
+				+ lastItemCnt + ", genreId=" + genreId + ", memberId=" + memberId + "]";
 	}
 	public int getGenreId() {
 		return genreId;
@@ -44,12 +44,6 @@ public class FilterDTO {
 	}
 	public void setWavveId(int wavveId) {
 		this.wavveId = wavveId;
-	}
-	public boolean isWish() {
-		return isWish;
-	}
-	public void setWish(boolean isWish) {
-		this.isWish = isWish;
 	}
 	public String getContentType() {
 		return contentType;
@@ -92,6 +86,12 @@ public class FilterDTO {
 	}
 	public void setPlatformId(int platformId) {
 		this.platformId = platformId;
+	}
+	public boolean getIsWishInclude() {
+		return isWishInclude;
+	}
+	public void setIsWishInclude(boolean isWishInclude) {
+		this.isWishInclude = isWishInclude;
 	}
 	
 }
