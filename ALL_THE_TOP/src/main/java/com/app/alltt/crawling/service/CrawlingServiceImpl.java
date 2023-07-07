@@ -502,8 +502,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		//getTvingContentDetailInfo("https://www.tving.com/contents/P001635813", "series");
 		
 		String contentType = "movie";
-		int str = 8;
-		int end = 10;
+		int str = 9;
+		int end = 25;
 		
 		for (GenreLinkDTO genreLinkDTO : getGenreLinkList(2)) {
 			if (genreLinkDTO.getContentType().equals(contentType)) {

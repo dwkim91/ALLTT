@@ -85,7 +85,7 @@ html, body {
 	margin-bottom: 10%; /* 필요에 따라 버튼과의 간격을 조정합니다 */
 }
 
-.comunityInfo {
+.communityInfo {
 	table-layout: fixed;
 	width: 100%;
 	height: 30%;
@@ -96,7 +96,7 @@ html, body {
 	border: none;
 }
 
-.comunityInfo td {
+.communityInfo td {
 	text-align: center;
 	padding: 10px;
 	border-radius: 20px;
@@ -105,11 +105,11 @@ html, body {
 	color: #98A4B7;
 }
 
-.comunityInfoCnt {
+.communityInfoCnt {
 	position: relative;
 }
 
-.comunityInfoCnt::after {
+.communityInfoCnt::after {
 	content: "";
 	position: absolute;
 	right: 0;
@@ -120,7 +120,7 @@ html, body {
 	height: 70%; /* 구분선의 높이를 조정합니다 */
 }
 
-.comunityInfo td:last-child::after {
+.communityInfo td:last-child::after {
 	content: none; /* 마지막 요소의 오른쪽 구분선을 제거합니다 */
 }
 
@@ -141,7 +141,7 @@ html, body {
 	width: 30%; /*  td 요소의 폭 설정 */
 }
 
-.myAllttInfo tr:not (:last-child ) {
+.myAllttInfo tr:not(:last-child) {
 	position: relative;
 }
 
@@ -150,7 +150,7 @@ html, body {
 	padding: 0 5%;
 }
 
-.myAllttInfo tr:not (:last-child ) td::after {
+.myAllttInfo tr:not(:last-child) td::after {
 	content: "";
 	position: absolute;
 	bottom: 0;
@@ -175,9 +175,55 @@ html, body {
 
 .wishListCnt {
 	text-align: right; /* 텍스트 오른쪽 정렬 */
-	padding-right: 10%;
+	padding-right: 10px;
 }
 
+.default-filter {
+	table-layout: fixed;
+	width: 100%;
+	height: 10%;
+	color: #98A4B7;
+	background-color: #172036;
+	border-collapse: collapse;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	border: none;
+}
+
+.default-filter tr:first-child td:first-child {
+	text-align: left;
+	width: 25%;
+	height: 50%;
+	padding: 10%;
+}
+
+.default-filter tr:first-child td:first-child::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 80%;
+  background-color: #98A4B7;
+}
+
+.default-filter tr:first-child td:last-child::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -1px;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 80%;
+  background-color: #98A4B7;
+}
+
+.default-filter tr:first-child td {
+  position: relative;
+}
+
+/*
 .default-filter {
 	table-layout: fixed;
 	width: 100%;
@@ -189,13 +235,12 @@ html, body {
 	margin-bottom: 20px;
 	border: none;
 }
-
 .default-filter td:first-child {
-	padding-left: 30px; /* 첫 번째 <td> 요소에 왼쪽에 px의 padding을 추가합니다 */
-	width: 30%; /*  td 요소의 폭 설정 */
+	padding-left: 30px; 
+	width: 30%; 
 }
 
-.default-filter tr:not (:last-child ) {
+.default-filter tr:not(:last-child) {
 	position: relative;
 }
 
@@ -204,16 +249,32 @@ html, body {
 	padding: 0 5%;
 }
 
-.default-filter tr:not (:last-child ) td::after {
+.default-filter tr:not(:last-child) td::after {
 	content: "";
 	position: absolute;
 	bottom: 0;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 90%; /* 구분선의 길이 비율 (100%) */
+	width: 90%; 
 	border-bottom: 1px solid #98A4B7;
 }
+*/
 
 .bold-text {
 	font-weight: bold;
 }
+
+.resize-checkbox {
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+}
+
+.withdraw {
+  font-size: 16px; /* 버튼의 크기를 조정할 수 있습니다 */
+  border-radius: 5px; /* 버튼을 둥글게 만들기 위해 border-radius를 사용합니다 */
+  background-color: #ff0000; /* 버튼의 배경색을 변경할 수 있습니다 */
+  color: #ffffff; /* 버튼의 텍스트 색상을 변경할 수 있습니다 */
+  padding: 5px 10px; /* 버튼 내부 여백을 조정할 수 있습니다 */
+}
+

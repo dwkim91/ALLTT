@@ -64,6 +64,7 @@
 				NICK_NAME = #{nickName}	
 	</select>
 	
+<<<<<<< HEAD
 	<select id="selectOneIsWishContent" parameterType="Map" resultType="long">
 		SELECT
 				CONTENT_ID
@@ -72,6 +73,99 @@
 		WHERE
 				MEMBER_ID = #{memberId} 	AND
 				CONTENT_ID = #{contentId}
+=======
+	<update id="updateNickname" parameterType="MemberDTO">
+		UPDATE
+				MEMBER
+		SET
+				NICK_NAME = #{nickName}
+		WHERE
+				MEMBER_ID = #{memberId}
+	</update>
+	
+	<select id="selectWishCntByMember" parameterType="Long" resultType="Integer">
+		SELECT
+				COUNT(*)
+		FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="selectNetflixWishCntByMemberId" parameterType="Long" resultType="Integer">
+		SELECT
+ 				 COUNT(PLATFORM_ID) AS WISHLISTCOUNT
+		FROM
+				  CONTENT_LINK
+		WHERE
+				  PLATFORM_ID = 1 
+				  AND CONTENT_ID IN (
+			    						SELECT
+			      								CONTENT_ID
+									    FROM
+									      		WISH_LIST
+									    WHERE
+									      		MEMBER_ID = #{memberId})
+	</select>
+	
+	<select id="selectTvingWishCntByMemberId" parameterType="Long" resultType="Integer">
+		SELECT
+ 				 COUNT(PLATFORM_ID) AS WISHLISTCOUNT
+		FROM
+				  CONTENT_LINK
+		WHERE
+				  PLATFORM_ID = 2 
+				  AND CONTENT_ID IN (
+			    						SELECT
+			      								CONTENT_ID
+									    FROM
+									      		WISH_LIST
+									    WHERE
+									      		MEMBER_ID = #{memberId})
+	</select>
+	
+	<select id="selectWavveWishCntByMemberId" parameterType="Long" resultType="Integer">
+		SELECT
+ 				 COUNT(PLATFORM_ID) AS WISHLISTCOUNT
+		FROM
+				  CONTENT_LINK
+		WHERE
+				  PLATFORM_ID = 3 
+				  AND CONTENT_ID IN (
+			    						SELECT
+			      								CONTENT_ID
+									    FROM
+									      		WISH_LIST
+									    WHERE
+									      		MEMBER_ID = #{memberId})
+	</select>
+	
+	<delete id="deleteSubscriptionByMemberId" parameterType="Long">
+		DELETE FROM
+				SUBSCRIPTION
+		WHERE
+				MEMBER_ID = #{memberId}
+	</delete>
+
+	<insert id="insertSubscription" parameterType="MemberDTO">
+		INSERT INTO SUBSCRIPTION (
+				MEMBER_ID,
+				PLATFORM_ID
+		)
+		VALUES (
+				#{memberId},
+				#{platformId}
+		)
+	</insert>
+
+	<select id="selectListSubscription" resultType="Integer">
+		SELECT
+				PLATFORM_ID
+		FROM 
+				SUBSCRIPTION
+		WHERE
+				MEMBER_ID = #{memberId}
+>>>>>>> 0065b03d9df961f9e8b06e7378c93be964be765a
 	</select>
 	
 </mapper>

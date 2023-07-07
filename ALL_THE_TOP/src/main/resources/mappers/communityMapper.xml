@@ -62,8 +62,7 @@ ORDER BY ENROLL_DT DESC;
 </select>
 
 <!-- 게시글 디테일 페이지 가져오기 -->
-<!-- 추천여부 가져올라면 postId, memberId 둘다 받아야 함 -->
-<select id="selectPostDetail" parameterType="long" resultType="PostDTO">
+<select id="selectPostDetail" parameterType="RecmndDTO" resultType="PostDTO">
 	SELECT
 	p.POST_ID AS POST_ID,
     p.POST_TITLE AS POST_TITLE,
@@ -75,7 +74,14 @@ ORDER BY ENROLL_DT DESC;
     count(re.RECMND_ID) AS RECMND_CNT,
     p.CONTENT_ID AS CONTENT_ID,
     C.TITLE AS POST_TAG,
-    M.NICK_NAME AS NICK_NAME
+    M.NICK_NAME AS NICK_NAME,
+    (SELECT 
+		count(RECMND_ID)
+	FROM
+		POST_RECMND
+	WHERE
+		POST_ID = P.POST_ID AND
+		MEMBER_ID = #{memberId}) AS MY_RECMND
 	FROM
 		POST p
 	LEFT JOIN MEMBER M ON p.MEMBER_ID = M.MEMBER_ID
@@ -252,10 +258,86 @@ ORDER BY ENROLL_DT DESC;
 		POST_ID = #{postId}
 </update>
 
+<!-- 게시글 삭제 -->
 <delete id="deletePost" parameterType="long">
 	DELETE FROM
 		POST
 	WHERE
+		POST_ID = #{postId}
+</delete>
+
+<!-- 댓글 수정을 위해 내용 가져오기 -->
+<select id="selectOneReply" parameterType="long" resultType="ReplyDTO">
+	SELECT
+		*
+	FROM
+		REPLY
+	WHERE
+		REPLY_ID = #{replyId}
+</select>
+
+<!-- 댓글 수정 -->
+<update id="updateReplyContent" parameterType="ReplyDTO">
+	UPDATE
+		REPLY
+	SET
+		CONTENT = #{content},
+		ENROLL_DT = NOW()
+	WHERE
+		REPLY_ID = #{replyId}
+</update>
+
+<!-- 댓글 삭제 -->
+<delete id="deleteReply" parameterType="long">
+	DELETE FROM
+		REPLY
+	WHERE
+		REPLY_ID = #{replyId}
+</delete>
+
+<!-- 게시글 좋아요 관련 -->
+<!-- 현재 내가 좋아요 한 게시글인지 -->
+<select id="selectPostLikeByMember" parameterType="RecmndDTO" resultType="int">
+	SELECT
+		COUNT(*)
+	FROM
+		POST_RECMND
+	WHERE
+		POST_ID = #{postId}
+	AND
+		MEMBER_ID = #{memberId} 
+</select>
+
+<!-- 해당 게시글의 총 좋아요 수 -->
+<select id="selectLikeCntByPost" parameterType="long" resultType="Integer">
+	SELECT
+		COUNT(*)
+	FROM
+		POST_RECMND
+	WHERE
+		POST_ID = #{postId}
+</select>
+
+<!-- 좋아요 추가 -->
+<insert id="insertPostLike" parameterType="RecmndDTO">
+	INSERT INTO
+		POST_RECMND (
+			MEMBER_ID,
+			POST_ID
+		)
+	VALUES (
+			#{memberId},
+			#{postId}
+	)
+</insert>
+
+<!-- 좋아요 삭제 -->
+<delete id="deletePostLike" parameterType="RecmndDTO">
+	DELETE FROM
+		POST_RECMND
+	WHERE
+		MEMBER_ID = #{memberId}
+	AND
 		POST_ID = #{postId}
 </delete>
 

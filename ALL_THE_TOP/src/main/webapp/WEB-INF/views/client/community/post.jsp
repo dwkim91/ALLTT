@@ -12,18 +12,12 @@
 <script>
 $(function() {
 	
-	// 수정하기, 삭제하기 modal 창 가리기
-	$(document).ready(function() {
-		$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-		$("#postModal").css("display", "none");
-		$("#replyModal").css("display", "none");
-		$("#confirmModal").css("display", "none");
-	});
-	
+	// 뒤로가기
 	$(".back-btn").click(function() {
 		history.go(-1);
 	});
 	
+	// 홈버튼
 	$("#communityHomeBtn").click(function() {
 		location.href="${contextPath}/community/feed";
 	});
@@ -43,28 +37,45 @@ $(function() {
 	
 	// 댓글 추가 처리
 	$("#addReplyBtn").click(function() {
-		var postId = "${post.postId}";
-		var content = $("#replyArea").val();
-		var memberId = "${sessionScope.memberId}";
-	
-		var param = {
-			"postId" : postId,
-			"content" : content,
-			"memberId" : memberId
-		};
+		if ($("#modifyCancel").css("display") === "none") {
+			var postId = "${post.postId}";
+			var content = $("#replyArea").val();
+			var memberId = "${sessionScope.memberId}";
 		
-		// post 로 작성된 내용을 넘기고
-		$.post("${contextPath}/community/addReply", param, function(data) {
-			// 등록이 완료되면 게시판으로 이동
-			if (data == "inserted") {
-				alert("댓글이 등록되었습니다.");
-			}
-		});
+			var param = {
+				"postId" : postId,
+				"content" : content,
+				"memberId" : memberId
+			};
+			
+			// post 로 작성된 내용을 넘기고
+			$.post("${contextPath}/community/addReply", param, function(data) {
+				// 등록이 완료되면 게시판으로 이동
+				if (data == "inserted") {
+					alert("댓글이 등록되었습니다.");
+				}
+			});
+		}
 	});
 
 	// 좋아요 표시
 	$("#likeBtn").click(function() {
 		$(this).toggleClass("active");
+		
+		var param = {
+				"memberId" : "${memberId}",
+				"postId" : "${post.postId}"
+			};
+		
+		$.ajax({
+			 url : "${contextPath}/community/postRecmnd",
+			 async : true,
+			 type : "POST",
+			 data : param,
+			 success : function(result) {
+				$("#likeCnt").html(result);
+			 }
+		});
 	});
 	
 	// 수정하기, 삭제하기 modal 창 열기
@@ -109,16 +120,16 @@ $(function() {
 		}
 	});
 	
+});
+</script>
+<script>
 	// 댓글 추가, 삭제 진행 버튼
-	$(".more").click(function() {
-		var replyId = $(this).data("1");
-		var memberId = $(this).data("2");
+	function replyAction(replyId, memberId) {
 		
 		// 만약 댓글 쓴 member와 지금 로그인한 사람이 같다면
 		if (memberId == "${sessionScope.memberId}") {
 			$("div[data-v-327582cc][data-v-00101c0c]").css("display", "block");
 			$("#replyModal").css("display", "block");
-			// body 스크롤 비활성화
 			$("body").css("overflow", "hidden");
 			
 			// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
@@ -130,7 +141,60 @@ $(function() {
 			
 			// 댓글 수정하기 버튼
 			$("#modifyReply").click(function() {
+				// 모달창을 닫고
+				$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
+				$("#replyModal").css("display", "none");
+				$("body").css("overflow", "auto");
 				
+				// 댓글 입력하는 칸에다가 댓글내용 수정 받고
+				$("#replyArea").focus().val("");
+				$("#addReplyBtn").attr("id", "modifyReplyBtn").removeClass("submit").addClass("submit active").prop("disabled", false).text("수정");
+				$("#modifyCancel").css("display", "block");
+				
+				$.ajax({
+					url : "${contextPath}/community/getReply",
+					async : true,
+					type : "GET",
+					data : {"replyId" : replyId},
+					success : function(result) {
+						$("#replyArea").val(result.content);
+					}
+				});
+				
+				// 취소버튼을 누르면
+				$("#modifyCancel").click(function() {
+					$(this).css("display", "none");
+					$("#replyArea").val("");
+					$("#modifyReplyBtn").attr("id", "addReplyBtn").removeClass("submit active").addClass("submit").prop("disabled", true).text("등록");
+				});
+				
+				// 댓글 수정하기
+				$("#modifyReplyBtn").click(function(){
+					if ($("#modifyCancel").css("display") === "block") {
+						var postId = "${post.postId}";
+						var content = $("#replyArea").val();
+						var memberId = "${sessionScope.memberId}";
+						
+						console.log(postId);
+						console.log(content);
+						console.log(memberId);
+					
+						var param = {
+							"postId" : postId,
+							"content" : content,
+							"memberId" : memberId,
+							"replyId" : replyId
+						};
+						
+						// post 로 작성된 내용을 넘기고
+						$.post("${contextPath}/community/modifyReply", param, function(data) {
+							// 등록이 완료되면 게시판으로 이동
+							if (data == "modified") {
+								alert("댓글이 수정되었습니다.");
+							}
+						});
+					}
+				});
 			});
 			
 			// 댓글 삭제하기 버튼
@@ -147,25 +211,34 @@ $(function() {
 				
 				// 뒤로가기
 				$("#closeButton").click(function() {
+					$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
+					$("#replyModal").css("display", "none");
+					$("body").css("overflow", "auto");
 					$("#confirmModal").css("display", "none");
 				});
 				
-				// 삭제하기
+				// 삭제 확인버튼
 				$("#confirmButton").click(function() {
-					$.post("${contextPath}/community/deleteReply", replyId, function(data) {
-						// 완료되면 게시판으로 이동
-						if (data == "deleted") {
-							alert("댓글이 삭제되었습니다.");
-							location.reload();
+					$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
+					$("#replyModal").css("display", "none");
+					$("body").css("overflow", "auto");
+					$("#confirmModal").css("display", "none");
+					
+					$.ajax({
+						url : "${contextPath}/community/deleteReply",
+						async : true,
+						type : "POST",
+						data : {"replyId" : replyId},
+						success : function(result) {
+							if (result == "deleted") {
+								location.reload();
+							}
 						}
 					});
-				})
-			})
+				});
+			});
 		}
-	});
-	
-
-});
+	}
 </script>
 </head>
 <body>
@@ -237,18 +310,18 @@ $(function() {
 					</div>
 					<div data-v-af062606="" class="badge-wrap">
 					<c:choose>
-					<c:when test="${post.myRecmnd != 0}">
-						<button data-v-de3ba2dc="" data-v-af062606="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary active">
-							<div data-v-6a12716b="" data-v-af062606="" class="icon like" data-v-de3ba2dc="">
+					<c:when test="${post.myRecmnd == 0}">
+						<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary">
+							<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
 							</div>
-							<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+							<span data-v-de3ba2dc="" id="likeCnt">${post.recmndCnt}</span>
 						</button>
 					</c:when>
 					<c:otherwise>
-						<button data-v-de3ba2dc="" data-v-af062606="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary">
-							<div data-v-6a12716b="" data-v-af062606="" class="icon like" data-v-de3ba2dc="">
+						<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary active">
+							<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
 							</div>
-							<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+							<span data-v-de3ba2dc="" id="likeCnt">${post.recmndCnt}</span>
 						</button>
 					</c:otherwise>
 					</c:choose>
@@ -261,7 +334,7 @@ $(function() {
 				<a data-v-5c10ad9e="" data-v-af062606="" href="${contextPath}/detail?contentId=${content.contentId}" class="" id="seasonList-15474">
 					<div data-v-5c10ad9e="" class="movie_item">
 						<div data-v-5c10ad9e="" class="movie_item__poster">
-							<img data-v-7874c524="" data-v-3090f2a6="" data-v-5c10ad9e="" alt="${content.title}" class="poster__img" data-src="${contentLink.imgUrl}" src="${contentLink.imgUrl}" lazy="loaded">
+							<img data-v-7874c524="" data-v-3090f2a6="" data-v-5c10ad9e="" alt="${content.title}" class="poster__img" data-src="${content.imgUrl}" src="${content.imgUrl}" lazy="loaded">
 						</div>
 						<div data-v-5c10ad9e="" class="movie_item__description">
 							<h5 data-v-5c10ad9e="" class="description__title">${content.title}</h5>
@@ -291,11 +364,11 @@ $(function() {
 							<div data-v-4851ddd6="" data-v-ed47b9c6="" class="comment" style="--depth: 0;">
 								<div data-v-4851ddd6="" class="comment-header">
 									<div data-v-4851ddd6="" class="left-area">
-										<span data-v-4851ddd6="" class="name">${reply.nickName}</span><span data-v-4851ddd6="" class="hash">0a21b1</span>
+										<span data-v-4851ddd6="" class="name">${reply.nickName}</span>
 									</div>
 									<div data-v-4851ddd6="" class="right-area">
 										<span data-v-4851ddd6="" title="2023-07-02 21:09:21" class="date">${reply.enrollDt}</span>
-										<button data-v-4851ddd6="" class="more" data-1="${reply.replyId}" data-2="${reply.memberId}">
+										<button data-v-4851ddd6="" class="more" onclick='replyAction("${reply.replyId}", "${reply.memberId}")'>
 											<svg data-v-4851ddd6="" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
 												<path data-v-4851ddd6="" fill-rule="evenodd" clip-rule="evenodd" d="M10.5 3.563a1.313 1.313 0 11-2.625 0 1.313 1.313 0 012.625 0zm0 5.718a1.312 1.312 0 11-2.625 0 1.312 1.312 0 012.625 0zm-1.313 7.031a1.313 1.313 0 100-2.625 1.313 1.313 0 000 2.626z" fill="#98A4B7"/>
 											</svg>
@@ -322,7 +395,7 @@ $(function() {
 					<div data-v-24000807="" data-v-af062606="" class="post-card-wrap">
 						<div data-v-120b3626="" data-v-24000807="" class="target before-post-target">
 						</div>
-						<h2 data-v-24000807="" class="subtitle"> 놓치기 아쉬운 글 </h2>
+						<h2 data-v-24000807="" class="subtitle"> 같은 작품에 대한 글 </h2>
 						<div data-v-a9f12d9a="" data-v-24000807="" class="posts-wrap post-card-list">
 						<c:forEach var="relatedPost" items="${relatedPostList}">
 						<a data-v-6008a2fc="" data-v-a9f12d9a="" href="${contextPath}/community/post?postId=${relatedPost.postId}" class="post-wrap" id="communityPost-0">
@@ -335,13 +408,6 @@ $(function() {
 						</div>
 					</div>
 				</c:if>
-				<div data-v-af062606="" class="link-area">
-					<a data-v-6e512271="" data-v-af062606="" href="/community/feed" class="link-wrap" id="communityHomeButton">
-					<p data-v-6e512271="" class="text">
-						🤓 놓치면 아쉬운 <b data-v-6e512271="">인기글</b> 보러갈까요?!<i data-v-6e512271="" class="kino-icon kino-icon--more-gray" style="width: 20px; height: 20px;"></i>
-					</p>
-					</a>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -350,9 +416,9 @@ $(function() {
 			<form data-v-45ef652a="">
 				<div data-v-45ef652a="" class="input-wrap">
 					<div data-v-6669f73c="" data-v-45ef652a="" class="textarea-wrap">
-						<textarea data-v-6669f73c="" id="replyArea" placeholder="댓글을 작성해주세요." rows="1" class="original" style="--limit: 5; height: 20px;"></textarea><textarea data-v-6669f73c="" placeholder="댓글을 작성해주세요." rows="1" class="hidden" style="--limit: 5; height: auto;"></textarea>
+						<textarea data-v-6669f73c="" id="replyArea" placeholder="댓글을 작성해주세요." rows="1" class="original" style="--limit: 5; height: 20px;"></textarea>
 					</div>
-					<!---->
+					<button data-v-45ef652a="" type="button" class="cancel" id="modifyCancel" style="display: none;">취소</button>
 					<button data-v-45ef652a="" id="addReplyBtn" name="postId" value="${post.postId}" disabled="disabled" class="submit"> 등록 </button>
 				</div>
 			</form>
@@ -365,9 +431,9 @@ $(function() {
 	<input data-v-af062606="" type="text" class="copy-input">
 	<!---->
 	</main>
-	<div data-v-327582cc="" data-v-00101c0c="">
+	<div data-v-327582cc="" data-v-00101c0c="" style="display: none;">
 		<div data-v-327582cc="" class="modal-bg"></div>
-		<div data-v-327582cc="" class="modal-layer" id="postModal">
+		<div data-v-327582cc="" class="modal-layer" id="postModal" style="display: none;">
 	<!-- 수정하기, 삭제하기 modal 창 -->
 			<div data-v-3478b392="" data-v-327582cc="" class="outerModal" style="">
 				<div data-v-3478b392="" class="innerModal" style="position: relative;">
@@ -384,7 +450,7 @@ $(function() {
 			</div>
 		</div>
 			<!-- 댓글 수정, 삭제하기 창 -->
-		<div data-v-327582cc="" class="modal-layer" id="replyModal">
+		<div data-v-327582cc="" class="modal-layer" id="replyModal" style="display: none;">
 			<div data-v-3478b392="" data-v-327582cc="" class="outerModal" style="">
 				<div data-v-3478b392="" class="innerModal" style="position: relative;">
 					<ul data-v-3478b392="" class="contents-wrap">
@@ -399,7 +465,7 @@ $(function() {
 			</div>
 		</div>
 		<!-- 확인받는 modal 창 -->
-		<div data-v-327582cc="" class="modal-layer" id="confirmModal">
+		<div data-v-327582cc="" class="modal-layer" id="confirmModal" style="display: none;">
 			<div data-v-7e7b7a4d="" data-v-327582cc="" class="confirm-modal-container">
 				<div data-v-7e7b7a4d="" class="confirm-modal-header">
 					<h2 data-v-7e7b7a4d="" name="header">대상이 삭제됩니다..</h2>

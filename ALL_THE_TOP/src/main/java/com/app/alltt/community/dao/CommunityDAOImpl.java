@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.app.alltt.community.dto.PostDTO;
+import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.crawling.dto.ContentDTO;
-import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 @Repository
@@ -24,8 +24,8 @@ public class CommunityDAOImpl implements CommunityDAO {
 	}
 
 	@Override
-	public PostDTO selectOnePost(long postId) {
-		return sqlSession.selectOne("communityMapper.selectPostDetail", postId);
+	public PostDTO selectOnePost(RecmndDTO recmndDTO) {
+		return sqlSession.selectOne("communityMapper.selectPostDetail", recmndDTO);
 	}
 
 	@Override
@@ -49,20 +49,8 @@ public class CommunityDAOImpl implements CommunityDAO {
 	}
 
 	@Override
-	public int selectOneAllReplyCnt(long postId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public List<ReplyDTO> selectListReply(long postId) {
 		return sqlSession.selectList("communityMapper.selectListReply", postId);
-	}
-
-	@Override
-	public ReplyDTO selectOneReply(long replyId) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -72,14 +60,12 @@ public class CommunityDAOImpl implements CommunityDAO {
 
 	@Override
 	public void updateReply(ReplyDTO reply) {
-		// TODO Auto-generated method stub
-		
+		sqlSession.update("communityMapper.updateReplyContent", reply);
 	}
 
 	@Override
 	public void deleteReply(long replyId) {
-		// TODO Auto-generated method stub
-		
+		sqlSession.delete("communityMapper.deleteReply", replyId);
 	}
 
 	@Override
@@ -103,16 +89,6 @@ public class CommunityDAOImpl implements CommunityDAO {
 	}
 
 	@Override
-	public ContentDTO selectOneContent(long postId) {
-		return sqlSession.selectOne("communityMapper.selectOneContent", postId);
-	}
-
-	@Override
-	public ContentLinkDTO selectContentLink(long contentId) {
-		return sqlSession.selectOne("communityMapper.selectContentImg", contentId);
-	}
-
-	@Override
 	public List<PostDTO> selectPostListByContentId(long contentId) {
 		return sqlSession.selectList("communityMapper.selectPostListByContentId", contentId);
 	}
@@ -131,4 +107,30 @@ public class CommunityDAOImpl implements CommunityDAO {
 	public String selectPostPasswd(long postId) {
 		return sqlSession.selectOne("communityMapper.selectPostPasswd", postId);
 	}
+
+	@Override
+	public int selectPostLikeByMember(RecmndDTO recmndDTO) {
+		return sqlSession.selectOne("communityMapper.selectPostLikeByMember", recmndDTO);
+	}
+
+	@Override
+	public int selectLikeCntByPost(long postId) {
+		return sqlSession.selectOne("communityMapper.selectLikeCntByPost", postId);
+	}
+
+	@Override
+	public void insertPostLike(RecmndDTO recmndDTO) {
+		sqlSession.insert("communityMapper.insertPostLike", recmndDTO);
+	}
+
+	@Override
+	public void deletePostLike(RecmndDTO recmndDTO) {
+		sqlSession.delete("communityMapper.deletePostLike", recmndDTO);
+	}
+
+	@Override
+	public ReplyDTO selectOneReply(long replyId) {
+		return sqlSession.selectOne("communityMapper.selectOneReply", replyId);
+	}
+
 }

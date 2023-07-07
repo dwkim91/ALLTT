@@ -7,6 +7,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.member.dao.MemberDAO;
 import com.app.alltt.member.dto.MemberDTO;
 
@@ -100,14 +101,23 @@ public class MemberServiceImpl implements MemberService {
 		String ranNickName = null;
 		
 		while(isDupl) {
+			
 			ranNickName = adverbs[getRandomIdx(adverbs.length)] + "_" + adjectives[getRandomIdx(adjectives.length)] + "_" + 
 					nouns[getRandomIdx(nouns.length)] + "_" + alphabets[getRandomIdx(alphabets.length)] + 
 					specialChar[getRandomIdx(specialChar.length)] + getRandomIdx(100);
-			List<MemberDTO> member = memberDAO.selectListNickName(ranNickName);
-			if(member.size() == 0) isDupl = false;
+
+			isDupl = nickNameDuplChecker(ranNickName);
+			
 		}
 		
 		return ranNickName;
+	}
+	
+	public boolean nickNameDuplChecker (String nickName) {
+		boolean isDupl = true;
+		List<MemberDTO> member = memberDAO.selectListNickName(nickName);
+		if(member.size() == 0) isDupl = false;
+		return isDupl;
 	}
 	
 	// 랜덤값 생성 메서드
@@ -151,8 +161,69 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public boolean isWishContent(Map<String, Long> wishMap) {
 		return memberDAO.selectOneIsWishContent(wishMap);
 	}
+=======
+	public void changeNickname(MemberDTO memberDTO) {
+		memberDAO.updateNickname(memberDTO);
+	}
+
+	@Override
+	public int getWishCntByMember(long memberId) {
+		return memberDAO.selectWishCntByMember(memberId);
+	}
+
+	@Override
+	public int getNetflixWishCntByMemberId(long memberId) {
+		return memberDAO.selectNetflixWishCntByMemberId(memberId);
+	}
+
+	@Override
+	public int getTvingWishCntByMemberId(long memberId) {
+		return memberDAO.selectTvingWishCntByMemberId(memberId);
+	}
+
+	@Override
+	public int getWavveWishCntByMemberId(long memberId) {
+		return memberDAO.selectWavveWishCntByMemberId(memberId);
+	}
+
+	@Override
+	public void setSubscriptionByMemberId(FilterDTO filterDTO) {
+		
+		memberDAO.deleteSubscriptionByMemberId(filterDTO.getMemberId());
+		
+		if (filterDTO.getNetflixId() == 1) {
+			filterDTO.setPlatformId(1);
+			memberDAO.insertSubscription(filterDTO);
+		}
+		if (filterDTO.getTvingId() == 2) {
+			filterDTO.setPlatformId(2);
+			memberDAO.insertSubscription(filterDTO);
+		}
+		if (filterDTO.getWavveId() == 3) {
+			filterDTO.setPlatformId(3);
+			memberDAO.insertSubscription(filterDTO);
+		}
+	}
+
+	@Override
+	public FilterDTO getSubscriptionByMemberId(long memberId) {
+		
+		FilterDTO filterDTO = new FilterDTO();
+		List<Integer> platforms = memberDAO.selectListSubscription(memberId);
+		
+		for (Integer integer : platforms) {
+			if(integer == 1) filterDTO.setNetflixId(1); 
+			if(integer == 2) filterDTO.setTvingId(2); 
+			if(integer == 3) filterDTO.setWavveId(3); 
+		}
+		
+		return filterDTO;
+	}
+
+>>>>>>> 0065b03d9df961f9e8b06e7378c93be964be765a
 	
 }
