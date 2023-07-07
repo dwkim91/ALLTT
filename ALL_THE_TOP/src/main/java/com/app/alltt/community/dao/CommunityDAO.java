@@ -10,8 +10,7 @@ import com.app.alltt.member.dto.MemberDTO;
 
 public interface CommunityDAO {
 
-	public int selectOneAllBoardCnt();
-	public List<PostDTO> selectListAllPost();
+	public List<PostDTO> selectListAllPost(long memberId);
 	
 	public PostDTO selectOnePost(long postId);
 	public void updateReadCnt(long postId);

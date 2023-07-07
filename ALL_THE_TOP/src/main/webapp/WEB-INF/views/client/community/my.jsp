@@ -13,8 +13,11 @@ $(function() {
 	
 	// 뒤로가기 버튼
 	$(".back-btn").click(function() {
-		history.go(-1);
+		location.href="${contextPath}/community/feed";
 	});
+	
+	// 어느곳에 focused를 줄건지
+	$("#${tab}Tab").addClass('focused');
 
 	// 게시글 탭과 댓글 탭을 와리가리 하는 과정
 	$(document).on('click', '.tab-item:not(.focused)', function() {
@@ -24,18 +27,10 @@ $(function() {
 		// 클릭한 요소에 focused 클래스 추가
 		$(this).addClass('focused');
 		
-		$.ajax({
-			url : "${contextPath}/community/my?tab=" + $(this).attr('id').replace('Tab', ''),
-			async : true,
-			type : "GET",
-			success : function() {
-
-			}
-		});
+		// 해당 페이지로 이동
+		location.href="${contextPath}/community/my?tab=" + $(this).attr('id').replace('Tab', '');
+		
 	});
-
-
-
 });
 </script>
 </head>
@@ -52,48 +47,37 @@ $(function() {
 					<button data-v-36d2ff30="" class="back-btn"><i data-v-36d2ff30="" class="kino-icon kino-icon--header-back"></i></button>
 				</div>
 				</header>
-				<div data-v-487a239a="" class="tab-wrap">
-					<div data-v-487a239a="" class="tab-inner-wrap">
-						<div data-v-487a239a="" id="postTab" class="tab-item focused">
-							<span data-v-487a239a="">내가 쓴 글</span>
-						</div>
-						<div data-v-487a239a="" id="commentTab" class="tab-item">
-							<span data-v-487a239a="">내가 쓴 댓글</span>
-						</div>
-					</div>
-				</div>
 				</section>
 				<section data-v-487a239a="" class="content-area">
 				<div data-v-487a239a="" class="mainContent">
 					<div data-v-487a239a="" class="content-inner-wrap">
 					<c:choose>
 						<c:when test="${myList != null }">
+							<p data-v-487a239a="" class="count-wrap">총 ${myList.size()}개</p>
 							<c:choose>
-								<p data-v-487a239a="" class="count-wrap">총 ${myList.size()}개</p>
-								<!-- tab이 게시글인 경우 -->
 								<c:when test="${tab eq 'post'}">
 									<ul data-v-487a239a="">
 									<c:forEach var="myPost" items="${myList}">
 										<li data-v-487a239a="" class="posts-gap">
 										<article data-v-b0785d82="" data-v-487a239a="" class="post-wrap">
 										<a data-v-b0785d82="" href="${contextPath}/community/post?postId=${myPost.postId}" id="undefined-p7DLH4kB9cnBH0U-iFAK">
-										<header data-v-b0785d82="" class="post-info-wrap">
-										<div data-v-b0785d82="" class="post-info-user-wrap">
-											<span data-v-b0785d82="" class="user-nickname">${myPost.nickName}</span>
-										</div>
-										<div data-v-b0785d82="" class="post-info-date-wrap">
-											<span data-v-b0785d82="" title="${myPost.enrollDt}" class="post-date"></span>
-										</div>
-										</header>
-										<h2 data-v-b0785d82="" class="post-title">${myPost.postTitle}</h2>
-										<p data-v-b0785d82="" class="post-body">${myPost.content}</p>
-										<c:if test="${myPost.postTag != null}">
-											<div data-v-b0785d82="" class="content-list-wrap">
-												<div data-v-b0785d82="" class="content-wrap">
-													<svg data-v-b0785d82="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-b0785d82="" d="M15.51 15.019h-3.675A8.006 8.006 0 0016 7.999C16 3.59 12.411 0 8 0S0 3.589 0 8c0 4.41 3.589 8 8 8h7.51a.49.49 0 100-.981zM.98 7.999A7.027 7.027 0 018 .982 7.027 7.027 0 0115.02 8 7.027 7.027 0 018 15.019a7.027 7.027 0 01-7.02-7.02z" fill="#3B4869"></path><path data-v-b0785d82="" fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm2-12a2 2 0 11-4 0 2 2 0 014 0zm0 8a2 2 0 11-4 0 2 2 0 014 0zm-6-2a2 2 0 100-4 2 2 0 000 4zm10-2a2 2 0 11-4 0 2 2 0 014 0z" fill="#3B4869"></path></svg><span data-v-b0785d82="" class="content-title">${myPost.postTag}</span>
-												</div>
+											<header data-v-b0785d82="" class="post-info-wrap">
+											<div data-v-b0785d82="" class="post-info-user-wrap">
+												<span data-v-b0785d82="" class="user-nickname">${myPost.nickName}</span>
 											</div>
-										</c:if>
+											<div data-v-b0785d82="" class="post-info-date-wrap">
+												<span data-v-b0785d82="" title="${myPost.enrollDt}" class="post-date"></span>
+											</div>
+											</header>
+											<h2 data-v-b0785d82="" class="post-title">${myPost.postTitle}</h2>
+											<p data-v-b0785d82="" class="post-body">${myPost.content}</p>
+											<c:if test="${myPost.postTag != null}">
+												<div data-v-b0785d82="" class="content-list-wrap">
+													<div data-v-b0785d82="" class="content-wrap">
+														<svg data-v-b0785d82="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-b0785d82="" d="M15.51 15.019h-3.675A8.006 8.006 0 0016 7.999C16 3.59 12.411 0 8 0S0 3.589 0 8c0 4.41 3.589 8 8 8h7.51a.49.49 0 100-.981zM.98 7.999A7.027 7.027 0 018 .982 7.027 7.027 0 0115.02 8 7.027 7.027 0 018 15.019a7.027 7.027 0 01-7.02-7.02z" fill="#3B4869"></path><path data-v-b0785d82="" fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm2-12a2 2 0 11-4 0 2 2 0 014 0zm0 8a2 2 0 11-4 0 2 2 0 014 0zm-6-2a2 2 0 100-4 2 2 0 000 4zm10-2a2 2 0 11-4 0 2 2 0 014 0z" fill="#3B4869"/></svg><span data-v-b0785d82="" class="content-title">${myPost.postTag}</span>
+													</div>
+												</div>
+											</c:if>
 										</a>
 										<footer data-v-b0785d82="" class="post-footer">
 										<div data-v-b0785d82="" class="badge-wrap">
@@ -106,16 +90,16 @@ $(function() {
 										</div>
 										<div data-v-b0785d82="" class="badge-wrap">
 											<button data-v-de3ba2dc="" data-v-b0785d82="" class="badge-wrap reactionButton button textColorPrimary">
-											<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
-											</div>
+											<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
 											<span data-v-de3ba2dc="">${myPost.recmndCnt}</span></button>
 										</div>
-										</footer></article></li>
+										</footer>
+										</article>
+										</li>
 									</c:forEach>
 									</ul>
 								</c:when>
 								<c:otherwise>
-								<!-- tab이 comment인 경우 -->
 								<ul data-v-487a239a="">
 								<c:forEach var="myPost" items="${myList}">
 									<div data-v-f30c54de="" data-v-487a239a="" class="my-comment-item-wrap comments-gap">
@@ -139,9 +123,10 @@ $(function() {
 					</c:choose>
 					</div>
 				</div>
-				</section><aside data-v-487a239a="" class="side-area">
+				</section>
+				<aside data-v-487a239a="" class="side-area">
 				<div data-v-487a239a="" class="side-tab-wrap">
-					<div data-v-487a239a="" id="postTab" class="tab-item focused">
+					<div data-v-487a239a="" id="postTab" class="tab-item">
 						<span data-v-487a239a="">내가 쓴 글</span>
 					</div>
 					<div data-v-487a239a="" id="commentTab" class="tab-item">
