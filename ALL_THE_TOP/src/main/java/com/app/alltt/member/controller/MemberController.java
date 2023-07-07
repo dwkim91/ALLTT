@@ -311,8 +311,8 @@ public class MemberController {
 		}
 	}
 	
-	@PostMapping("/wishStateChange")
-	public void wishStateChange(@RequestParam("contentId") long contentId, @RequestParam("isWishContent") boolean isWishContent, HttpSession session) {
+	@RequestMapping(value="/wishStateChange", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	public ResponseEntity<String> wishStateChange(@RequestParam("contentId") long contentId, HttpSession session) {
 		long memberId = (long)session.getAttribute("memberId");
 		
 		Map<String, Long> wishMap = new HashMap<>();
@@ -320,26 +320,22 @@ public class MemberController {
 		wishMap.put("contentId", contentId);
 		wishMap.put("memberId", memberId);
 		
-		if (isWishContent) {
-			System.out.println("찜 추가");
+		boolean test = memberService.isWishContent(wishMap);
+		
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+		
+		System.out.println(test);
+		if (test) {
 			memberService.addWishContentByMemberId(wishMap);
-			
+			return ResponseEntity.ok("찜 컨텐츠가 추가되었습니다.");
 		}
 		else {
-			System.out.println("찜 삭제");
-			memberService.deleteWishContentByMemberId(wishMap);
 			
+			memberService.deleteWishContentByMemberId(wishMap);
+			return ResponseEntity.ok("찜 컨텐츠가 삭제되었습니다.");
 		}
+
 	}
 	
-	@PostMapping("/checkSession")
-	public boolean checkSession(HttpSession session) {
-		
-		boolean isLogin = false;
-		
-		if (session.getAttribute("memberId") != null) {
-			isLogin = true;
-		}
-		return isLogin;
-	}
 }

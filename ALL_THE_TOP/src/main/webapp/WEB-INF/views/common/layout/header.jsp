@@ -49,7 +49,7 @@
 				<div class="paramount">커뮤니티</div>
 			</a>
 			<aside class="css-13co1xy e10hkk350">
-				<button type="button" class="css-xyumn e10hkk356" style="background-image:url(${contextPath}/resources/bootstrap/img/icon_search.svg);">찾기</button>
+				<button type="button" id="searchButton" class="css-xyumn e10hkk356" style="background-image:url(${contextPath}/resources/bootstrap/img/icon_search.svg);">찾기</button>
 				<div class="menu_my">
 					<div class="profile_img css-8nwm4w e10hkk353">
 						<picture class="loaded css-ovhph3 euf32k20">

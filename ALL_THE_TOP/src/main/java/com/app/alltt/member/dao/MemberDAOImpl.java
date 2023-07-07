@@ -90,5 +90,19 @@ public class MemberDAOImpl implements MemberDAO {
 	public List<Integer> selectListSubscription(long memberId) {
 		return sqlSession.selectList("memberMapper.selectListSubscription", memberId);
 	}
+
+	@Override
+	public boolean selectOneIsWishContent(Map<String, Long> wishMap) {
+		boolean isWishContent;
+		
+		if (sqlSession.selectOne("memberMapper.selectOneIsWishContent",wishMap) == null) {
+			isWishContent = true;
+		}
+		else {
+			isWishContent = false;
+		}
+		
+		return isWishContent;
+	}
 	
 }

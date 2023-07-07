@@ -1,5 +1,6 @@
 package com.app.alltt.main.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,14 +63,9 @@ public class MainController {
 	@PostMapping("/contentLoad")
 	@ResponseBody
 	public List<FilteredDTO> mainFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		
 		if (session.getAttribute("memberId") != null) filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
-		// AJAX : 스크롤, 체크박스, 셀렉트
-		List<FilteredDTO> responseData = mainService.getMoreFilteredContent(filterDTO);
-		
-		System.out.println(responseData);
-		return responseData;
+		return mainService.getMoreFilteredContent(filterDTO);
 		
 	}
 	
@@ -170,6 +166,13 @@ public class MainController {
 	@GetMapping("/wish")
 	public String wish() {
 		return "/alltt/wish";
+	}
+	
+	@PostMapping("/contentSearch")
+	@ResponseBody
+	public List<FilteredDTO> search(@ModelAttribute FilterDTO filterDTO) {
+		System.out.println(filterDTO);
+		return mainService.getMoreContentByKeyword(filterDTO);
 	}
 	
 }

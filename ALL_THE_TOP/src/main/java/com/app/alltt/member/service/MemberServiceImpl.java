@@ -219,5 +219,10 @@ public class MemberServiceImpl implements MemberService {
 		return filterDTO;
 	}
 
+	@Override
+	public boolean isWishContent(Map<String, Long> wishMap) {
+		return memberDAO.selectOneIsWishContent(wishMap);
+	}
+
 	
 }
