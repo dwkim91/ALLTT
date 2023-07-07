@@ -1,5 +1,6 @@
 package com.app.alltt.member.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +19,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.app.alltt.community.service.CommunityService;
+import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.member.service.MemberService;
@@ -36,6 +40,9 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private CommunityService communityService;
 	
 	// instance 명을 servlet-context.xml에 설정된 이름으로 진행함으로써
 	// servlet-context.xml에 설정한 변수값들을 SnsValue에 바로 전달하면서 instance 생성
@@ -224,7 +231,7 @@ public class MemberController {
 	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		return memberService.getMemberByMemberId(memberId);
-	}
+	} 
 	
 	@GetMapping("/mypage")
 	@ResponseBody
@@ -232,24 +239,62 @@ public class MemberController {
 		ModelAndView mv = new ModelAndView();
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		mv.setViewName("/alltt/mypage");
-		mv.addObject("memberDTO", memberService.getMemberByMemberId(memberId));
+		// 로그인한 멤버DTO
+		mv.addObject("member", memberService.getMemberByMemberId(memberId));
+		// 로그인한 멤버의 찜 작품 수
+		mv.addObject("wishCnt", memberService.getWishCntByMember(memberId));
+		// 로그인한 멤버가 쓴 글 개수
+		mv.addObject("postCnt", communityService.getPostCntByMember(memberId));
+		// 로그인한 멤버가 쓴 댓글 수
+		mv.addObject("replyCnt", communityService.getReplyCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
+		mv.addObject("netflixWishCnt", memberService.getNetflixWishCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 티빙 찜 작품 수
+		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
+		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 구독 정보
+		mv.addObject("subscription", memberService.getSubscriptionByMemberId(memberId));
+		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
+		//mv.addObject("seriesGenreList", memberService.getGenreList( mvoie));
+		//mv.addObject("movieGenreList", memberService.getGenreList());
 		return mv;
 	}
 	
 	// 랜덤닉네임
-	@GetMapping("/randomNickname/")
+	@RequestMapping(value="/randomNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String genNickName(HttpServletRequest request, HttpSession session) {
 		return memberService.genNickName();
 	}
-	
+
 	// 닉네임 저장
-	@GetMapping("/nicknameChange")
+	@RequestMapping(value="/saveNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public MemberDTO saveNickName(HttpServletRequest request, HttpSession session) {
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public String saveNickname(@RequestParam("nickname") String nickname, HttpSession session) {
 		
-		return memberService.getMemberByMemberId(memberId);
+		boolean isDupl = memberService.nickNameDuplChecker(nickname);
+
+		if (!isDupl) {
+			MemberDTO memberDTO = new MemberDTO();
+			long memberId = ((Long) session.getAttribute("memberId")).longValue();
+			memberDTO.setNickName(nickname);
+			memberDTO.setMemberId(memberId);
+			memberService.changeNickname(memberDTO);
+		}
+		
+		return isDupl ? "닉네임이 중복되었습니다." : "닉네임이 변경되었습니다.";
+	}
+	
+	// 구독정보 수정
+	@RequestMapping(value="/setSubscription", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    filterDTO.setMemberId(memberId);
+	    System.out.println(filterDTO);
+	    memberService.setSubscriptionByMemberId(filterDTO);
+	    return "구독 정보가 수정되었습니다.";
 	}
 	
 	// session 검증용 method
