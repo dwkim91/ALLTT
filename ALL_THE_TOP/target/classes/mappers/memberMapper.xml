@@ -64,16 +64,6 @@
 				NICK_NAME = #{nickName}	
 	</select>
 	
-<<<<<<< HEAD
-	<select id="selectOneIsWishContent" parameterType="Map" resultType="long">
-		SELECT
-				CONTENT_ID
-		FROM
-				WISH_LIST
-		WHERE
-				MEMBER_ID = #{memberId} 	AND
-				CONTENT_ID = #{contentId}
-=======
 	<update id="updateNickname" parameterType="MemberDTO">
 		UPDATE
 				MEMBER
@@ -165,7 +155,6 @@
 				SUBSCRIPTION
 		WHERE
 				MEMBER_ID = #{memberId}
->>>>>>> 0065b03d9df961f9e8b06e7378c93be964be765a
 	</select>
 	
 </mapper>

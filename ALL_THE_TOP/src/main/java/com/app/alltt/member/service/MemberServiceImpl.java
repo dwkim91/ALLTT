@@ -161,11 +161,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public boolean isWishContent(Map<String, Long> wishMap) {
-		return memberDAO.selectOneIsWishContent(wishMap);
-	}
-=======
 	public void changeNickname(MemberDTO memberDTO) {
 		memberDAO.updateNickname(memberDTO);
 	}
@@ -224,6 +219,5 @@ public class MemberServiceImpl implements MemberService {
 		return filterDTO;
 	}
 
->>>>>>> 0065b03d9df961f9e8b06e7378c93be964be765a
 	
 }

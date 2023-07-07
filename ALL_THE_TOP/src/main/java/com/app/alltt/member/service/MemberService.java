@@ -14,10 +14,6 @@ public interface MemberService {
 	public MemberDTO getMemberByMemberId(long memberId);
 	public void addWishContentByMemberId(Map<String, Long> wishMap);
 	public void deleteWishContentByMemberId(Map<String, Long> wishMap);
-<<<<<<< HEAD
-	public boolean isWishContent(Map<String, Long> wishMap);
-
-=======
 	public void changeNickname(MemberDTO memberDTO);
 	public boolean nickNameDuplChecker (String nickName);
 	public int getWishCntByMember(long memberId);
@@ -26,5 +22,4 @@ public interface MemberService {
 	public int getWavveWishCntByMemberId(long memberId);
 	public void setSubscriptionByMemberId(FilterDTO filterDTO);
 	public FilterDTO getSubscriptionByMemberId(long memberId);
->>>>>>> 0065b03d9df961f9e8b06e7378c93be964be765a
 }

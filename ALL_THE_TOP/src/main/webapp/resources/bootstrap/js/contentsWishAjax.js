@@ -5,8 +5,7 @@ export function wishStateChange(wishData) {
 		data: wishData,
 		
 		success: function(resultData) {
-			
-			alert(resultData);
+			console.log(resultData);
 		}
 	})
 }

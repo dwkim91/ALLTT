@@ -54,10 +54,5 @@ public class MainServiceImpl implements MainService {
 	public String getPlatformByDetailUrl(FilteredDTO filteredDTO) {
 		return mainDAO.selectOnePlatformByDetailUrl(filteredDTO);
 	}
-
-	@Override
-	public List<FilteredDTO> getMoreContentByKeyword(FilterDTO filterDTO) {
-		return mainDAO.selectListContentByKeyword(filterDTO);
-	}
 	
 }

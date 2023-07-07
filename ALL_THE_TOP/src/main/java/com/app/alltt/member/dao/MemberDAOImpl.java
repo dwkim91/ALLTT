@@ -52,19 +52,6 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public boolean selectOneIsWishContent(Map<String, Long> wishMap) {
-		boolean isWishContent;
-		
-		if (sqlSession.selectOne("memberMapper.selectOneIsWishContent", wishMap) != null) {
-			isWishContent = false;
-		}
-		else {
-			isWishContent = true;
-		}
-		
-		return isWishContent;
-=======
 	public void updateNickname(MemberDTO memberDTO) {
 		sqlSession.update("memberMapper.updateNickname", memberDTO);
 	}
@@ -102,7 +89,6 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public List<Integer> selectListSubscription(long memberId) {
 		return sqlSession.selectList("memberMapper.selectListSubscription", memberId);
->>>>>>> 0065b03d9df961f9e8b06e7378c93be964be765a
 	}
 	
 }

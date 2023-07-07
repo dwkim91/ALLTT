@@ -20,6 +20,7 @@ $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실
 				"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
 				"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 				"contentType"	:	$('#contentType').val(),
+				"searchKey"		:	$('#searchKey').val(),
 				"sortType"		:	$('#sortType').val(),
 				"genreId"		:	Number($('#genreId').val()),
 				"lastItemCnt"	:	document.querySelectorAll('.item').length,
@@ -29,16 +30,15 @@ $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실
     }, delay);
 });
 
-$('.checkbox-label').change(function() {
-	$('.scrollLoadFalse').removeClass('scrollLoadFalse').addClass('footer');
-	$("#container").empty();
-	
+$('.checkbox-container').change(function() {
+	var container = $("#container").empty();
 	var filterData = {
 			"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 			"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 			"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
 			"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 			"contentType"	:	$('#contentType').val(),
+			"searchKey"		:	$('#searchKey').val(),
 			"sortType"		:	$('#sortType').val(),
 			"genreId"		:	Number($('#genreId').val()),
 			"lastItemCnt"	:	document.querySelectorAll('.item').length
@@ -46,16 +46,15 @@ $('.checkbox-label').change(function() {
 	contentsLoadAjax(filterData);
 });
 
-$('.select-filter').change(function() {
-	$('.scrollLoadFalse').removeClass('scrollLoadFalse').addClass('footer');
-	$("#container").empty();
-	
+$('.select-container').change(function() {
+	var container = $("#container").empty();
 	var filterData = {
 			"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 			"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 			"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
 			"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 			"contentType"	:	$('#contentType').val(),
+			"searchKey"		:	$('#searchKey').val(),
 			"sortType"		:	$('#sortType').val(),
 			"genreId"		:	Number($('#genreId').val()),
 			"lastItemCnt"	:	document.querySelectorAll('.item').length

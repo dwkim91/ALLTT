@@ -26,6 +26,4 @@ public interface MainService {
 
 	String getPlatformByDetailUrl(FilteredDTO filteredDTO);
 
-	List<FilteredDTO> getMoreContentByKeyword(FilterDTO filterDTO);
-
 }

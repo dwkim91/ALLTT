@@ -54,10 +54,5 @@ public class MainDAOImpl implements MainDAO {
 	public String selectOnePlatformByDetailUrl(FilteredDTO filteredDTO) {
 		return sqlSession.selectOne("mainMapper.selectOnePlatformByDetailUrl", filteredDTO);
 	}
-
-	@Override
-	public List<FilteredDTO> selectListContentByKeyword(FilterDTO filterDTO) {
-		return sqlSession.selectList("mainMapper.selectListContentByKeyword", filterDTO);
-	}
 	
 }
