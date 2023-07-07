@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<footer class="footer floating-footer">
+<footer class="footer">
     <div class="page-up">
         <a href="#" id="scrollToTopButton"><span class="arrow_carrot-up"></span></a>
     </div>

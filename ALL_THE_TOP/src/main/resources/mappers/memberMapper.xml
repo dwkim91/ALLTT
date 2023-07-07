@@ -64,4 +64,14 @@
 				NICK_NAME = #{nickName}	
 	</select>
 	
+	<select id="selectOneIsWishContent" parameterType="Map" resultType="long">
+		SELECT
+				CONTENT_ID
+		FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId} 	AND
+				CONTENT_ID = #{contentId}
+	</select>
+	
 </mapper>
