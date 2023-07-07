@@ -49,5 +49,19 @@ public class MemberDAOImpl implements MemberDAO {
 	public List<MemberDTO> selectListNickName(String nickName) {
 		return sqlSession.selectList("memberMapper.selectListNickName", nickName);
 	}
+
+	@Override
+	public boolean selectOneIsWishContent(Map<String, Long> wishMap) {
+		boolean isWishContent;
+		
+		if (sqlSession.selectOne("memberMapper.selectOneIsWishContent", wishMap) != null) {
+			isWishContent = false;
+		}
+		else {
+			isWishContent = true;
+		}
+		
+		return isWishContent;
+	}
 	
 }

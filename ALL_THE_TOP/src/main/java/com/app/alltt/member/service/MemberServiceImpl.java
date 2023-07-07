@@ -149,5 +149,10 @@ public class MemberServiceImpl implements MemberService {
 	public void deleteWishContentByMemberId(Map<String, Long> wishMap) {
 		memberDAO.deleteWishContent(wishMap);
 	}
+
+	@Override
+	public boolean isWishContent(Map<String, Long> wishMap) {
+		return memberDAO.selectOneIsWishContent(wishMap);
+	}
 	
 }
