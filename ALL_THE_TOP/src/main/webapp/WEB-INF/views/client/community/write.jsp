@@ -11,9 +11,6 @@
 <script type="text/javascript">
 $(function() {
 	
-	// modal 창 가리기
-	$("#addContentId").css("display", "none");
-	
 	// 뒤로가기
 	$("#backBtn").click(function() {
 		location.href="${contextPath}/community";
@@ -219,13 +216,16 @@ $(function() {
 										<textarea id="title" maxlength="100" placeholder="제목을 입력해주세요." rows="1"
 											value="" class="textarea_auto_height__textarea"
 											data-v-0c949614="" autofocus="autofocus"
-											style="height: 21px;"></textarea>
+											style="height: 21px; "></textarea>
 									</div>
 								</div>
 								<div class="post_editor__main" data-v-4179835d="">
 									<div class="placeholder main__placeholder" data-v-376be9e4="" data-v-4179835d="">
 									</div>
 									<textarea id="content" class="main__writer" data-v-4179835d="" data-v-0c949614="" placeholder="#태그로 작품이 등록된 게시글은 따로 모아 확인할 수 있어요."></textarea>
+								</div>
+								<div data-v-4179835d="" class="post_editor__footer">
+									<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
 								</div>
 								<div class="post_editor__footer" data-v-4179835d="">
 									<button class="footer__hash-tag-button" id="tagBtn" data-v-4179835d="">
@@ -235,14 +235,11 @@ $(function() {
 												fill="#98A4B7" data-v-4179835d=""></path></svg>
 									</button>
 								</div>
-								<div data-v-4179835d="" class="post_editor__footer">
-									<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
-								</div>
 							</div>
 							<div data-v-4179835d="" class="movie_list">
 							</div>
 							<!---->
-								<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId">
+								<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId" style="display: none;">
 									<div data-v-2e4bbd00="" class="modal">
 										<div data-v-2e4bbd00="" class="modal__body">
 											<form data-v-2e4bbd00="" class="body__form mx">

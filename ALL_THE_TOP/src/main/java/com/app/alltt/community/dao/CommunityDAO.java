@@ -3,19 +3,17 @@ package com.app.alltt.community.dao;
 import java.util.List;
 
 import com.app.alltt.community.dto.PostDTO;
+import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.crawling.dto.ContentDTO;
-import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 public interface CommunityDAO {
 
 	public List<PostDTO> selectListAllPost(long memberId);
 	
-	public PostDTO selectOnePost(long postId);
+	public PostDTO selectOnePost(RecmndDTO recmndDTO);
 	public void updateReadCnt(long postId);
-	public ContentDTO selectOneContent(long postId);
-	public ContentLinkDTO selectContentLink(long postId);
 	public List<PostDTO> selectPostListByContentId(long contentId);
 	
 	public List<PostDTO> selectPostListByMemberId(long memberId);
@@ -28,12 +26,17 @@ public interface CommunityDAO {
 	
 	public void deletePost(long postId);
 	
+	// 게시글 좋아요 관련
+	public int selectPostLikeByMember(RecmndDTO recmndDTO);
+	public int selectLikeCntByPost(long postId);
+	public void insertPostLike(RecmndDTO recmndDTO);
+	public void deletePostLike(RecmndDTO recmndDTO);
+	
 	public MemberDTO selectMember(long memberId);
 	public int selectPostCntByMemberId(long memberId);
 	public int selectReplyCntByMemberId(long memberId);
 	public List<ContentDTO> selectListContent(String searchTitle);
 	
-	public int selectOneAllReplyCnt(long postId);
 	public List<ReplyDTO> selectListReply(long postId);
 	public ReplyDTO selectOneReply(long replyId);
 	public void insertReply(ReplyDTO reply);
