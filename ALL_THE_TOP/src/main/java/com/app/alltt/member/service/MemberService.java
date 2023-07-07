@@ -13,5 +13,6 @@ public interface MemberService {
 	public MemberDTO getMemberByMemberId(long memberId);
 	public void addWishContentByMemberId(Map<String, Long> wishMap);
 	public void deleteWishContentByMemberId(Map<String, Long> wishMap);
+	public boolean isWishContent(Map<String, Long> wishMap);
 
 }

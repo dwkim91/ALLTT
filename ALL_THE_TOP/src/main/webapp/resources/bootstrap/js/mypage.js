@@ -1,6 +1,6 @@
 $('.css-xyumn.e10hkk356').click(function() {
     $.ajax({
-      url: '/member/checkSession',
+      url: '/member/random/nickname/',
       type: 'POST',
       success: function(response) {
         if (response) {

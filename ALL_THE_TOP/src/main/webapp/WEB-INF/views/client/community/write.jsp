@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="${contextPath}/resources/css/write.css" type="text/css">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
-<script>
+<script type="text/javascript">
 $(function() {
 	
 	// modal 창 가리기
@@ -74,9 +74,13 @@ $(function() {
 			$("body").css("overflow", "hidden"); // 스크롤바 제거
 			
 			// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
-			$("#addContentId").on("click", "#addContentId", function() {
-				$("#addContentId").css("display", "none");
-				$("body").css("overflow", "auto");
+			$(document).on("click", ".post-modal", function(event) {
+				  var target = $(event.target);
+				  if (!target.closest(".modal__body").length) {
+						$(".recommend-tag__list").empty();
+						$("#addContentId").css("display", "none");
+						$("body").css("overflow", "auto");
+				  }
 			});
 		}
 	});
@@ -238,45 +242,45 @@ $(function() {
 							<div data-v-4179835d="" class="movie_list">
 							</div>
 							<!---->
-							<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId">
-								<div data-v-2e4bbd00="" class="modal">
-									<div data-v-2e4bbd00="" class="modal__body">
-										<form data-v-2e4bbd00="" class="body__form mx">
-											<label data-v-2e4bbd00="" for="input-search">
-											<svg data-v-2e4bbd00="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="">
-												<path data-v-2e4bbd00=""
-														d="M5.432 7.256h1.36l-.336 2.048H5v1.072h1.296l-.544 3.36H6.76l.528-3.36h1.76l-.528 3.36h.992l.528-3.36h1.472V9.304h-1.296l.32-2.048h1.408V6.2h-1.216L11.24 3h-.992l-.512 3.2H7.96L8.472 3H7.48l-.512 3.2H5.432v1.056zm2.352 0h1.76l-.32 2.048H7.448l.336-2.048z"
-														fill="#637DEA"></path>
-											</svg>
-											</label>
-											<input data-v-2e4bbd00="" id="input-search" placeholder="태그 검색" type="text" class="form__input">
-											<button data-v-2e4bbd00="" type="button" class="form__clear" style="">
-												<svg data-v-2e4bbd00="" width="24" height="24" fill="none"
-													xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-													class="clear__icon">
-													<path data-v-2e4bbd00="" fill-rule="evenodd"
-														clip-rule="evenodd"
-														d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5.234-3.766a.797.797 0 00-.618-.232.907.907 0 00-.7.264L12 10.714 9.552 8.266a.907.907 0 00-.7-.264.797.797 0 00-.85.85.907.907 0 00.264.7L10.714 12l-2.448 2.448a.907.907 0 00-.264.7.797.797 0 00.85.85.907.907 0 00.7-.264L12 13.286l2.448 2.448c.192.192.448.28.7.264a.797.797 0 00.85-.85.907.907 0 00-.264-.7L13.286 12l2.448-2.448a.907.907 0 00.264-.7.797.797 0 00-.232-.618z"
-														fill="#98A4B7"></path></svg>
-											</button>
-										</form>
-										<div data-v-2e4bbd00="" class="body__container">
-											<div data-v-2e4bbd00="" class="container__contents">
-												<!---->
-												<div data-v-2e4bbd00="" class="contents__recommend-tags">
-													<ul data-v-2e4bbd00="" class="recommend-tag__list" id="tag_list">
-													</ul>
-												</div>
-												<ul data-v-2e4bbd00="" class="contents__tag-list">
+								<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId">
+									<div data-v-2e4bbd00="" class="modal">
+										<div data-v-2e4bbd00="" class="modal__body">
+											<form data-v-2e4bbd00="" class="body__form mx">
+												<label data-v-2e4bbd00="" for="input-search">
+												<svg data-v-2e4bbd00="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="">
+													<path data-v-2e4bbd00=""
+															d="M5.432 7.256h1.36l-.336 2.048H5v1.072h1.296l-.544 3.36H6.76l.528-3.36h1.76l-.528 3.36h.992l.528-3.36h1.472V9.304h-1.296l.32-2.048h1.408V6.2h-1.216L11.24 3h-.992l-.512 3.2H7.96L8.472 3H7.48l-.512 3.2H5.432v1.056zm2.352 0h1.76l-.32 2.048H7.448l.336-2.048z"
+															fill="#637DEA"></path>
+												</svg>
+												</label>
+												<input data-v-2e4bbd00="" id="input-search" placeholder="태그 검색" type="text" class="form__input">
+												<button data-v-2e4bbd00="" type="button" class="form__clear" style="">
+													<svg data-v-2e4bbd00="" width="24" height="24" fill="none"
+														xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+														class="clear__icon">
+														<path data-v-2e4bbd00="" fill-rule="evenodd"
+															clip-rule="evenodd"
+															d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5.234-3.766a.797.797 0 00-.618-.232.907.907 0 00-.7.264L12 10.714 9.552 8.266a.907.907 0 00-.7-.264.797.797 0 00-.85.85.907.907 0 00.264.7L10.714 12l-2.448 2.448a.907.907 0 00-.264.7.797.797 0 00.85.85.907.907 0 00.7-.264L12 13.286l2.448 2.448c.192.192.448.28.7.264a.797.797 0 00.85-.85.907.907 0 00-.264-.7L13.286 12l2.448-2.448a.907.907 0 00.264-.7.797.797 0 00-.232-.618z"
+															fill="#98A4B7"></path></svg>
+												</button>
+											</form>
+											<div data-v-2e4bbd00="" class="body__container">
+												<div data-v-2e4bbd00="" class="container__contents">
 													<!---->
-												</ul>
+													<div data-v-2e4bbd00="" class="contents__recommend-tags">
+														<ul data-v-2e4bbd00="" class="recommend-tag__list" id="tag_list">
+														</ul>
+													</div>
+													<ul data-v-2e4bbd00="" class="contents__tag-list">
+														<!---->
+													</ul>
+													<!---->
+												</div>
 												<!---->
 											</div>
-											<!---->
 										</div>
 									</div>
 								</div>
-							</div>
 							<!---->
 						</div>
 					</div>

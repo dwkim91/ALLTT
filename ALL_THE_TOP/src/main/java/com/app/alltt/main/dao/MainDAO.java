@@ -8,22 +8,24 @@ import com.app.alltt.main.dto.FilteredDTO;
 public interface MainDAO {
 	
 	// 필터링 조건 + platformId > 독점컨텐츠
-	List<FilteredDTO> selectListPlatformContent(FilterDTO filterDTO);
+	public List<FilteredDTO> selectListPlatformContent(FilterDTO filterDTO);
 
 	// 필터링 조건 > 컨텐츠
-	List<FilteredDTO> selectListFilteredContentList(FilterDTO filterDTO);
+	public List<FilteredDTO> selectListFilteredContentList(FilterDTO filterDTO);
 
-	List<FilterDTO> selectListGenreList(FilterDTO filterDTO);
+	public List<FilterDTO> selectListGenreList(FilterDTO filterDTO);
 
-	FilteredDTO selectOneContentDetail(long contentId);
+	public FilteredDTO selectOneContentDetail(long contentId);
 	
 	public List<String> selectListGenreNm(long contentId);
 
-	List<FilteredDTO> selectListGenreLatestContent(FilteredDTO filteredDTO);
+	public List<FilteredDTO> selectListGenreLatestContent(FilteredDTO filteredDTO);
 
-	List<FilteredDTO> selectListGenreSimilarContent(FilteredDTO filteredDTO);
+	public List<FilteredDTO> selectListGenreSimilarContent(FilteredDTO filteredDTO);
 
-	String selectOnePlatformByDetailUrl(FilteredDTO filteredDTO);
+	public String selectOnePlatformByDetailUrl(FilteredDTO filteredDTO);
+
+	public List<FilteredDTO> selectListContentByKeyword(FilterDTO filterDTO);
 	
 	
 }

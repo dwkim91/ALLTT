@@ -69,14 +69,8 @@ public class CommunityServiceImpl implements CommunityService {
 	}
 
 	@Override
-	public List<PostDTO> getAllPostList() {
-		return communityDAO.selectListAllPost();
-	}
-
-	@Override
-	public int getBoardCnt() {
-		// TODO Auto-generated method stub
-		return 0;
+	public List<PostDTO> getAllPostList(long memberId) {
+		return communityDAO.selectListAllPost(memberId);
 	}
 
 	@Override

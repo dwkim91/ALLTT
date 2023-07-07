@@ -31,30 +31,38 @@
 </select>
 
 <!-- community feed 로 들어갈 때, 전체 게시글 리스트 가져오기 -->
-<select id="selectListAllPost" resultType="PostDTO">
-	SELECT
-		p.POST_ID AS POST_ID,
-		p.POST_TITLE AS POST_TITLE,
-		p.MEMBER_ID AS MEMBER_ID,
-		p.CONTENT AS CONTENT,
-		p.READ_CNT AS READ_CNT,
-		p.ENROLL_DT AS ENROLL_DT,
-		count(re.RECMND_ID) AS RECMND_CNT,
-		p.CONTENT_ID AS CONTENT_ID,
-		m.NICK_NAME AS NICK_NAME,
-		c.TITLE AS POST_TAG,
-        count(r.REPLY_ID) AS REPLY_CNT
+<select id="selectListAllPost" parameterType="long" resultType="PostDTO">
+SELECT
+	p.POST_ID AS POST_ID,
+	p.POST_TITLE AS POST_TITLE,
+	p.MEMBER_ID AS MEMBER_ID,
+	p.CONTENT AS CONTENT,
+	p.READ_CNT AS READ_CNT,
+	p.ENROLL_DT AS ENROLL_DT,
+	count(re.RECMND_ID) AS RECMND_CNT,
+	p.CONTENT_ID AS CONTENT_ID,
+	m.NICK_NAME AS NICK_NAME,
+	c.TITLE AS POST_TAG,
+	count(r.REPLY_ID) AS REPLY_CNT,
+    (SELECT 
+		count(RECMND_ID)
 	FROM
-		POST p
-	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
-	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
-	LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
-	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
-    GROUP BY p.POST_ID
-   	ORDER BY ENROLL_DT DESC;
+		POST_RECMND
+	WHERE
+		POST_ID = P.POST_ID AND
+		MEMBER_ID = #{memberId}) AS MY_RECMND
+FROM
+	POST p
+LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
+LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
+LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
+LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
+GROUP BY p.POST_ID
+ORDER BY ENROLL_DT DESC;
 </select>
 
 <!-- 게시글 디테일 페이지 가져오기 -->
+<!-- 추천여부 가져올라면 postId, memberId 둘다 받아야 함 -->
 <select id="selectPostDetail" parameterType="long" resultType="PostDTO">
 	SELECT
 	p.POST_ID AS POST_ID,
