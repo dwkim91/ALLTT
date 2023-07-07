@@ -1,0 +1,219 @@
+@charset "UTF-8";
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+.page-container {
+	padding-top: 100px; /* Header의 높이만큼 여백 추가 */
+	z-index: 1;
+	color: white;
+	background-color: #101322;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	min-height: 100vh; /* 최소 높이를 브라우저 높이로 설정 */
+}
+
+.table-container {
+	width: 50%; /* 테이블의 폭 설정 */
+	height: 100%;
+}
+
+.table-container table {
+	width: 100%;
+}
+
+.userInfo {
+	width: 50%;
+	height: 20%;
+	margin-bottom: 10px; /* 테이블 아래 간격 */
+	border: none;
+}
+
+.userInfo .thumbnailcell {
+	text-align: center;
+	width: 30%;
+}
+
+.userInfo .thumbnailcell img {
+	border-radius: 70px;
+	width: 50%;
+}
+
+.userInfo .nickNameCell {
+	width: 50%; /* 원하는 너비 */
+	height: 80%; /* 원하는 높이 */
+	border: none;
+}
+
+.nickName {
+	width: 100%;
+	height: 50%;
+	font-size: 24px;
+	box-sizing: border-box;
+	/* 패딩과 테두리를 너비와 높이 계산에 포함하도록 box-sizing 속성을 추가합니다 */
+	padding: 15px; /* 필요한 경우 텍스트 상자에 패딩을 추가합니다 */
+}
+
+.nickbutton {
+	width: 20%;
+}
+
+.userInfo Button {
+	width: 80%; /* 원하는 버튼의 너비 */
+	height: 50%; /* 원하는 버튼의 높이 */
+	border-radius: 10px; /* 버튼의 둥근 정도 조절 */
+	background-color: #637DEA; /* 버튼의 배경색 지정 */
+	color: white; /* 버튼의 글자색 지정 */
+	font-size: 100%; /* 버튼의 글자 크기 조절 */
+	border: none;
+	text-align: center; /* 버튼 안의 글자를 가운데 정렬 */
+}
+
+.genNickName {
+	display: block; /* 인라인 속성을 블록 속성으로 변경합니다 */
+	margin: auto; /* 수평 방향에 대해 자동으로 마진을 설정하여 가운데 정렬합니다 */
+	margin-top: 10%; /* 필요에 따라 버튼과의 간격을 조정합니다 */
+}
+
+.setNickName {
+	display: block; /* 인라인 속성을 블록 속성으로 변경합니다 */
+	margin: auto; /* 수평 방향에 대해 자동으로 마진을 설정하여 가운데 정렬합니다 */
+	margin-bottom: 10%; /* 필요에 따라 버튼과의 간격을 조정합니다 */
+}
+
+.comunityInfo {
+	table-layout: fixed;
+	width: 100%;
+	height: 30%;
+	background-color: #172036;
+	border-collapse: collapse;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	border: none;
+}
+
+.comunityInfo td {
+	text-align: center;
+	padding: 10px;
+	border-radius: 20px;
+	height: 50px;
+	position: relative;
+	color: #98A4B7;
+}
+
+.comunityInfoCnt {
+	position: relative;
+}
+
+.comunityInfoCnt::after {
+	content: "";
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: #98A4B7;
+	width: 1px; /* 세로 구분선을 생성하기 위해 너비를 1px로 설정합니다 */
+	height: 70%; /* 구분선의 높이를 조정합니다 */
+}
+
+.comunityInfo td:last-child::after {
+	content: none; /* 마지막 요소의 오른쪽 구분선을 제거합니다 */
+}
+
+.myAllttInfo {
+	table-layout: fixed;
+	width: 100%;
+	height: 100%;
+	color: #98A4B7;
+	background-color: #172036;
+	border-collapse: collapse;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	border: none;
+}
+
+.myAllttInfo td:first-child {
+	padding-left: 30px; /* 첫 번째 <td> 요소에 왼쪽에 px의 padding을 추가합니다 */
+	width: 30%; /*  td 요소의 폭 설정 */
+}
+
+.myAllttInfo tr:not (:last-child ) {
+	position: relative;
+}
+
+.myAllttInfo td span {
+	display: inline-block;
+	padding: 0 5%;
+}
+
+.myAllttInfo tr:not (:last-child ) td::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 90%; /* 구분선의 길이 비율 (100%) */
+	border-bottom: 1px solid #98A4B7;
+}
+
+.sub-checkbox {
+	height: 100px;
+}
+
+.sub-set {
+	text-align: right; /* 텍스트 오른쪽 정렬 */
+	padding-right: 10%;
+}
+
+.wishList {
+	height: 70px;
+}
+
+.wishListCnt {
+	text-align: right; /* 텍스트 오른쪽 정렬 */
+	padding-right: 10%;
+}
+
+.default-filter {
+	table-layout: fixed;
+	width: 100%;
+	height: 100%;
+	color: #98A4B7;
+	background-color: #172036;
+	border-collapse: collapse;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	border: none;
+}
+
+.default-filter td:first-child {
+	padding-left: 30px; /* 첫 번째 <td> 요소에 왼쪽에 px의 padding을 추가합니다 */
+	width: 30%; /*  td 요소의 폭 설정 */
+}
+
+.default-filter tr:not (:last-child ) {
+	position: relative;
+}
+
+.default-filter td span {
+	display: inline-block;
+	padding: 0 5%;
+}
+
+.default-filter tr:not (:last-child ) td::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 90%; /* 구분선의 길이 비율 (100%) */
+	border-bottom: 1px solid #98A4B7;
+}
+
+.bold-text {
+	font-weight: bold;
+}

@@ -46,6 +46,7 @@
 				#{contentId}
 		)
 	</insert>
+	
 	<delete id="deleteWishContent" parameterType="Map">
 		DELETE FROM
 				WISH_LIST
@@ -53,4 +54,14 @@
 				MEMBER_ID = #{memberId} 	AND
 				CONTENT_ID = #{contentId}
 	</delete>
+	
+	<select id="selectListNickName" parameterType="String" resultType="MemberDTO">
+		SELECT
+				*
+		FROM
+				MEMBER
+		WHERE
+				NICK_NAME = #{nickName}	
+	</select>
+	
 </mapper>

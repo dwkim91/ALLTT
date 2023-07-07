@@ -50,7 +50,7 @@ public class MemberController {
 	
 	// 회원 가입 및 탈퇴 메서드
 	@GetMapping("/{service}/{source}")
-	public ModelAndView kakaoCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
+	public ModelAndView srviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
 		
 		ModelAndView mv = new ModelAndView();
@@ -164,7 +164,7 @@ public class MemberController {
 	
 	// 회원 탈퇴 메서드
 	@RequestMapping(value = "/{service}/callback/withdraw", method = {RequestMethod.GET, RequestMethod.POST})
-	public ResponseEntity<Object> callbackNaverWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
+	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
 		
 		// state 값 검증
 		String stateSession = (String)session.getAttribute("state");
@@ -234,6 +234,22 @@ public class MemberController {
 		mv.setViewName("/alltt/mypage");
 		mv.addObject("memberDTO", memberService.getMemberByMemberId(memberId));
 		return mv;
+	}
+	
+	// 랜덤닉네임
+	@GetMapping("/randomNickname/")
+	@ResponseBody
+	public String genNickName(HttpServletRequest request, HttpSession session) {
+		return memberService.genNickName();
+	}
+	
+	// 닉네임 저장
+	@GetMapping("/nicknameChange")
+	@ResponseBody
+	public MemberDTO saveNickName(HttpServletRequest request, HttpSession session) {
+		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		
+		return memberService.getMemberByMemberId(memberId);
 	}
 	
 	// session 검증용 method

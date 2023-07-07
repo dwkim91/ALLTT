@@ -11,9 +11,6 @@
 <script type="text/javascript">
 $(function() {
 	
-	// modal 창 가리기
-	$("#addContentId").css("display", "none");
-	
 	// 뒤로가기
 	$("#backBtn").click(function() {
 		location.href="${contextPath}/community";
@@ -219,7 +216,7 @@ $(function() {
 										<textarea id="title" maxlength="100" placeholder="제목을 입력해주세요." rows="1"
 											value="" class="textarea_auto_height__textarea"
 											data-v-0c949614="" autofocus="autofocus"
-											style="height: 21px;"></textarea>
+											style="height: 21px; "></textarea>
 									</div>
 								</div>
 								<div class="post_editor__main" data-v-4179835d="">
@@ -227,26 +224,22 @@ $(function() {
 									</div>
 									<textarea id="content" class="main__writer" data-v-4179835d="" data-v-0c949614="" placeholder="#태그로 작품이 등록된 게시글은 따로 모아 확인할 수 있어요."></textarea>
 								</div>
+								<div data-v-4179835d="" class="post_editor__footer">
+									<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
+								</div>
 								<div class="post_editor__footer" data-v-4179835d="">
 									<button class="footer__hash-tag-button" id="tagBtn" data-v-4179835d="">
 										<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-v-4179835d="" class="">
 											<path fill-rule="evenodd" clip-rule="evenodd"
 												d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z"
 												fill="#98A4B7" data-v-4179835d=""></path></svg>
-										<div data-v-4ddcaa90="" data-v-4179835d="" class="tooltip hash-tag-button__tooltip tooltip--left-top">
-											<i data-v-4ddcaa90=""
-												class="kino-icon tooltip__close mask kino-icon--close-normal"></i>
-										</div>
 									</button>
-								</div>
-								<div data-v-4179835d="" class="post_editor__footer">
-									<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
 								</div>
 							</div>
 							<div data-v-4179835d="" class="movie_list">
 							</div>
 							<!---->
-								<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId">
+								<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId" style="display: none;">
 									<div data-v-2e4bbd00="" class="modal">
 										<div data-v-2e4bbd00="" class="modal__body">
 											<form data-v-2e4bbd00="" class="body__form mx">

@@ -8,6 +8,7 @@ public class RecmndDTO {
 	private long recmndId;
 	private long memberId;
 	private long postId;
+	private long postRecmndCnt;
 	public long getRecmndId() {
 		return recmndId;
 	}
@@ -26,10 +27,18 @@ public class RecmndDTO {
 	public void setPostId(long postId) {
 		this.postId = postId;
 	}
+	public long getPostRecmndCnt() {
+		return postRecmndCnt;
+	}
+	public void setPostRecmndCnt(long postRecmndCnt) {
+		this.postRecmndCnt = postRecmndCnt;
+	}
 	@Override
 	public String toString() {
-		return "RecmndDTO [recmndId=" + recmndId + ", memberId=" + memberId + ", postId=" + postId + "]";
+		return "RecmndDTO [recmndId=" + recmndId + ", memberId=" + memberId + ", postId=" + postId + ", postRecmndCnt="
+				+ postRecmndCnt + "]";
 	}
+	
 	
 	
 }

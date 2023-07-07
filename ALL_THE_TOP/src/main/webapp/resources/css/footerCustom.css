@@ -1,0 +1,43 @@
+.footer.floating-footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 99999;
+	width: 100%;
+	padding-bottom: calc(env(safe-area-inset-bottom));
+	border-bottom: 0;
+	will-change: transform;
+	background: #101527;
+	box-shadow: 0 -4px 16px rgba(16, 16, 16, .48)
+}
+
+.footer.floating-footer ul {
+	display: flex;
+	max-width: 700px;
+	margin: 0 auto;
+	padding: 0 16px;
+	position: relative
+}
+
+.menu {
+	display: flex;
+	flex: 1 1 25%;
+	height: 2rem;
+	font-size: 1rem;
+	font-weight: 500;
+	line-height: 1rem;
+	color: #FFFF;
+	text-align: center;
+	-webkit-tap-highlight-color: transparent;
+	position: relative;
+	flex-direction: column;
+}
+
+.menu a {
+	font-weight: lighter;
+}
+
+.list-gap {
+	list-style: none;
+	
+}

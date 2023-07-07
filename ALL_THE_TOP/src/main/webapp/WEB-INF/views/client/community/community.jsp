@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>커뮤니티</title>
 <link rel="stylesheet" href="${contextPath}/resources/css/community.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/css/footerCustom.css" type="text/css">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
 <script>
 $(function() {
@@ -29,9 +30,7 @@ $(function() {
 	$("#myCommentButton").click(function() {
 		location.href="${contextPath}/community/my?tab=comment";
 	});
-
-	// 시간 계산값 넘기기
-	$(".post-date").val(getTimeDiff("${post.enrollDt}"));
+	
 	
 });
 </script>
@@ -40,15 +39,23 @@ $(function() {
 	function likePostBtn(postId){
 		  	// 클릭된 버튼에만 클래스 변경을 적용하기 위해 id 값을 사용
 		  	var btnId = "likeBtn" + postId;
-			$("#" + btnId).toggleClass("active");
+		  	var targetBtn = $("#" + btnId);
+			targetBtn.toggleClass("active");
 			
-			// 좋아요를 DB에 반영
-			//$.ajax({
-				// url : "${contextPath}/community/postRecmnd"
-				// insert 혹은 delete 를 진행
-				// select를 해서 다시 가져오고
-				// myRecmnd가 있다면 버튼 active
-			//});
+			var param = {
+				"memberId" : "${member.memberId}",
+				"postId" : postId
+			};
+			
+			$.ajax({
+				 url : "${contextPath}/community/postRecmnd",
+				 async : true,
+				 type : "POST",
+				 data : param,
+				 success : function(result) {
+					targetBtn.find("span").html(result);
+				 }
+			});
 	}
 </script>
 </head>
@@ -104,14 +111,14 @@ $(function() {
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary active">
 								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
 								</div>
-								<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+								<span data-v-de3ba2dc="" id="likeCnt${post.postId}">${post.recmndCnt}</span>
 							</button>
 						</c:when>
 						<c:otherwise>
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary">
 								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
 								</div>
-								<span data-v-de3ba2dc="">${post.recmndCnt}</span>
+								<span data-v-de3ba2dc="" id="likeCnt${post.postId}">${post.recmndCnt}</span>
 							</button>
 						</c:otherwise>
 						</c:choose>
