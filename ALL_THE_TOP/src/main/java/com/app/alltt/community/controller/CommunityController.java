@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.alltt.community.dto.PostDTO;
+import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.crawling.dto.ContentDTO;
-import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.main.service.MainService;
 
@@ -46,8 +46,8 @@ public class CommunityController {
 	@GetMapping("/feed")
 	public String community(Model model, HttpSession session) {
 		
-		// 원래는 로그인 된 상태에서만 들어오도록...? 이거는 방향에 따라 다름
-		long memberId = -1;
+		// 원래는 로그인 된 상태에서만 들어오도록...?
+		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
 		}
@@ -99,9 +99,15 @@ public class CommunityController {
 	
 	// 게시글 디테일 페이지
 	@GetMapping("/post")
-	public String postDetail(@RequestParam long postId, Model model) {
+	public String postDetail(@RequestParam long postId, Model model, HttpSession session) {
 		
-		PostDTO post = communityService.getPostDetail(postId, true);
+		// 원래는 로그인 된 상태에서만 들어오도록...?
+		long memberId = 0;
+		if (session.getAttribute("memberId") != null) {
+			memberId = (Long) session.getAttribute("memberId");
+		}
+		
+		PostDTO post = communityService.getPostDetail(postId, memberId, true);
 		
 		// 같은 contentId를 태그한 게시글들 모두 가져오기
 		List<PostDTO> relatedPostList = communityService.getPostListByContent(post.getContentId());
@@ -114,16 +120,10 @@ public class CommunityController {
 			}
 		}
 		
-		ContentDTO content = communityService.getContentDetail(postId);
-		ContentLinkDTO contentLink = null; 
-		
-		if (content != null) {
-			contentLink = communityService.getContentImg(content.getContentId());
-		}
+		FilteredDTO content = mainService.getContentDetail(post.getContentId());
 		
 		model.addAttribute("post", post);
 		model.addAttribute("content", content);
-		model.addAttribute("contentLink", contentLink);
 		model.addAttribute("relatedPostList", relatedPostList);
 		model.addAttribute("replyList", communityService.getReplyList(postId));
 		
@@ -169,10 +169,16 @@ public class CommunityController {
 	
 	// 게시글 수정
 	@GetMapping("/modify")
-	public String modify(@RequestParam long postId, Model model) {
+	public String modify(@RequestParam long postId, Model model, HttpSession session) {
+		
+		// 원래는 로그인 된 상태에서만 들어오도록...?
+		long memberId = 0;
+		if (session.getAttribute("memberId") != null) {
+			memberId = (Long) session.getAttribute("memberId");
+		}
 		
 		// 수정 대상 게시글
-		PostDTO post = communityService.getPostDetail(postId, false);
+		PostDTO post = communityService.getPostDetail(postId, memberId, false);
 		FilteredDTO content = null;
 		if (post.getContentId() > 0) {
 			content = mainService.getContentDetail(post.getContentId());
@@ -196,9 +202,15 @@ public class CommunityController {
 	}
 	
 	@GetMapping("/delete")
-	public String delete(@RequestParam long postId, Model model) {
+	public String delete(@RequestParam long postId, Model model, HttpSession session) {
+		
+		// 원래는 로그인 된 상태에서만 들어오도록...?
+		long memberId = 0;
+		if (session.getAttribute("memberId") != null) {
+			memberId = (Long) session.getAttribute("memberId");
+		}
 
-		PostDTO post = communityService.getPostDetail(postId, false);
+		PostDTO post = communityService.getPostDetail(postId, memberId, false);
 		FilteredDTO content = null;
 		if (post.getContentId() > 0) {
 			content = mainService.getContentDetail(post.getContentId());
@@ -230,9 +242,24 @@ public class CommunityController {
 		}
 	}
 	
-	@PostMapping("/postRecmnd")
-	public @ResponseBody String changeRecmnd() {
-		return "";
+	@GetMapping("/getReply")
+	public @ResponseBody ReplyDTO getReplyContent(@RequestParam long replyId) {
+		return communityService.getReply(replyId);
 	}
 	
+	@PostMapping("/modifyReply")
+	public @ResponseBody String modifyReply(@ModelAttribute ReplyDTO reply) {
+		
+		if (communityService.modifyReply(reply)) {
+			return "modified";
+		}
+		else {
+			return "false";
+		}
+	}
+	
+	@PostMapping("/postRecmnd")
+	public @ResponseBody int changeRecmnd(@ModelAttribute RecmndDTO recmnd) {
+		return communityService.changeLikePost(recmnd);
+	}
 }
