@@ -308,7 +308,7 @@ transform
 	background-size: 100% auto;
 	font-size: 1rem;
 	text-indent: -9999px;
-	background-image: url('resources/bootstrap/img/logo.png');
+	background-image: url('${contextPath}/resources/bootstrap/img/logo.png');
 }
 
 @media ( max-width : 767px) {
