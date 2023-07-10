@@ -64,4 +64,155 @@
 				NICK_NAME = #{nickName}	
 	</select>
 	
+	<update id="updateNickname" parameterType="MemberDTO">
+		UPDATE
+				MEMBER
+		SET
+				NICK_NAME = #{nickName}
+		WHERE
+				MEMBER_ID = #{memberId}
+	</update>
+	
+	<select id="selectWishCntByMember" parameterType="Long" resultType="Integer">
+		SELECT
+				COUNT(*)
+		FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="selectNetflixWishCntByMemberId" parameterType="Long" resultType="Integer">
+		SELECT
+ 				 COUNT(PLATFORM_ID) AS WISHLISTCOUNT
+		FROM
+				  CONTENT_LINK
+		WHERE
+				  PLATFORM_ID = 1 
+				  AND CONTENT_ID IN (
+			    						SELECT
+			      								CONTENT_ID
+									    FROM
+									      		WISH_LIST
+									    WHERE
+									      		MEMBER_ID = #{memberId})
+	</select>
+	
+	<select id="selectTvingWishCntByMemberId" parameterType="Long" resultType="Integer">
+		SELECT
+ 				 COUNT(PLATFORM_ID) AS WISHLISTCOUNT
+		FROM
+				  CONTENT_LINK
+		WHERE
+				  PLATFORM_ID = 2 
+				  AND CONTENT_ID IN (
+			    						SELECT
+			      								CONTENT_ID
+									    FROM
+									      		WISH_LIST
+									    WHERE
+									      		MEMBER_ID = #{memberId})
+	</select>
+	
+	<select id="selectWavveWishCntByMemberId" parameterType="Long" resultType="Integer">
+		SELECT
+ 				 COUNT(PLATFORM_ID) AS WISHLISTCOUNT
+		FROM
+				  CONTENT_LINK
+		WHERE
+				  PLATFORM_ID = 3 
+				  AND CONTENT_ID IN (
+			    						SELECT
+			      								CONTENT_ID
+									    FROM
+									      		WISH_LIST
+									    WHERE
+									      		MEMBER_ID = #{memberId})
+	</select>
+	
+	<delete id="deleteSubscriptionByMemberId" parameterType="Long">
+		DELETE FROM
+				SUBSCRIPTION
+		WHERE
+				MEMBER_ID = #{memberId}
+	</delete>
+
+	<insert id="insertSubscription" parameterType="MemberDTO">
+		INSERT INTO SUBSCRIPTION (
+				MEMBER_ID,
+				PLATFORM_ID
+		)
+		VALUES (
+				#{memberId},
+				#{platformId}
+		)
+	</insert>
+
+	<select id="selectListSubscription" resultType="Integer">
+		SELECT
+				PLATFORM_ID
+		FROM 
+				SUBSCRIPTION
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="selectOneIsWishContent" parameterType="Map" resultType="long">
+		SELECT
+				CONTENT_ID
+		FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId},
+				CONTENT_ID = #{contentId}
+	</select>
+
+	<select id="selectOneContentFilter" parameterType="FilterDTO" resultType="FilterDTO">
+		SELECT
+				*
+		FROM
+				SEARCH_FILTER
+		WHERE
+				MEMBER_ID = #{memberId} AND
+				CONTENT_TYPE = #{contentType}
+	</select>
+	
+	<insert id="insertContentFilter" parameterType="FilterDTO">
+		INSERT INTO SEARCH_FILTER (
+				MEMBER_ID,
+				CONTENT_TYPE,
+				NETFLIX_ID,
+				TVING_ID,
+				WAVVE_ID,
+				GENRE_ID,
+				WISH_INCLUDE_YN,
+				SORT_TYPE
+		)
+		VALUES (
+				#{memberId},
+				#{contentType},
+				#{netflixId},
+				#{tvingId},
+				#{wavveId},
+				#{genreId},
+				#{wishIncludeYn},
+				#{sortType}
+		)
+	</insert>
+	
+	<update id="updateContentFilter" parameterType="FilterDTO">
+		UPDATE SEARCH_FILTER
+		SET
+				CONTENT_TYPE = #{contentType},
+				NETFLIX_ID = #{netflixId},
+				TVING_ID = #{tvingId},
+				WAVVE_ID = #{wavveId},
+				GENRE_ID = #{genreId},
+				WISH_INCLUDE_YN = #{wishIncludeYn},
+				SORT_TYPE = #{sortType}
+		WHERE
+				MEMBER_ID = #{memberId}	AND
+				CONTENT_TYPE = #{contentType}
+	</update>
+	
 </mapper>

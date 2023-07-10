@@ -4,40 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/header.js" type="module"></script>
 <script>
-	function getMember() {
-		// AJAX 요청을 통해 member 정보를 가져오는 코드
-		$.ajax({
-			url : '${contextPath}/member/memberInfo',
-			method : 'GET',
-			success : function(data) {
-				var member = data; // 받아온 data 정보를 member 변수에 할당
-				setMemberInfo(member); // member의 값을 설정하는 함수 호출
-			},
-			error : function() {
-				console.log('Failed to fetch member information.');
-			}
-		});
-	}
-	
-	function setMemberInfo(member) {
-		// 닉네임 요소 선택
-		var nicknameElement = document.querySelector('.profile_info_name');
-		// text 값 입력
-		nicknameElement.innerText = member.nickName;
-		// 이미지 요소 선택
-		var firstImgElement = document
-				.querySelector('.menu_my .loaded.css-1doy9ip.euf32k22');
-		// src 값 변경
-		firstImgElement.setAttribute('src', member.thumbnailImg);
-		// 이미지 요소 선택
-		var secondImgElement = document
-				.querySelector('.menu_my_content.wrap_margin .loaded.css-1doy9ip.euf32k22');
-		// src 값 변경
-		secondImgElement.setAttribute('src', member.thumbnailImg);
-	}
+	var memberSession = '${sessionScope.memberId}';
 </script>
+
     <!-- Css Styles -->
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/font-awesome.min.css" type="text/css">
@@ -61,15 +31,6 @@
 
 </head>
 <body>
-	
-	<c:if test='${sessionScope.memberId != null}'>
-		<script>
-			$(document).ready(function() {
-                 getMember();
-            });
-		</script>
-	</c:if>
-	
 	<div id="__next">
 		<header class="wrap_padding css-vfh4pc e10hkk351">
 			<a href="/main">
@@ -90,7 +51,7 @@
 				<div class="paramount">커뮤니티</div>
 			</a>
 			<aside class="css-13co1xy e10hkk350">
-				<button type="button" class="css-xyumn e10hkk356" style="background-image:url(${contextPath}/resources/bootstrap/img/icon_search.svg);">찾기</button>
+				<button type="button" id="searchButton" class="css-xyumn e10hkk356" style="background-image:url(${contextPath}/resources/bootstrap/img/icon_search.svg);">찾기</button>
 				<div class="menu_my">
 					<div class="profile_img css-8nwm4w e10hkk353">
 						<picture class="loaded css-ovhph3 euf32k20">
@@ -115,9 +76,6 @@
 							</div>
 							<div class="profile_info">
 								<p class="profile_info_name">닉네임 입력</p>
-								<button type="button" class="profile_info_change">
-									<span>프로필 변경</span>
-								</button>
 							</div>
 						</div>
 						<hr>
@@ -130,5 +88,6 @@
 				</c:if>
 			</aside>
 		</header>
+		<script src="${contextPath}/resources/bootstrap/js/header.js"></script>
 </body>
 </html>

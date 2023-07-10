@@ -15,16 +15,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.app.alltt.main.dto.FilteredDTO;
+import com.app.alltt.community.service.CommunityService;
+import com.app.alltt.main.dto.FilterDTO;
+import com.app.alltt.main.service.MainService;
 import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.member.service.MemberService;
 import com.app.alltt.member.sns.AuthModule;
@@ -36,6 +38,12 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private CommunityService communityService;
+	
+	@Autowired
+	private MainService mainService;
 	
 	// instance 명을 servlet-context.xml에 설정된 이름으로 진행함으로써
 	// servlet-context.xml에 설정한 변수값들을 SnsValue에 바로 전달하면서 instance 생성
@@ -116,8 +124,7 @@ public class MemberController {
 		if (state.equals(stateSession)) {
 			// 인증을 위한 state 다 썼으니까 날리고
 			session.removeAttribute("state");
-			// NAVER 에서 새로 받은 member 정보 확인
-//			MemberDTO loginMember = authModule.getMemberProfile(authModule.getNaverAccessToken(code));
+			// 새로 받은 member 정보 확인
 			MemberDTO loginMember = authModule.getMemberProfile(authModule.getAccessToken(code));
 			// 새로 받은 userId로 검색한 member
 			MemberDTO dbMember = memberService.getMemberByUserId(loginMember.getUserId());
@@ -138,7 +145,8 @@ public class MemberController {
 				// 로그인을 위해서 다시 가져와서 memberId 확인
 				MemberDTO newMember = memberService.getMemberByUserId(loginMember.getUserId());
 				long newMemberId = newMember.getMemberId();
-				
+				// 기본 검색 필터 입력 
+				memberService.setMemberFilter(newMemberId);
 				// 로그인 처리, session에 값 부여
 				session.setAttribute("memberId", newMemberId);
 				
@@ -219,12 +227,12 @@ public class MemberController {
 	}
 	
 	// 멤버정보  가져오기
-	@GetMapping("/memberInfo")
+	@PostMapping("/memberInfo")
 	@ResponseBody
 	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		return memberService.getMemberByMemberId(memberId);
-	}
+	} 
 	
 	@GetMapping("/mypage")
 	@ResponseBody
@@ -232,26 +240,109 @@ public class MemberController {
 		ModelAndView mv = new ModelAndView();
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		mv.setViewName("/alltt/mypage");
-		mv.addObject("memberDTO", memberService.getMemberByMemberId(memberId));
+		// 로그인한 멤버DTO
+		mv.addObject("member", memberService.getMemberByMemberId(memberId));
+		// 로그인한 멤버의 찜 작품 수
+		mv.addObject("wishCnt", memberService.getWishCntByMember(memberId));
+		// 로그인한 멤버가 쓴 글 개수
+		mv.addObject("postCnt", communityService.getPostCntByMember(memberId));
+		// 로그인한 멤버가 쓴 댓글 수
+		mv.addObject("replyCnt", communityService.getReplyCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
+		mv.addObject("netflixWishCnt", memberService.getNetflixWishCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 티빙 찜 작품 수
+		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
+		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(memberId));
+		// 로그인한 멤버가 선택한 구독 정보
+		mv.addObject("subscription", memberService.getSubscriptionByMemberId(memberId));
+		// 로그인한 멤버가 선택한 시리즈 검색 필터
+		mv.addObject("seriesFilter", memberService.getContentFilter(memberId, "series"));
+		// 로그인한 멤버가 선택한 영화 검색 필터
+		mv.addObject("movieFilter", memberService.getContentFilter(memberId, "movie"));
+		// 시리즈 장르 리스트
+		FilterDTO filterDTO = new FilterDTO();
+		filterDTO.setNetflixId(1);
+		filterDTO.setTvingId(2);
+		filterDTO.setWavveId(3);
+		filterDTO.setSortType("latest");
+		filterDTO.setContentType("series");
+		filterDTO.setLastItemCnt(0);
+		filterDTO.setIsWishInclude(true);
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		mv.addObject("seriesList", mainService.getMoreGenreList(filterDTO));
+		// 영화 장르 리스트
+		filterDTO.setContentType("movie");
+		mv.addObject("movieList", mainService.getMoreGenreList(filterDTO));
 		return mv;
 	}
 	
 	// 랜덤닉네임
-	@GetMapping("/randomNickname/")
+	@RequestMapping(value="/randomNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String genNickName(HttpServletRequest request, HttpSession session) {
 		return memberService.genNickName();
 	}
-	
+
 	// 닉네임 저장
-	@GetMapping("/nicknameChange")
+	@RequestMapping(value="/saveNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public MemberDTO saveNickName(HttpServletRequest request, HttpSession session) {
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
-		
-		return memberService.getMemberByMemberId(memberId);
+	public String saveNickname(@RequestParam("nickname") String nickname, HttpSession session) {
+		String result = "";
+		if (nickname.length() > 5) {
+			boolean isDupl = memberService.nickNameDuplChecker(nickname);
+
+			if (!isDupl) {
+				MemberDTO memberDTO = new MemberDTO();
+				long memberId = ((Long) session.getAttribute("memberId")).longValue();
+				memberDTO.setNickName(nickname);
+				memberDTO.setMemberId(memberId);
+				memberService.changeNickname(memberDTO);
+				result = "닉네임이 변경되었습니다.";
+			}
+			else {
+				result = "닉네임이 중복되었습니다.";
+			}
+		}
+		else {
+			result = "6자 이상 입력해 주세요.";
+		}
+				
+		return result;
 	}
 	
+	// 구독정보 수정
+	@RequestMapping(value="/setSubscription", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    filterDTO.setMemberId(memberId);
+	    System.out.println(filterDTO);
+	    memberService.setSubscriptionByMemberId(filterDTO);
+	    return "구독 정보가 수정되었습니다.";
+	}
+	
+	// 필터 정보 수정
+	@RequestMapping(value="/setSearchFilter", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    filterDTO.setMemberId(memberId);
+	    System.out.println(filterDTO);
+	    memberService.changeContentFilterByMemberId(filterDTO);
+	    return "필터 정보가 수정되었습니다.";
+	}
+	
+	@RequestMapping(value="/filterUpdate", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public List<FilterDTO> updateSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    filterDTO.setMemberId(memberId);
+	    System.out.println(filterDTO);
+	    //memberService.changeContentFilterByMemberId(filterDTO);
+	    List<FilterDTO> filterList = mainService.getMoreGenreList(filterDTO);
+	    return filterList;
+	}
 	// session 검증용 method
 	public void getSessionStatus(HttpSession session) {
 		try {
@@ -266,8 +357,8 @@ public class MemberController {
 		}
 	}
 	
-	@PostMapping("/wishStateChange")
-	public void wishStateChange(@RequestParam("contentId") long contentId, @RequestParam("isWishContent") boolean isWishContent, HttpSession session) {
+	@RequestMapping(value="/wishStateChange", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	public ResponseEntity<String> wishStateChange(@RequestParam("contentId") long contentId, HttpSession session) {
 		long memberId = (long)session.getAttribute("memberId");
 		
 		Map<String, Long> wishMap = new HashMap<>();
@@ -275,26 +366,22 @@ public class MemberController {
 		wishMap.put("contentId", contentId);
 		wishMap.put("memberId", memberId);
 		
-		if (isWishContent) {
-			System.out.println("찜 추가");
+		boolean test = memberService.isWishContent(wishMap);
+		
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+		
+		System.out.println(test);
+		if (test) {
 			memberService.addWishContentByMemberId(wishMap);
-			
+			return ResponseEntity.ok("찜 컨텐츠가 추가되었습니다.");
 		}
 		else {
-			System.out.println("찜 삭제");
-			memberService.deleteWishContentByMemberId(wishMap);
 			
+			memberService.deleteWishContentByMemberId(wishMap);
+			return ResponseEntity.ok("찜 컨텐츠가 삭제되었습니다.");
 		}
+
 	}
 	
-	@PostMapping("/checkSession")
-	public boolean checkSession(HttpSession session) {
-		
-		boolean isLogin = false;
-		
-		if (session.getAttribute("memberId") != null) {
-			isLogin = true;
-		}
-		return isLogin;
-	}
 }
