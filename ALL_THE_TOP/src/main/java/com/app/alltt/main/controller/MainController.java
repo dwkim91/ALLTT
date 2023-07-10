@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.main.service.MainService;
@@ -23,6 +24,9 @@ public class MainController {
 	
 	@Autowired
 	private MainService mainService;
+	
+	@Autowired
+	private CommunityService communityService;
 	
 	@GetMapping("/main")
 	public ModelAndView main(HttpServletRequest request) {
@@ -62,21 +66,22 @@ public class MainController {
 	@PostMapping("/contentLoad")
 	@ResponseBody
 	public List<FilteredDTO> mainFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		
 		if (session.getAttribute("memberId") != null) filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
-		// AJAX : 스크롤, 체크박스, 셀렉트
-		List<FilteredDTO> responseData = mainService.getMoreFilteredContent(filterDTO);
-		
-		System.out.println(responseData);
-		return responseData;
+		return mainService.getMoreFilteredContent(filterDTO);
 		
 	}
 	
 	@GetMapping("/detail")
-	public ModelAndView detilContent(@RequestParam("contentId") long contentId) {
+	public ModelAndView detilContent(@RequestParam("contentId") long contentId, HttpSession session) {
 		
 		ModelAndView mv = new ModelAndView();
+
+		if(session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/detail");
 		
 		// 컨텐츠의 모든정보 (1개씩)
@@ -101,6 +106,9 @@ public class MainController {
 		mv.addObject("tvingUrl",mainService.getPlatformByDetailUrl(filteredDTO));
 		filteredDTO.setPlatformId(3);
 		mv.addObject("wavveUrl",mainService.getPlatformByDetailUrl(filteredDTO));
+		
+		mv.addObject("postList", communityService.getPostListByContent(contentId));
+		System.out.println(communityService.getPostListByContent(contentId));
 		return mv;
 	}
 	
@@ -170,6 +178,15 @@ public class MainController {
 	@GetMapping("/wish")
 	public String wish() {
 		return "/alltt/wish";
+	}
+	
+	@PostMapping("/contentSearch")
+	@ResponseBody
+	public List<FilteredDTO> search(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+		
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		return mainService.getMoreContentByKeyword(filterDTO);
 	}
 	
 }

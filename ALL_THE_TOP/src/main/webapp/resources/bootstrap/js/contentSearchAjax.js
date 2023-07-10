@@ -1,4 +1,4 @@
-export function searchAjax(searchKey) {
+export function contentsSearchAjax(searchKey) {
 	
 	$.ajax({
 		url: '/contentSearch',
