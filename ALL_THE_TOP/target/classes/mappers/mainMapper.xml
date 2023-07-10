@@ -249,7 +249,13 @@
 		    LEFT JOIN WISH_LIST WL 
 				   ON C.CONTENT_ID = WL.CONTENT_ID AND WL.MEMBER_ID = #{memberId}
 		WHERE
-			CONTENT_TYPE = #{contentType} 	AND
+			<choose>
+	        	<when test="contentType == null">
+	        	</when>
+	        	<otherwise>
+	        		CONTENT_TYPE = #{contentType} 	AND
+	        	</otherwise>
+	        </choose>
 			TITLE LIKE CONCAT('%', #{searchKey}, '%')
 		GROUP BY C.CONTENT_ID
 		ORDER BY

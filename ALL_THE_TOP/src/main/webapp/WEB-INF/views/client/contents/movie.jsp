@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
@@ -19,14 +18,14 @@
 				<div class="hidden-horizontal-scrollbar__items"></div>
 				<div>
 					<div class="filter-container">
-						<label class="checkbox-label"> 
+						<label class="checkbox-platform"> 
 							<input type="checkbox" checked id="netflixCheckbox" value="1"> 
 							<span class="checkbox-custom" style="background-image: url('${contextPath}/resources/bootstrap/img/n100.jpeg');"></span>
 						</label>
-							<label class="checkbox-label"> <input type="checkbox" checked id="tvingCheckbox" value="2">
+							<label class="checkbox-platform"> <input type="checkbox" checked id="tvingCheckbox" value="2">
 							<span class="checkbox-custom" style="background-image: url('${contextPath}/resources/bootstrap/img/t100.jpeg');"></span>
 						</label>
-							<label class="checkbox-label"> <input type="checkbox" checked id="wavveCheckbox" value="3">
+							<label class="checkbox-platform"> <input type="checkbox" checked id="wavveCheckbox" value="3">
 							<span class="checkbox-custom" style="background-image: url('${contextPath}/resources/bootstrap/img/w100.jpeg');"></span>
 						</label>
 						<select id="genreId" class="select-filter">
@@ -61,10 +60,13 @@
 											<div class="item__thumb item__thumb-25x36" id="wishContent">
 										</c:otherwise>
 									</c:choose>
-									<div class="item__tags"></div>
+									<div class="item__tags" style="pointer-events: auto;">
+										<div class="item__tags-right">
+											<button class="tag tag-age tag-age-nineteen" id="wishButton"></button>
+										</div>
+									</div>
 									<div class="item__image lazy">
-										<img class="loaded css-1doy9ip euf32k22"
-											src="${content.imgUrl}" alt="${content.title}">
+										<img class="loaded css-1doy9ip euf32k22" src="${content.imgUrl}" alt="${content.title}">
 									</div>
 								</div>
 								<div class="item__info ">
