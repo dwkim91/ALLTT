@@ -13,14 +13,8 @@ public class FilterDTO {
 	private int lastItemCnt;			// 현재페이지 로드된 item 개수
 	private int genreId;
 	private long memberId;				// 현재로그인된 계정아이디
+	private String wishIncludeYn;
 	
-	@Override
-	public String toString() {
-		return "FilterDTO [platformId=" + platformId + ", netflixId=" + netflixId + ", tvingId=" + tvingId
-				+ ", wavveId=" + wavveId + ", isWishInclude=" + isWishInclude + ", contentType=" + contentType
-				+ ", searchKey=" + searchKey + ", sortType=" + sortType + ", genreNm=" + genreNm + ", lastItemCnt="
-				+ lastItemCnt + ", genreId=" + genreId + ", memberId=" + memberId + "]";
-	}
 	public int getGenreId() {
 		return genreId;
 	}
@@ -92,6 +86,21 @@ public class FilterDTO {
 	}
 	public void setIsWishInclude(boolean isWishInclude) {
 		this.isWishInclude = isWishInclude;
+	}
+	public String getWishIncludeYn() {
+		return wishIncludeYn;
+	}
+	public void setWishIncludeYn(String wishIncludeYn) {
+		this.wishIncludeYn = wishIncludeYn;
+	}
+	
+	@Override
+	public String toString() {
+		return "FilterDTO [platformId=" + platformId + ", netflixId=" + netflixId + ", tvingId=" + tvingId
+				+ ", wavveId=" + wavveId + ", isWishInclude=" + isWishInclude + ", contentType=" + contentType
+				+ ", searchKey=" + searchKey + ", sortType=" + sortType + ", genreNm=" + genreNm + ", lastItemCnt="
+				+ lastItemCnt + ", genreId=" + genreId + ", memberId=" + memberId + ", wishIncludeYn=" + wishIncludeYn
+				+ "]";
 	}
 	
 }
