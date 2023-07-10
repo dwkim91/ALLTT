@@ -1,6 +1,5 @@
 package com.app.alltt.member.controller;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
-import com.app.alltt.main.dto.FilteredDTO;
+import com.app.alltt.main.service.MainService;
 import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.member.service.MemberService;
 import com.app.alltt.member.sns.AuthModule;
@@ -43,6 +41,9 @@ public class MemberController {
 	
 	@Autowired
 	private CommunityService communityService;
+	
+	@Autowired
+	private MainService mainService;
 	
 	// instance 명을 servlet-context.xml에 설정된 이름으로 진행함으로써
 	// servlet-context.xml에 설정한 변수값들을 SnsValue에 바로 전달하면서 instance 생성
@@ -123,8 +124,7 @@ public class MemberController {
 		if (state.equals(stateSession)) {
 			// 인증을 위한 state 다 썼으니까 날리고
 			session.removeAttribute("state");
-			// NAVER 에서 새로 받은 member 정보 확인
-//			MemberDTO loginMember = authModule.getMemberProfile(authModule.getNaverAccessToken(code));
+			// 새로 받은 member 정보 확인
 			MemberDTO loginMember = authModule.getMemberProfile(authModule.getAccessToken(code));
 			// 새로 받은 userId로 검색한 member
 			MemberDTO dbMember = memberService.getMemberByUserId(loginMember.getUserId());
@@ -145,7 +145,8 @@ public class MemberController {
 				// 로그인을 위해서 다시 가져와서 memberId 확인
 				MemberDTO newMember = memberService.getMemberByUserId(loginMember.getUserId());
 				long newMemberId = newMember.getMemberId();
-				
+				// 기본 검색 필터 입력 
+				memberService.setMemberFilter(newMemberId);
 				// 로그인 처리, session에 값 부여
 				session.setAttribute("memberId", newMemberId);
 				
@@ -226,7 +227,7 @@ public class MemberController {
 	}
 	
 	// 멤버정보  가져오기
-	@GetMapping("/memberInfo")
+	@PostMapping("/memberInfo")
 	@ResponseBody
 	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
@@ -255,9 +256,24 @@ public class MemberController {
 		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(memberId));
 		// 로그인한 멤버가 선택한 구독 정보
 		mv.addObject("subscription", memberService.getSubscriptionByMemberId(memberId));
-		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
-		//mv.addObject("seriesGenreList", memberService.getGenreList( mvoie));
-		//mv.addObject("movieGenreList", memberService.getGenreList());
+		// 로그인한 멤버가 선택한 시리즈 검색 필터
+		mv.addObject("seriesFilter", memberService.getContentFilter(memberId, "series"));
+		// 로그인한 멤버가 선택한 영화 검색 필터
+		mv.addObject("movieFilter", memberService.getContentFilter(memberId, "movie"));
+		// 시리즈 장르 리스트
+		FilterDTO filterDTO = new FilterDTO();
+		filterDTO.setNetflixId(1);
+		filterDTO.setTvingId(2);
+		filterDTO.setWavveId(3);
+		filterDTO.setSortType("latest");
+		filterDTO.setContentType("series");
+		filterDTO.setLastItemCnt(0);
+		filterDTO.setIsWishInclude(true);
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		mv.addObject("seriesList", mainService.getMoreGenreList(filterDTO));
+		// 영화 장르 리스트
+		filterDTO.setContentType("movie");
+		mv.addObject("movieList", mainService.getMoreGenreList(filterDTO));
 		return mv;
 	}
 	
@@ -272,18 +288,27 @@ public class MemberController {
 	@RequestMapping(value="/saveNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String saveNickname(@RequestParam("nickname") String nickname, HttpSession session) {
-		
-		boolean isDupl = memberService.nickNameDuplChecker(nickname);
+		String result = "";
+		if (nickname.length() > 5) {
+			boolean isDupl = memberService.nickNameDuplChecker(nickname);
 
-		if (!isDupl) {
-			MemberDTO memberDTO = new MemberDTO();
-			long memberId = ((Long) session.getAttribute("memberId")).longValue();
-			memberDTO.setNickName(nickname);
-			memberDTO.setMemberId(memberId);
-			memberService.changeNickname(memberDTO);
+			if (!isDupl) {
+				MemberDTO memberDTO = new MemberDTO();
+				long memberId = ((Long) session.getAttribute("memberId")).longValue();
+				memberDTO.setNickName(nickname);
+				memberDTO.setMemberId(memberId);
+				memberService.changeNickname(memberDTO);
+				result = "닉네임이 변경되었습니다.";
+			}
+			else {
+				result = "닉네임이 중복되었습니다.";
+			}
 		}
-		
-		return isDupl ? "닉네임이 중복되었습니다." : "닉네임이 변경되었습니다.";
+		else {
+			result = "6자 이상 입력해 주세요.";
+		}
+				
+		return result;
 	}
 	
 	// 구독정보 수정
@@ -297,6 +322,27 @@ public class MemberController {
 	    return "구독 정보가 수정되었습니다.";
 	}
 	
+	// 필터 정보 수정
+	@RequestMapping(value="/setSearchFilter", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    filterDTO.setMemberId(memberId);
+	    System.out.println(filterDTO);
+	    memberService.changeContentFilterByMemberId(filterDTO);
+	    return "필터 정보가 수정되었습니다.";
+	}
+	
+	@RequestMapping(value="/filterUpdate", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public List<FilterDTO> updateSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    filterDTO.setMemberId(memberId);
+	    System.out.println(filterDTO);
+	    //memberService.changeContentFilterByMemberId(filterDTO);
+	    List<FilterDTO> filterList = mainService.getMoreGenreList(filterDTO);
+	    return filterList;
+	}
 	// session 검증용 method
 	public void getSessionStatus(HttpSession session) {
 		try {

@@ -11,6 +11,8 @@ import com.app.alltt.member.dto.MemberDTO;
 public interface CommunityDAO {
 
 	public List<PostDTO> selectListAllPost(long memberId);
+	// 게시글 검색에서, 인기 태그 보여주기 위해
+	public List<ContentDTO> selectMostTaggedContent();
 	
 	public PostDTO selectOnePost(RecmndDTO recmndDTO);
 	public void updateReadCnt(long postId);

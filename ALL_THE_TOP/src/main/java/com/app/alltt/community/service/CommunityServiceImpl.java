@@ -171,4 +171,9 @@ public class CommunityServiceImpl implements CommunityService {
 		return communityDAO.selectOneReply(replyId);
 	}
 
+	@Override
+	public List<ContentDTO> getMostTaggedContent() {
+		return communityDAO.selectMostTaggedContent();
+	}
+
 }

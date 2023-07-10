@@ -4,6 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+	var memberSession = '${sessionScope.memberId}';
+</script>
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
@@ -28,7 +31,6 @@
 
 </head>
 <body>
-	
 	<div id="__next">
 		<header class="wrap_padding css-vfh4pc e10hkk351">
 			<a href="/main">
@@ -74,9 +76,6 @@
 							</div>
 							<div class="profile_info">
 								<p class="profile_info_name">닉네임 입력</p>
-								<button type="button" class="profile_info_change">
-									<span>프로필 변경</span>
-								</button>
 							</div>
 						</div>
 						<hr>
@@ -89,6 +88,6 @@
 				</c:if>
 			</aside>
 		</header>
-		<script src="${contextPath}/resources/bootstrap/js/header.js" type="module"></script>
+		<script src="${contextPath}/resources/bootstrap/js/header.js"></script>
 </body>
 </html>

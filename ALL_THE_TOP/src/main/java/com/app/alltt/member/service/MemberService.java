@@ -23,4 +23,7 @@ public interface MemberService {
 	public void setSubscriptionByMemberId(FilterDTO filterDTO);
 	public FilterDTO getSubscriptionByMemberId(long memberId);
 	public boolean isWishContent(Map<String, Long> wishMap);
+	public FilterDTO getContentFilter(long memberId, String contentType);
+	public void changeContentFilterByMemberId(FilterDTO filterDTO);
+	public void setMemberFilter(long newMemberId);
 }
