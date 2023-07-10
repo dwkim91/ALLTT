@@ -133,4 +133,9 @@ public class CommunityDAOImpl implements CommunityDAO {
 		return sqlSession.selectOne("communityMapper.selectOneReply", replyId);
 	}
 
+	@Override
+	public List<ContentDTO> selectMostTaggedContent() {
+		return sqlSession.selectList("communityMapper.selectMostTaggedContent");
+	}
+
 }
