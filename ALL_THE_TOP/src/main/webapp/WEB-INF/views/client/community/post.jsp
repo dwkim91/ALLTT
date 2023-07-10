@@ -94,6 +94,9 @@ $(function() {
 				$("body").css("overflow", "auto");
 			});
 		}
+		else {
+			alert("작성자만 확인할 수 있습니다.");
+		}
 	});
 	
 	// 게시글 수정하기 버튼
@@ -254,7 +257,7 @@ $(function() {
 		</button>
 		<button data-v-36d2ff30="" id="communityHomeBtn" class="home-btn">
 			<svg data-v-36d2ff30="" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
-			<path data-v-36d2ff30="" fill-rule="evenodd" clip-rule="evenodd" d="M10.43 4.294L4.364 9.57a.687.687 0 00.45 1.206h.913v6.875c0 .38.307.688.687.688h2.75v-2.75c0-.38.308-.688.688-.688h2.062c.38 0 .688.308.688.688v2.75h2.75c.38 0 .687-.308.687-.688v-6.875h.912a.687.687 0 00.45-1.206l-6.067-5.276a.688.688 0 00-.902 0z" fill="#98A4B7"></path></svg>
+			<path data-v-36d2ff30="" fill-rule="evenodd" clip-rule="evenodd" d="M10.43 4.294L4.364 9.57a.687.687 0 00.45 1.206h.913v6.875c0 .38.307.688.687.688h2.75v-2.75c0-.38.308-.688.688-.688h2.062c.38 0 .688.308.688.688v2.75h2.75c.38 0 .687-.308.687-.688v-6.875h.912a.687.687 0 00.45-1.206l-6.067-5.276a.688.688 0 00-.902 0z" fill="#f0a9a9"></path></svg>
 			<span data-v-36d2ff30="">커뮤니티</span>
 		</button>
 	</div>

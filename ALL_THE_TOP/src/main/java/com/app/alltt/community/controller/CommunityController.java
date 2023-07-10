@@ -44,16 +44,20 @@ public class CommunityController {
 
 	// 전체 게시글 보기
 	@GetMapping("/feed")
-	public String community(@RequestParam String tag, Model model, HttpSession session) {
+	public String community(Model model, HttpSession session, HttpServletRequest request) {
 		
 		// 원래는 로그인 된 상태에서만 들어오도록...?
 		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
 		}
+		
+		String tag = request.getParameter("tag");
+		System.out.println(tag);
 
 		// 태그 검색도 여기서 받아서 처리
-		if (tag != null) {
+		// tag가 있다면 로드되는 페이지가 달라져야 함
+		if (tag == null) {
 			// 로그인한 멤버 정보를 보여주기 위해
 			model.addAttribute("member", communityService.getMemberId(memberId));
 			// 로그인한 멤버가 쓴 글 개수를 보여주기 위해
