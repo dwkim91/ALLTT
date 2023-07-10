@@ -57,6 +57,7 @@ $(function() {
 				 }
 			});
 	}
+	
 </script>
 </head>
 <body>
@@ -66,7 +67,7 @@ $(function() {
 		<header data-v-36d2ff30="" data-v-f04faaa6="" class="header-wrap left-title header-main">
 		<h1 data-v-36d2ff30="" class="header-title beta"> 커뮤니티 </h1>
 		<!---->
-		<a data-v-f04faaa6="" href="/search" class="header-right-button search" id="searchButton" data-v-36d2ff30=""><img data-v-f04faaa6="" src="https://static.kinolights.com/icon/ic-search.svg" alt="검색"></a>
+		<a data-v-f04faaa6="" href="${contextPath}/community/search" class="header-right-button search" id="searchButton" data-v-36d2ff30=""><img data-v-f04faaa6="" src="https://static.kinolights.com/icon/ic-search.svg" alt="검색"></a>
 		</header>
 		</section>
 		<div data-v-f04faaa6="" class="content-area">
@@ -74,7 +75,7 @@ $(function() {
 				<section data-v-f04faaa6="" class="list-item list-area list-area--home">
 				<div data-v-f04faaa6="" class="list-inner-wrap">
 					<ul data-v-f04faaa6="" id="postList">
-					<c:forEach var="post" items="${postList}">
+					<c:forEach var="post" items="${postList}" varStatus="i">
 						<li data-v-f04faaa6="" class="list-gap">
 							<article data-v-b0785d82="" data-v-f04faaa6="" class="post-wrap">
 								<a data-v-b0785d82="" href="${contextPath}/community/post?postId=${post.postId}" class="" id="postList-nIoYFokBkUHnIaLwUX4I">
@@ -83,8 +84,7 @@ $(function() {
 							<span data-v-b0785d82="" class="user-nickname">${post.nickName}</span>
 						</div>
 						<div data-v-b0785d82="" class="post-info-date-wrap">
-						<!-- 몇분 전, 몇 시간 전에 썼는지 표기하는거 -->
-							<span data-v-b0785d82="" title="getTimeDiff(${post.enrollDt})" class="post-date"></span>
+							<span data-v-b0785d82="" title="${post.enrollDt}" class="post-date">${post.enrollDt}</span>
 						</div>
 						</header>
 						<h2 data-v-b0785d82="" class="post-title">${post.postTitle}</h2>
@@ -131,7 +131,6 @@ $(function() {
 							<svg data-v-07a4f3b7="" viewbox="25 25 50 50" class="circular-loader"><circle data-v-07a4f3b7="" cx="50" cy="50" r="20" fill="none" stroke-width="6" class="loader-path"></circle></svg>
 						</div>
 					</div>
-					<!---->
 				</div>
 				</section><aside data-v-f04faaa6="" class="side-item side-area side-area--home">
 				<div data-v-f04faaa6="" class="user-info-wrap">
@@ -152,8 +151,6 @@ $(function() {
 					<button data-v-f04faaa6="" class="write-btn"><span data-v-f04faaa6="" class="write-btn-text">글 작성하기</span><svg data-v-f04faaa6="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class=""><rect data-v-f04faaa6="" x="8" y="26" width="16" height="2" rx="1" fill="#EFEFEF"></rect><path data-v-f04faaa6="" fill-rule="evenodd" clip-rule="evenodd" d="M20.813 5.2a.677.677 0 00-.96-.001L18.362 6.69a1.003 1.003 0 00-.001 1.416l3.935 3.951a.997.997 0 001.413.002l1.491-1.492a.68.68 0 00.001-.962L20.812 5.2zm-3.525 3.976a.999.999 0 00-1.414-.002l-7.67 7.663a.68.68 0 00-.2.48L8 21.717c0 .375.303.68.678.68l4.263.003c.265 0 .52-.105.707-.292l7.577-7.569a1 1 0 00.001-1.415l-3.938-3.948z" fill="#EFEFEF"></path></svg>
 					</button>
 				</div>
-				<!---->
-				<!---->
 				</aside>
 			</div>
 		</div>
