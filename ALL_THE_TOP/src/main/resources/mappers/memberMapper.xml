@@ -166,5 +166,53 @@
 				MEMBER_ID = #{memberId},
 				CONTENT_ID = #{contentId}
 	</select>
+
+	<select id="selectOneContentFilter" parameterType="FilterDTO" resultType="FilterDTO">
+		SELECT
+				*
+		FROM
+				SEARCH_FILTER
+		WHERE
+				MEMBER_ID = #{memberId} AND
+				CONTENT_TYPE = #{contentType}
+	</select>
+	
+	<insert id="insertContentFilter" parameterType="FilterDTO">
+		INSERT INTO SEARCH_FILTER (
+				MEMBER_ID,
+				CONTENT_TYPE,
+				NETFLIX_ID,
+				TVING_ID,
+				WAVVE_ID,
+				GENRE_ID,
+				WISH_INCLUDE_YN,
+				SORT_TYPE
+		)
+		VALUES (
+				#{memberId},
+				#{contentType},
+				#{netflixId},
+				#{tvingId},
+				#{wavveId},
+				#{genreId},
+				#{wishIncludeYn},
+				#{sortType}
+		)
+	</insert>
+	
+	<update id="updateContentFilter" parameterType="FilterDTO">
+		UPDATE SEARCH_FILTER
+		SET
+				CONTENT_TYPE = #{contentType},
+				NETFLIX_ID = #{netflixId},
+				TVING_ID = #{tvingId},
+				WAVVE_ID = #{wavveId},
+				GENRE_ID = #{genreId},
+				WISH_INCLUDE_YN = #{wishIncludeYn},
+				SORT_TYPE = #{sortType}
+		WHERE
+				MEMBER_ID = #{memberId}	AND
+				CONTENT_TYPE = #{contentType}
+	</update>
 	
 </mapper>

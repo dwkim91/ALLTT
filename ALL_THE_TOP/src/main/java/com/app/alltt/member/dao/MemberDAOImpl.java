@@ -104,5 +104,20 @@ public class MemberDAOImpl implements MemberDAO {
 		
 		return isWishContent;
 	}
+
+	@Override
+	public FilterDTO selectOneContentFilter(FilterDTO filterDTO) {
+		return sqlSession.selectOne("memberMapper.selectOneContentFilter", filterDTO);
+	}
+
+	@Override
+	public void insertContentFilter(FilterDTO filterDTO) {
+		sqlSession.insert("memberMapper.insertContentFilter", filterDTO);
+	}
+
+	@Override
+	public void updateContentFilter(FilterDTO filterDTO) {
+		sqlSession.update("memberMapper.updateContentFilter", filterDTO);
+	}
 	
 }

@@ -224,5 +224,39 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.selectOneIsWishContent(wishMap);
 	}
 
+	@Override
+	public FilterDTO getContentFilter(long memberId, String contentType) {
+		
+		FilterDTO filterDTO = new FilterDTO();
+		filterDTO.setMemberId(memberId);
+		filterDTO.setContentType(contentType);
+		FilterDTO filterDTO_DB = memberDAO.selectOneContentFilter(filterDTO);
+		filterDTO = filterDTO_DB;
+		return filterDTO;
+		
+	}
+
+	@Override
+	public void changeContentFilterByMemberId(FilterDTO filterDTO) {
+		memberDAO.updateContentFilter(filterDTO);
+	}
+
+	@Override
+	public void setMemberFilter(long newMemberId) {
+		
+		FilterDTO filterDTO = new FilterDTO();
+		filterDTO.setMemberId(newMemberId);
+		filterDTO.setNetflixId(1);
+		filterDTO.setTvingId(2);
+		filterDTO.setWavveId(3);
+		filterDTO.setSortType("latest");
+		filterDTO.setGenreId(0);
+		filterDTO.setWishIncludeYn("Y");
+		filterDTO.setContentType("series");
+		memberDAO.insertContentFilter(filterDTO);
+		filterDTO.setContentType("movie");
+		memberDAO.insertContentFilter(filterDTO);
+		
+	}
 	
 }

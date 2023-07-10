@@ -26,4 +26,7 @@ public interface MemberDAO {
 	public void insertSubscription(FilterDTO filterDTO);
 	public List<Integer> selectListSubscription(long memberId);
 	public boolean selectOneIsWishContent(Map<String, Long> wishMap);
+	public FilterDTO selectOneContentFilter(FilterDTO filterDTO);
+	public void insertContentFilter(FilterDTO filterDTO);
+	public void updateContentFilter(FilterDTO filterDTO);
 }

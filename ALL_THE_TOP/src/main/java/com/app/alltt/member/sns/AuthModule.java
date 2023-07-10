@@ -95,12 +95,9 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 			accessToken = oauth20Service.getAccessToken(code).getAccessToken();
 		}
 		else if (this.sns.isKakao()) {
-			System.out.println("getKakaoAccessToken code" + code);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
 			// 헤더에 필요한 추가 정보를 설정
-			
-		 //   headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);// 없어도 동작함
 		    headers.add("Content-Type", "application/x-www-form-urlencoded");
 		    
 		    // 토큰 요청을 위해 필요한 파라미터를 설정
@@ -121,13 +118,13 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		    
 		    String response = responseEntity.getBody();
 		    // 응답 결과 확인
-		    System.out.println(response);
+//		    System.out.println(response);
 		    
 		    // json을 mapping 해주는 역할
 	 		ObjectMapper mapper = new ObjectMapper();
 	 		JsonNode rootNode = mapper.readTree(responseEntity.getBody());
 	 		String access_token = rootNode.get("access_token").asText();
-	 		System.out.println("access_token : " + access_token);
+//	 		System.out.println("access_token : " + access_token);
 
 	 		accessToken = access_token;
 			
