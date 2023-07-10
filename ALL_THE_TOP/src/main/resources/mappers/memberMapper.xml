@@ -157,4 +157,14 @@
 				MEMBER_ID = #{memberId}
 	</select>
 	
+	<select id="selectOneIsWishContent" parameterType="Map" resultType="long">
+		SELECT
+				CONTENT_ID
+		FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId},
+				CONTENT_ID = #{contentId}
+	</select>
+	
 </mapper>

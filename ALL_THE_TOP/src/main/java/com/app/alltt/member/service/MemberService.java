@@ -22,4 +22,5 @@ public interface MemberService {
 	public int getWavveWishCntByMemberId(long memberId);
 	public void setSubscriptionByMemberId(FilterDTO filterDTO);
 	public FilterDTO getSubscriptionByMemberId(long memberId);
+	public boolean isWishContent(Map<String, Long> wishMap);
 }

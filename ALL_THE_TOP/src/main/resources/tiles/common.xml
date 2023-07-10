@@ -56,6 +56,20 @@
 		<put-attribute name="body"	value="/WEB-INF/views/client/community/community.jsp"/>	
 		<put-attribute name="title" value="community"/>	
 	</definition>
+
+	<!-- 커뮤니티 태그 검색 -->
+	<definition name="/alltt/tag" extends="alltt">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body"	value="/WEB-INF/views/client/community/tagFeed.jsp"/>	
+		<put-attribute name="title" value="tag"/>	
+	</definition>
+
+	<!-- 커뮤니티 검색 -->
+	<definition name="/alltt/search" extends="alltt">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body"	value="/WEB-INF/views/client/community/search.jsp"/>	
+		<put-attribute name="title" value="search"/>	
+	</definition>
 	
 	<!-- 게시글 작성 -->
 	<definition name="/alltt/write" extends="alltt">

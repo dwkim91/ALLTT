@@ -5,6 +5,14 @@
   padding-top: 10px;
 }
 
+.filter-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  padding-top: 10px;
+  justify-content: center;
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -34,6 +42,8 @@
 .checkbox-label input[type="checkbox"]:not(:checked) + .checkbox-custom {
   opacity: 0.5;
 }
+
+
 
 .platform-container {
   display: flex;
@@ -143,4 +153,64 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 400px;
+}
+#searchContainer {
+  display: flex;
+  align-items: center;
+}
+
+#searchButton {
+  transition: margin-right 0.3s ease;
+}
+
+#searchBarContainer {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+#searchBarContainer.active {
+  width: 600px;
+  margin-right: 10px; 
+}
+
+#searchBar {
+  width: 100%;
+  height: 30px;
+  padding: 5px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f2f2f2;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+}
+
+#searchBar:focus {
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.alert-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 20px;
+}
+
+.checkboxfalse {
+	display: none;
+}
+
+.selectfalse {
+	display: none;
+}
+
+.tag.tag-age.tag-age-nineteen {
+	background-image: url('../../img/wish_true.png');
+	width: 3rem;
+	height: 3rem; 
 }
