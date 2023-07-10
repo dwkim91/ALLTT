@@ -163,7 +163,7 @@
 		FROM
 				WISH_LIST
 		WHERE
-				MEMBER_ID = #{memberId},
+				MEMBER_ID = #{memberId}		AND
 				CONTENT_ID = #{contentId}
 	</select>
 

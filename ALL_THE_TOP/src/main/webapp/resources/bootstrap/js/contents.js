@@ -29,7 +29,7 @@ $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실
     }, delay);
 });
 
-$('.checkbox-label').change(function() {
+$('.checkbox-platform').change(function() {
 	$('.scrollLoadFalse').removeClass('scrollLoadFalse').addClass('footer');
 	$("#container").empty();
 	

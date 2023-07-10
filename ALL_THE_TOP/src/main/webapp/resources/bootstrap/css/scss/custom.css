@@ -11,6 +11,13 @@
   padding-bottom: 15px;
   padding-top: 10px;
   justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nice-select.select-filter {
+	display: flex;
+  	align-items: center;
+  	margin: 1rem;
 }
 
 .checkbox-label {
@@ -18,6 +25,25 @@
   align-items: center;
   margin: 0 7px;
 }
+
+.checkbox-platform {
+	display: flex;
+  	align-items: center;
+  	margin: 3rem;
+}
+
+.checkbox-platform input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-platform input[type="checkbox"]:checked + .checkbox-custom {
+  opacity: 1;
+}
+
+.checkbox-platform input[type="checkbox"]:not(:checked) + .checkbox-custom {
+  opacity: 0.5;
+}
+
 
 .checkbox-custom {
   display: flex;
@@ -105,7 +131,7 @@
   animation: blink 1s linear infinite;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 280px) {
 	.checkbox-label {
 		transform: scale(0.8);
 	}
@@ -166,16 +192,17 @@
 #searchBarContainer {
   width: 0;
   overflow: hidden;
-  transition: width 0.3s ease;
 }
 
 #searchBarContainer.active {
-  width: 600px;
-  margin-right: 10px; 
+  width: 100%;
+  padding-left: 20%;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 #searchBar {
-  width: 100%;
+  width: 80%;
   height: 30px;
   padding: 5px;
   border: none;
@@ -184,6 +211,8 @@
   font-size: 14px;
   color: #333;
   outline: none;
+  text-align: -webkit-center;
+  text-shadow: 0 0 black;
 }
 
 #searchBar:focus {
@@ -212,5 +241,6 @@
 .tag.tag-age.tag-age-nineteen {
 	background-image: url('../../img/wish_true.png');
 	width: 3rem;
-	height: 3rem; 
+	height: 3rem;
+	border-radius: 2rem;
 }
