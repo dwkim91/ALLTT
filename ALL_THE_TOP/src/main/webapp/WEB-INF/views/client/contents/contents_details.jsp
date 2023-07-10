@@ -5,6 +5,52 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+function formatEnrollDt(dateString) {
+	  var dateParts = dateString.split(" ");
+	  var monthNames = [
+	    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+	    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	  ];
+
+	  var year = dateParts[3];
+	  var month = monthNames.indexOf(dateParts[1]);
+	  var day = dateParts[2];
+	  var timeParts = dateParts[4].split(":");
+	  var hour = timeParts[0];
+	  var minute = timeParts[1];
+	  var second = timeParts[2];
+
+	  var givenTime = new Date(year, month, day, hour, minute, second);
+	  var currentTime = new Date();
+	  var timeDiff = currentTime.getTime() - givenTime.getTime();
+
+	  var seconds = Math.floor(timeDiff / 1000);
+	  var minutes = Math.floor(seconds / 60);
+	  var hours = Math.floor(minutes / 60);
+	  var days = Math.floor(hours / 24);
+	  var months = Math.floor(days / 30);
+	  var years = Math.floor(months / 12);
+
+	  if (seconds < 60) {
+	    return seconds + "초 전";
+	  } else if (minutes < 60) {
+	    return minutes + "분 전";
+	  } else if (hours < 24) {
+	    return hours + "시간 전";
+	  } else if (days < 30) {
+	    return days + "일 전";
+	  } else if (months < 12) {
+	    return months + "달 전";
+	  } else {
+	    return years + "년 전";
+	  }
+	}
+
+	var dateString = "Mon Jul 10 17:12:50 KST 2023";
+	var formattedEnrollDt = formatEnrollDt(dateString);
+	console.log(formattedEnrollDt);
+</script>
 <meta charset="UTF-8">
 <style>
 .contents_wrap.wrap_margin {
@@ -46,20 +92,24 @@
 											<h5>게시글</h5>
 										</div>
 										<ul>
-											<li><a href="">
-													<div class="anime__review__item">
-														<div class="anime__review__item__text">
-															<h6>
-																닉네임<span> - 1시간 전</span><span class="subject_over"
-																	style="width: 100%;">게시글 제목이길때는 어찌되는지
-																	확인해보아자아자아자아자아장장자</span>
-															</h6>
+											<c:forEach var="post" items="${postList}">
+												<li>
+													<a href="/community/post?postId=${post.postId}">
+														<div class="anime__review__item">
+															<div class="anime__review__item__text">
+																<h6>
+																	${post.nickName}<span> - <script>document.write(formatEnrollDt('${post.enrollDt}'));</script></span>
+																<span class="subject_over" style="width: 100%;">
+																	${post.content}
+																</span>
+																</h6>
+															</div>
 														</div>
-													</div>
-											</a>
-									</div>
-									<li>
+													</a>
+												<li>
+											</c:forEach>
 										</ul>
+									</div>
 								</div>
 							</div>
 						</div>

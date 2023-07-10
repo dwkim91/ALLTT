@@ -366,13 +366,12 @@ public class MemberController {
 		wishMap.put("contentId", contentId);
 		wishMap.put("memberId", memberId);
 		
-		boolean test = memberService.isWishContent(wishMap);
+		boolean wishCheck = memberService.isWishContent(wishMap);
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		
-		System.out.println(test);
-		if (test) {
+		if (wishCheck) {
 			memberService.addWishContentByMemberId(wishMap);
 			return ResponseEntity.ok("찜 컨텐츠가 추가되었습니다.");
 		}
@@ -382,6 +381,19 @@ public class MemberController {
 			return ResponseEntity.ok("찜 컨텐츠가 삭제되었습니다.");
 		}
 
-	}
+	} 
 	
+	@PostMapping("/checkSession")
+	@ResponseBody
+	public Boolean checkSession(HttpSession session) {
+		
+		boolean isLogin = false;
+		
+		if (session.getAttribute("memberId") != null) {
+			isLogin = true;
+		}
+		
+		System.out.println(isLogin);
+		return isLogin;
+	}
 }
