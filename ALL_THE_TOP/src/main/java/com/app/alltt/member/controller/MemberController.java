@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -333,16 +334,51 @@ public class MemberController {
 	    return "필터 정보가 수정되었습니다.";
 	}
 	
-	@RequestMapping(value="/filterUpdate", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	// 장르리스트 업데이트용 필터 수정
+	@RequestMapping(value="/filterUpdate", method=RequestMethod.GET)
 	@ResponseBody
-	public List<FilterDTO> updateSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public List<FilterDTO> updateSearchFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+	    
+		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    System.out.println(filterDTO);
-	    //memberService.changeContentFilterByMemberId(filterDTO);
 	    List<FilterDTO> filterList = mainService.getMoreGenreList(filterDTO);
+	    checkSessionTime(session);
 	    return filterList;
+	    
 	}
+	
+	@PostMapping("/sessionRemainingTime")
+	@ResponseBody
+	public int checkSessionTime(HttpSession session) {
+		
+		boolean isExist = false;
+		int remainingTime = 0;
+		Enumeration<String> attributeNames = session.getAttributeNames();
+		
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+	        if (attributeName.equals("memberId")) {
+	            int maxInactiveInterval = session.getMaxInactiveInterval();
+//	        	int maxInactiveInterval = 180;
+	            int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - session.getLastAccessedTime()) / 1000);
+	            isExist = true;
+	            remainingTime = maxInactiveInterval - elapsedTimeInSeconds;
+//	            System.out.print("maxInactiveInterval = " + maxInactiveInterval);
+//	            System.out.println("elapsedTimeInSeconds = " + elapsedTimeInSeconds);
+//	            session.invalidate();
+	        }
+		}
+		if (!isExist) {
+			System.out.println("세션이 만료되었습니다.");
+		}
+		else {
+			System.out.println(remainingTime);
+		}
+		return 0;
+	}
+	
+	
 	// session 검증용 method
 	public void getSessionStatus(HttpSession session) {
 		try {
