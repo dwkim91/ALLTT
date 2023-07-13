@@ -244,3 +244,24 @@
 	height: 3rem;
 	border-radius: 2rem;
 }
+
+.css-110e4jt {
+	padding: 0.5rem 0.667rem;
+    border-radius: 3px;
+    border: 1px solid rgb(78, 78, 78);
+    font-size: 1.5rem;
+    line-height: 1.4;
+    opacity: 0.7;
+    transition: opacity 0.1s ease 0s;
+    margin-left: 1rem;
+}
+.css-vmfm9q {
+	padding: 0.5rem 0.667rem;
+    border-radius: 3px;
+    border: 1px solid rgb(78, 78, 78);
+    font-size: 1.5rem;
+    line-height: 1.4;
+    opacity: 0.7;
+    transition: opacity 0.1s ease 0s;
+    margin-left: 1rem;
+}

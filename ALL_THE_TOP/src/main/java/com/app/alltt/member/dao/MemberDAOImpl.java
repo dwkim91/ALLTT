@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.app.alltt.main.dto.FilterDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 @Repository
@@ -37,8 +38,8 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public void insertWishContent(Map<String, Long> wishMap) {
-		sqlSession.insert("memberMapper.insertWishContent", wishMap);
+	public void insertWishContent(FilteredDTO filteredDTO) {
+		sqlSession.insert("memberMapper.insertWishContent", filteredDTO);
 	}
 
 	@Override
@@ -92,10 +93,10 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public boolean selectOneIsWishContent(Map<String, Long> wishMap) {
+	public boolean selectOneIsWishContent(FilteredDTO filteredDTO) {
 		boolean isWishContent;
 		
-		if (sqlSession.selectOne("memberMapper.selectOneIsWishContent",wishMap) == null) {
+		if (sqlSession.selectOne("memberMapper.selectOneIsWishContent",filteredDTO) == null) {
 			isWishContent = true;
 		}
 		else {
@@ -118,6 +119,16 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public void updateContentFilter(FilterDTO filterDTO) {
 		sqlSession.update("memberMapper.updateContentFilter", filterDTO);
+	}
+
+	@Override
+	public List<FilteredDTO> selectListWishContentByFilterDTO(FilterDTO filterDTO) {
+		return sqlSession.selectList("memberMapper.selectListWishContentByFilterDTO", filterDTO);
+	}
+
+	@Override
+	public void deleteWishContent(FilteredDTO filteredDTO) {
+		sqlSession.delete("memberMapper.deleteWishContent",filteredDTO);
 	}
 	
 }

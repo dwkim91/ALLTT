@@ -37,7 +37,7 @@
 			<a href="/main">
 				<h1 class="css-116irpw e10hkk352">홈</h1>
 			</a>
-			<a href="/wish">
+			<a href="/member/wish">
 				<div class="live">
 					<span>찜 컨텐츠</span>
 				</div>
