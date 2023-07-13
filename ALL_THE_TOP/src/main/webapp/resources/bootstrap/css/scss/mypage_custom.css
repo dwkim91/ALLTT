@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 .profile-outer-wrap .profile-inner-wrap {
-	background: #101322;
+	background: black;
 }
 
 .nickname-button {
@@ -15,13 +15,15 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #4263eb;
+	background: #e53637;
 }
 
 .user-name .nickName {
 	padding-left: 10px;
 	height: 40px;
 	width: 400px;
+	color: #f3dbdb;
+	background: #212121;
 }
 
 .resize-checkbox {

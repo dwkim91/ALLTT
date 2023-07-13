@@ -36,7 +36,7 @@
 				MEMBER_ID = #{memberId}
 	</select>
 	
-	<insert id="insertWishContent" parameterType="Map">
+	<insert id="insertWishContent" parameterType="FilteredDTO">
 		INSERT INTO WISH_LIST (
 				MEMBER_ID,
 				CONTENT_ID
@@ -47,7 +47,7 @@
 		)
 	</insert>
 	
-	<delete id="deleteWishContent" parameterType="Map">
+	<delete id="deleteWishContent" parameterType="FilteredDTO">
 		DELETE FROM
 				WISH_LIST
 		WHERE
@@ -157,7 +157,7 @@
 				MEMBER_ID = #{memberId}
 	</select>
 	
-	<select id="selectOneIsWishContent" parameterType="Map" resultType="long">
+	<select id="selectOneIsWishContent" parameterType="FilteredDTO" resultType="long">
 		SELECT
 				CONTENT_ID
 		FROM
@@ -215,4 +215,20 @@
 				CONTENT_TYPE = #{contentType}
 	</update>
 	
+	<select id="selectListWishContentByFilterDTO" parameterType="FilterDTO" resultType="FilteredDTO">
+		SELECT
+				WL.MEMBER_ID,
+		        WL.CONTENT_ID,
+		        C.TITLE,
+		        C.CONTENT_TYPE,
+		        CL.IMG_URL,
+		        CL.URL
+		FROM
+				WISH_LIST WL
+			JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
+		    JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
+		WHERE
+				MEMBER_ID = #{memberId}			AND
+		        CONTENT_TYPE = #{contentType}
+	</select>
 </mapper>

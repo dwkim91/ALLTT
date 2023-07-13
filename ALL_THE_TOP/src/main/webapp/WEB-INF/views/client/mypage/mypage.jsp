@@ -70,7 +70,7 @@
 						</div>
 					</section>
 					<section data-v-014a8b00="" class="profile-contents-wrap"
-						style="background: #101322;">
+						style="background: black;">
 						<div data-v-014a8b00="" class="profile-contents-container">
 							<a data-v-014a8b00="" href="/wish" class="content-wrap"
 								id="interestLabel" title=""><span data-v-014a8b00=""

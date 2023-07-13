@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/swiper.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/c958e41d94d69c7e.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/custom.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/header_custom.css" type="text/css">
 
 </head>
 <body>
@@ -36,7 +37,7 @@
 			<a href="/main">
 				<h1 class="css-116irpw e10hkk352">홈</h1>
 			</a>
-			<a href="/wish">
+			<a href="/member/wish">
 				<div class="live">
 					<span>찜 컨텐츠</span>
 				</div>
@@ -67,7 +68,8 @@
 					</div>
 				</div>
 				<c:if test='${sessionScope.memberId != null}'>
-					<div class="menu_my_content wrap_margin">
+					<div class="menu_my_content wrap_margin" 
+					style="background: #212121;">
 						<div class="profile">
 							<div class="profile_img css-vvktly e10hkk353">
 								<picture class="loaded css-ovhph3 euf32k20">
@@ -80,9 +82,9 @@
 						</div>
 						<hr>
 						<ul class="menu_my_btn_wrap">
-							<li><a class="btn_my" href="${contextPath}/member/mypage">마이페이지</a></li>
-							<li><a href="/help">고객센터</a></li>
-							<li><a class="btn_logout" href="/member/logout">로그아웃</a></li>
+							<li><a class="btn_my" href="${contextPath}/member/mypage" style="color: #f0a9a9;">마이페이지</a></li>
+							<li><a href="/help" style="color: #f0a9a9;">고객센터</a></li>
+							<li><a class="btn_logout" href="/member/logout" style="color: #f0a9a9;">로그아웃</a></li>
 						</ul>
 					</div>
 				</c:if>
