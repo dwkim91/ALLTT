@@ -31,7 +31,7 @@
 </select>
 
 <!-- community feed 로 들어갈 때, 전체 게시글 리스트 가져오기 -->
-<select id="selectListAllPost" parameterType="long" resultType="PostDTO">
+<select id="selectListAllPost" parameterType="PostDTO" resultType="PostDTO">
 	SELECT
 		p.POST_ID AS POST_ID,
 		p.POST_TITLE AS POST_TITLE,
@@ -61,6 +61,11 @@
 	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
 	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
 	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
+	<where>
+	<if test='postTag != null and postTag != ""'>
+		C.TITLE LIKE CONCAT('%', #{postTag}, '%')
+	</if>
+	</where>
 	GROUP BY p.POST_ID
 	ORDER BY ENROLL_DT DESC;
 </select>
