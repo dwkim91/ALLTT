@@ -53,7 +53,6 @@ public class CommunityController {
 		}
 		
 		String tag = request.getParameter("tag");
-		System.out.println(tag);
 
 		// 태그 검색도 여기서 받아서 처리
 		// tag가 있다면 로드되는 페이지가 달라져야 함
@@ -65,11 +64,14 @@ public class CommunityController {
 			// 로그인한 멤버가 쓴 댓글 수를 보여주기 위해
 			model.addAttribute("replyCnt", communityService.getReplyCntByMemberId(memberId));
 			// 모든 게시글 리스트
-			model.addAttribute("postList", communityService.getAllPostList(memberId));
+			model.addAttribute("postList", communityService.getAllPostList(memberId, ""));
 			
 			return "/alltt/community";
 		}
 		else {
+			// tag 와 연관된 게시글 리스트
+			model.addAttribute("tag", tag);
+			model.addAttribute("postList", communityService.getAllPostList(memberId, tag));
 			
 			return "/alltt/tag";
 		}

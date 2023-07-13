@@ -12,9 +12,6 @@
 <script>
 $(function() {
 	
-	// modal 창 가리기
-	$("#addContentId").css("display", "none");
-	
 	$(".back-btn").click(function() {
 		location.href="${contextPath}/community/post?postId=${post.postId}";
 	});
@@ -229,10 +226,6 @@ $(function() {
 									<path fill-rule="evenodd" clip-rule="evenodd"
 										d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z"
 										fill="#98A4B7" data-v-4179835d=""></path></svg>
-								<div data-v-4ddcaa90="" data-v-4179835d="" class="tooltip hash-tag-button__tooltip tooltip--left-top">
-									<i data-v-4ddcaa90=""
-										class="kino-icon tooltip__close mask kino-icon--close-normal"></i>
-								</div>
 							</button>
 						</div>
 						<div data-v-4179835d="" class="post_editor__footer">
@@ -263,7 +256,7 @@ $(function() {
 					</c:if>
 					</div>
 					<!---->
-					<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId">
+					<div data-v-2e4bbd00="" data-v-4179835d="" class="post-tag-modal post-modal" id="addContentId" style="display: none;">
 						<div data-v-2e4bbd00="" class="modal">
 							<div data-v-2e4bbd00="" class="modal__header">
 								<h3 data-v-2e4bbd00="" class="header__title">태그 등록</h3>
