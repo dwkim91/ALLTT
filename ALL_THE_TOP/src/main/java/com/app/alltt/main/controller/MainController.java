@@ -86,7 +86,7 @@ public class MainController {
 		
 		// 컨텐츠의 모든정보 (1개씩)
 		FilteredDTO filteredDTO = mainService.getContentDetail(contentId);
-		mv.addObject("filteredDataDTO", filteredDTO);
+		mv.addObject("filteredDTO", filteredDTO);
 		
 		// 컨텐츠의 장르 (모두)
 		List<String> genreNmList = mainService.getGenreNmList(contentId);
@@ -173,11 +173,6 @@ public class MainController {
 	@GetMapping("/login")
 	public String login() {
 		return "/alltt/login";
-	}
-	
-	@GetMapping("/wish")
-	public String wish() {
-		return "/alltt/wish";
 	}
 	
 	@PostMapping("/contentSearch")

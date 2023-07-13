@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.alltt.main.dto.FilterDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dao.MemberDAO;
 import com.app.alltt.member.dto.MemberDTO;
 
@@ -152,12 +153,12 @@ public class MemberServiceImpl implements MemberService {
 		
 	}
 	@Override
-	public void addWishContentByMemberId(Map<String, Long> wishMap) {
-		memberDAO.insertWishContent(wishMap);
+	public void addWishContentByMemberId(FilteredDTO filteredDTO) {
+		memberDAO.insertWishContent(filteredDTO);
 	}
 	@Override
-	public void deleteWishContentByMemberId(Map<String, Long> wishMap) {
-		memberDAO.deleteWishContent(wishMap);
+	public void deleteWishContentByMemberId(FilteredDTO filteredDTO) {
+		memberDAO.deleteWishContent(filteredDTO);
 	}
 
 	@Override
@@ -220,8 +221,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public boolean isWishContent(Map<String, Long> wishMap) {
-		return memberDAO.selectOneIsWishContent(wishMap);
+	public boolean isWishContent(FilteredDTO filteredDTO) {
+		return memberDAO.selectOneIsWishContent(filteredDTO);
 	}
 
 	@Override
@@ -256,6 +257,20 @@ public class MemberServiceImpl implements MemberService {
 		memberDAO.insertContentFilter(filterDTO);
 		filterDTO.setContentType("movie");
 		memberDAO.insertContentFilter(filterDTO);
+		
+	}
+
+	@Override
+	public List<FilteredDTO> getWishContentByFilterDTO(FilterDTO filterDTO) {
+		return memberDAO.selectListWishContentByFilterDTO(filterDTO);
+	}
+
+	@Override
+	public void removeWishContentByFilterDTOList(List<FilteredDTO> filteredDTOList) {
+		
+		for (FilteredDTO filteredDTO : filteredDTOList) {
+			memberDAO.deleteWishContent(filteredDTO);
+		}
 		
 	}
 	

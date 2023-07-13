@@ -1,5 +1,6 @@
 package com.app.alltt.member.controller;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.main.service.MainService;
 import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.member.service.MemberService;
@@ -358,26 +361,23 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value="/wishStateChange", method=RequestMethod.POST, produces = "application/text; charset=utf8")
-	public ResponseEntity<String> wishStateChange(@RequestParam("contentId") long contentId, HttpSession session) {
+	public ResponseEntity<String> wishStateChange(@ModelAttribute FilteredDTO filteredDTO, HttpSession session) {
 		long memberId = (long)session.getAttribute("memberId");
 		
-		Map<String, Long> wishMap = new HashMap<>();
+		filteredDTO.setMemberId(memberId);
 		
-		wishMap.put("contentId", contentId);
-		wishMap.put("memberId", memberId);
-		
-		boolean wishCheck = memberService.isWishContent(wishMap);
+		boolean wishCheck = memberService.isWishContent(filteredDTO);
 		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		
 		if (wishCheck) {
-			memberService.addWishContentByMemberId(wishMap);
+			memberService.addWishContentByMemberId(filteredDTO);
 			return ResponseEntity.ok("찜 컨텐츠가 추가되었습니다.");
 		}
 		else {
 			
-			memberService.deleteWishContentByMemberId(wishMap);
+			memberService.deleteWishContentByMemberId(filteredDTO);
 			return ResponseEntity.ok("찜 컨텐츠가 삭제되었습니다.");
 		}
 
@@ -395,5 +395,46 @@ public class MemberController {
 		
 		System.out.println(isLogin);
 		return isLogin;
+	}
+	
+	@GetMapping("/wish")
+	public ModelAndView wish(HttpSession session) {
+		
+		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
+		FilterDTO filterDTO = new FilterDTO();
+		
+		filterDTO.setContentType("series");
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		mv.addObject("wishContentList", memberService.getWishContentByFilterDTO(filterDTO));
+		mv.setViewName("/alltt/wish");
+		
+		return mv;
+	}
+	
+	@PostMapping("/getWishList")
+	@ResponseBody
+	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+
+		return memberService.getWishContentByFilterDTO(filterDTO);
+	}
+	
+	@PostMapping("/removeWishContent")
+	public ResponseEntity<String> removeWishContent(@RequestBody List<FilteredDTO> filteredDTOList, HttpSession session) {
+		
+		for (FilteredDTO filteredDTO : filteredDTOList) {
+			filteredDTO.setMemberId((long)session.getAttribute("memberId"));
+		}
+		
+		memberService.removeWishContentByFilterDTOList(filteredDTOList);
+		
+		return ResponseEntity.ok("Success");
 	}
 }

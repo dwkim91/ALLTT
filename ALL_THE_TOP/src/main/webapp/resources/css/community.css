@@ -53,7 +53,8 @@ sup {
 	top:-.5em
 }
 img {
-	border-style:none
+	border-style:none;
+	width: 0%;
 }
 button,input,optgroup,select,textarea {
 	font-family:inherit;
