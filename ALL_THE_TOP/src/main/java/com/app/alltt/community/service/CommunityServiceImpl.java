@@ -73,11 +73,11 @@ public class CommunityServiceImpl implements CommunityService {
 	}
 
 	@Override
-	public List<PostDTO> getAllPostList(long memberId, String postTag) {
+	public List<PostDTO> getAllPostList(long memberId, long contentId) {
 		
 		PostDTO post = new PostDTO();
 		post.setMemberId(memberId);
-		post.setPostTag(postTag);
+		post.setContentId(contentId);
 		
 		return communityDAO.selectListAllPost(post);
 	}

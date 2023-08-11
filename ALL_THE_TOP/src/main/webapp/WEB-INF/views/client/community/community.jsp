@@ -109,15 +109,13 @@ $(function() {
 						<c:choose>
 						<c:when test="${post.myRecmnd != 0}">
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary active">
-								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
-								</div>
+								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
 								<span data-v-de3ba2dc="" id="likeCnt${post.postId}">${post.recmndCnt}</span>
 							</button>
 						</c:when>
 						<c:otherwise>
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary">
-								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
-								</div>
+								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
 								<span data-v-de3ba2dc="" id="likeCnt${post.postId}">${post.recmndCnt}</span>
 							</button>
 						</c:otherwise>

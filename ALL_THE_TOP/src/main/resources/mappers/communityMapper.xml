@@ -62,8 +62,8 @@
 	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
 	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
 	<where>
-	<if test='postTag != null and postTag != ""'>
-		C.TITLE LIKE CONCAT('%', #{postTag}, '%')
+	<if test='contentId != null and contentId != ""'>
+		C.CONTENT_ID = #{contentId}
 	</if>
 	</where>
 	GROUP BY p.POST_ID
@@ -220,16 +220,27 @@
 		p.CONTENT_ID AS CONTENT_ID,
 		m.NICK_NAME AS NICK_NAME,
 		c.TITLE AS POST_TAG,
-        count(r.REPLY_ID) AS REPLY_CNT
+		(SELECT
+			count(REPLY_ID)
+		FROM
+			REPLY
+		WHERE
+			POST_ID = p.POST_ID) AS REPLY_CNT,
+		(SELECT 
+			count(RECMND_ID)
+		FROM
+			POST_RECMND
+		WHERE
+			POST_ID = P.POST_ID AND
+			MEMBER_ID = 17) AS MY_RECMND
 	FROM
 		POST p
 	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
 	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
-	LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
 	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
 	WHERE p.MEMBER_ID = #{memberId}
-    GROUP BY p.POST_ID
-   	ORDER BY ENROLL_DT DESC;
+	GROUP BY p.POST_ID
+	ORDER BY ENROLL_DT DESC;
 </select>
 
 <!-- 내가 쓴 댓글 목록 가져오기 -->

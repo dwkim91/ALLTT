@@ -76,7 +76,7 @@ function setSubscription() {
 
 	$.ajax({
 		url : '/member/setSubscription',
-		method : 'POST',
+		type : 'POST',
 		data : JSON.stringify(filterData),
 		contentType : 'application/json',
 		success : function(response) {
@@ -134,7 +134,7 @@ function setSearchFilter(contentType){
 	
 	$.ajax({
 		url : '/member/setSearchFilter',
-		method : 'POST',
+		type : 'POST',
 		data : JSON.stringify(filterData),
 		contentType : 'application/json',
 		success : function(response) {
@@ -150,15 +150,15 @@ function getSelectVal(selector){
 	return selectedItem.getAttribute('data-value');
 }
 
+//체크박스 변경 시 장르 리스트 동적 변경
 $('[name="series"], [name="movie"]').change(function() {
 	var checkboxName = $(event.target).attr('name');
 	// 체크박스 변경 시 실행될 함수 호출
-	console.log("Checkbox changed in group:" + checkboxName+"1");
 	updateMemberFilter(checkboxName);
 	
 });
 
-//시리즈/영화 체크박스 가져오기
+// 시리즈/영화 필터 장르 부분 OTT선택별 동적 변경 메서드
 function updateMemberFilter(contentType) {
 	
 	var netflixCheckbox = document.querySelector('#'+contentType+'-filter #netflixCheckbox');
@@ -171,15 +171,21 @@ function updateMemberFilter(contentType) {
 		"wavveId" : wavveCheckbox.checked ? Number(wavveCheckbox.value) : 0,
 		"contentType" : contentType,
 	};
-	console.log(filterData);
 	
 	$.ajax({
 		url : '/member/filterUpdate',
-		method : 'POST',
-		data : JSON.stringify(filterData),
-		contentType : 'application/json',
-		success : function(response) {
-			alert(response);
+		type : 'GET',
+		data : filterData,
+		success : function(filterList) {
+			// 기존의 옵션 제거
+			$('.' + contentType + '-g-select ul').empty();
+			var newLiOption = $();// jQuery 객체로 초기화
+			$('.' + contentType + '-g-select .current').text('전체');
+			newLiOption = newLiOption.add($('<li>').attr('data-value', 0).addClass('option').addClass('selected').html('전체'));
+			$(filterList).each(function(){
+			    newLiOption = newLiOption.add($('<li>').attr('data-value', this.genreId).addClass('option').html(this.genreNm));
+			});
+			$('.' + contentType + '-g-select ul').append(newLiOption);
 		}
 	});
 	

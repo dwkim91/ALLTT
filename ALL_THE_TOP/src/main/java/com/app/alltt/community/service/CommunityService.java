@@ -25,7 +25,7 @@ public interface CommunityService {
 	// 게시글 삭제
 	public boolean removePost(PostDTO post);
 	// 전체 게시글 리스트 가져오기
-	public List<PostDTO> getAllPostList(long memberId, String postTag);
+	public List<PostDTO> getAllPostList(long memberId, long contentId);
 	// 게시글 검색 탭에서, 가장 태그 많이 된 작품들 불러오기
 	public List<ContentDTO> getMostTaggedContent();
 	
