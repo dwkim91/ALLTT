@@ -1,6 +1,6 @@
 import { contentsLoadAjax } from './contentsAjax.js';
 
-var delay = 1000;		 // 딜레이 시간 설정 (밀리초 단위)
+var delay = 100;		 // 딜레이 시간 설정 (밀리초 단위)
 var timer;				 // 타이머 변수 선언
 
 $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실행
