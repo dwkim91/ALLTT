@@ -196,7 +196,7 @@
 								<div data-v-014a8b00="" class="link-label-wrap"
 									style="height: 30px;">
 									<div class="series-g-select">
-										<select id="s-genreId" style="display: none;">
+										<select id="series-genreId" style="display: none;">
 											<option value="0">전체</option>
 										<c:forEach var="s_genreDTO" items="${seriesList}">
 											<option value="${s_genreDTO.genreId}">${s_genreDTO.genreNm}</option>
@@ -264,7 +264,7 @@
 									<div class="movie-g-select">
 										<select id="m-genreId" style="display: none;">
 											<option value="0">전체</option>
-										<c:forEach var="m_genreDTO" items="${movieList}">
+										<c:forEach var="movie_genreDTO" items="${movieList}">
 											<option value="${m_genreDTO.genreId}">${m_genreDTO.genreNm}</option>
 										</c:forEach>
 										</select>

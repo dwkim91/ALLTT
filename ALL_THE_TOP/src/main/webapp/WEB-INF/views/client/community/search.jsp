@@ -38,7 +38,7 @@
 				<ul data-v-21cc99af="" class="tag-list__container">
 				<c:forEach var="content" items="${tagContent}" varStatus="i">
 					<li data-v-21cc99af="">
-						<a data-v-93ed3f00="" data-v-21cc99af="" href="/community/feed?tag=%ED%82%A4%EB%85%B8%EB%9E%91" class="tag" id="hotTag_${i}">
+						<a data-v-93ed3f00="" data-v-21cc99af="" href="${contextPath}/community/feed?tag=${content.title}" class="tag" id="hotTag_${i}">
 						<div data-v-93ed3f00="" class="tag__icon">
 						<svg data-v-93ed3f00="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class="">
 							<path data-v-93ed3f00="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#98A4B7"/>

@@ -218,11 +218,12 @@
 	<select id="selectListWishContentByFilterDTO" parameterType="FilterDTO" resultType="FilteredDTO">
 		SELECT
 				WL.MEMBER_ID,
-		        WL.CONTENT_ID,
-		        C.TITLE,
-		        C.CONTENT_TYPE,
-		        CL.IMG_URL,
-		        CL.URL
+			    WL.CONTENT_ID,
+			    C.TITLE,
+			    C.CONTENT_TYPE,
+			    MIN(CL.IMG_URL) AS IMG_URL,
+			    MAX(CL.URL) AS URL,
+	            MAX(CL.PLATFORM_ID)
 		FROM
 				WISH_LIST WL
 			JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
@@ -230,5 +231,7 @@
 		WHERE
 				MEMBER_ID = #{memberId}			AND
 		        CONTENT_TYPE = #{contentType}
+		group by
+				WL.CONTENT_ID
 	</select>
 </mapper>

@@ -78,6 +78,9 @@
 							</div>
 							<div class="profile_info">
 								<p class="profile_info_name">닉네임 입력</p>
+								<button type="button" class="profile_info_change">
+									<span><img src="${contextPath}/resources/bootstrap/img/timer.png" style="width: 14px;" >세션 시간 확인</span>
+								</button>
 							</div>
 						</div>
 						<hr>
