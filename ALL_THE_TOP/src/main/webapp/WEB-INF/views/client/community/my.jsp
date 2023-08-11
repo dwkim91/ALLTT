@@ -33,6 +33,30 @@ $(function() {
 	});
 });
 </script>
+<script>
+	// 좋아요 표시
+	function likePostBtn(postId){
+		  	// 클릭된 버튼에만 클래스 변경을 적용하기 위해 id 값을 사용
+		  	var btnId = "likeBtn" + postId;
+		  	var targetBtn = $("#" + btnId);
+			targetBtn.toggleClass("active");
+			
+			var param = {
+				"memberId" : "${member.memberId}",
+				"postId" : postId
+			};
+			
+			$.ajax({
+				 url : "${contextPath}/community/postRecmnd",
+				 async : true,
+				 type : "POST",
+				 data : param,
+				 success : function(result) {
+					targetBtn.find("span").html(result);
+				 }
+			});
+	}
+</script>
 </head>
 <body>
 
@@ -88,10 +112,21 @@ $(function() {
 												<svg data-v-b0785d82="" data-v-de3ba2dc="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class="icon-color-navy06"><path data-v-b0785d82="" data-v-de3ba2dc="" fill-rule="evenodd" clip-rule="evenodd" d="M13 5a9 9 0 00-5.79 15.89c.342 2.296-.657 4.867-1.055 5.773a.207.207 0 00.22.286c3.867-.575 6.027-2.341 7.22-3.949H19a9 9 0 100-18h-6z" fill="#eee"></path></svg><span data-v-de3ba2dc="">${myPost.replyCnt}</span>
 											</div>
 										</div>
-										<div data-v-b0785d82="" class="badge-wrap">
-											<button data-v-de3ba2dc="" data-v-b0785d82="" class="badge-wrap reactionButton button textColorPrimary">
-											<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
-											<span data-v-de3ba2dc="">${myPost.recmndCnt}</span></button>
+										<div data-v-29756cf4="" class="badge-wrap">
+										<c:choose>
+										<c:when test="${myPost.myRecmnd != 0}">
+											<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${myPost.postId}" onclick="likePostBtn('${myPost.postId}')" class="badge-wrap reactionButton button textColorPrimary active">
+												<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
+												<span data-v-de3ba2dc="" id="likeCnt${myPost.postId}">${myPost.recmndCnt}</span>
+											</button>
+										</c:when>
+										<c:otherwise>
+											<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${myPost.postId}" onclick="likePostBtn('${myPost.postId}')" class="badge-wrap reactionButton button textColorPrimary">
+												<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
+												<span data-v-de3ba2dc="" id="likeCnt${myPost.postId}">${myPost.recmndCnt}</span>
+											</button>
+										</c:otherwise>
+										</c:choose>
 										</div>
 										</footer>
 										</article>
