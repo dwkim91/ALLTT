@@ -130,5 +130,10 @@ public class MemberDAOImpl implements MemberDAO {
 	public void deleteWishContent(FilteredDTO filteredDTO) {
 		sqlSession.delete("memberMapper.deleteWishContent",filteredDTO);
 	}
+
+	@Override
+	public List<FilteredDTO> selectListWishContentByMemberId(long memberId) {
+		return sqlSession.selectList("memberMapper.selectListWishContentByMemberId", memberId);
+	}
 	
 }

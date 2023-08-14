@@ -447,7 +447,17 @@ public class MemberController {
 		filterDTO.setContentType("series");
 		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
+		// 로그인한 맴버의 찜 리스트
 		mv.addObject("wishContentList", memberService.getWishContentByFilterDTO(filterDTO));
+		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
+		mv.addObject("netflixWishCnt", memberService.getNetflixWishCntByMemberId(filterDTO.getMemberId()));
+		// 로그인한 멤버가 선택한 티빙 찜 작품 수
+		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(filterDTO.getMemberId()));
+		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
+		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(filterDTO.getMemberId()));
+		// 로그인한 맴버가 선택한 작품을 보기위한 최소한의 구독플랫폼
+		mv.addObject("wishPlatform", memberService.getWishMinimumSubscriptionByMemberId(filterDTO.getMemberId()));
+		
 		mv.setViewName("/alltt/wish");
 		
 		return mv;
