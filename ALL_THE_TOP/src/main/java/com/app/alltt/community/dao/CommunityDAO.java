@@ -45,4 +45,6 @@ public interface CommunityDAO {
 	public void updateReply(ReplyDTO reply);
 	public void deleteReply(long replyId);
 	
+	public List<PostDTO> selectPostListByTag(String title);
+	public List<PostDTO> selectPostList(String title);
 }

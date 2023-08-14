@@ -181,4 +181,14 @@ public class CommunityServiceImpl implements CommunityService {
 		return communityDAO.selectMostTaggedContent();
 	}
 
+	@Override
+	public List<PostDTO> getPostListByTag(String title) {
+		return communityDAO.selectPostListByTag(title);
+	}
+
+	@Override
+	public List<PostDTO> getPostList(String title) {
+		return communityDAO.selectPostList(title);
+	}
+
 }
