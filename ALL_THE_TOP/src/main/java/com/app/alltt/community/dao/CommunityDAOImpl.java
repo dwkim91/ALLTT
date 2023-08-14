@@ -138,4 +138,14 @@ public class CommunityDAOImpl implements CommunityDAO {
 		return sqlSession.selectList("communityMapper.selectMostTaggedContent");
 	}
 
+	@Override
+	public List<PostDTO> selectPostListByTag(String title) {
+		return sqlSession.selectList("communityMapper.selectPostListByTag", title);
+	}
+
+	@Override
+	public List<PostDTO> selectPostList(String title) {
+		return sqlSession.selectList("communityMapper.selectPostList", title);
+	}
+
 }
