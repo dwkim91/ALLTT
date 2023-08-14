@@ -1,6 +1,6 @@
 import { contentsLoadAjax } from './contentsAjax.js';
 
-var delay = 1000;		 // 딜레이 시간 설정 (밀리초 단위)
+var delay = 100;		 // 딜레이 시간 설정 (밀리초 단위)
 var timer;				 // 타이머 변수 선언
 
 $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실행
@@ -20,7 +20,6 @@ $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실
 				"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
 				"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 				"contentType"	:	$('#contentType').val(),
-				"searchKey"		:	$('#searchKey').val(),
 				"sortType"		:	$('#sortType').val(),
 				"genreId"		:	Number($('#genreId').val()),
 				"lastItemCnt"	:	document.querySelectorAll('.item').length,
@@ -30,15 +29,16 @@ $(window).scroll(function() {	// 현재 스크롤 값이 변하면 이벤트 실
     }, delay);
 });
 
-$('.checkbox-container').change(function() {
-	var container = $("#container").empty();
+$('.checkbox-platform').change(function() {
+	$('.scrollLoadFalse').removeClass('scrollLoadFalse').addClass('footer');
+	$("#container").empty();
+	
 	var filterData = {
 			"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 			"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 			"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
 			"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 			"contentType"	:	$('#contentType').val(),
-			"searchKey"		:	$('#searchKey').val(),
 			"sortType"		:	$('#sortType').val(),
 			"genreId"		:	Number($('#genreId').val()),
 			"lastItemCnt"	:	document.querySelectorAll('.item').length
@@ -46,15 +46,16 @@ $('.checkbox-container').change(function() {
 	contentsLoadAjax(filterData);
 });
 
-$('.select-container').change(function() {
-	var container = $("#container").empty();
+$('.select-filter').change(function() {
+	$('.scrollLoadFalse').removeClass('scrollLoadFalse').addClass('footer');
+	$("#container").empty();
+	
 	var filterData = {
 			"netflixId"		:	$('#netflixCheckbox').prop('checked') ? Number($('#netflixCheckbox').val()) :  Number('0'),
 			"tvingId"		:	$('#tvingCheckbox').prop('checked')	  ? Number($('#tvingCheckbox').val()) 	:  Number('0'),
 			"wavveId"		:	$('#wavveCheckbox').prop('checked')	  ? Number($('#wavveCheckbox').val()) 	:  Number('0'),
 			"isWishInclude"	:	Boolean($('#isWishInclude').val()),
 			"contentType"	:	$('#contentType').val(),
-			"searchKey"		:	$('#searchKey').val(),
 			"sortType"		:	$('#sortType').val(),
 			"genreId"		:	Number($('#genreId').val()),
 			"lastItemCnt"	:	document.querySelectorAll('.item').length

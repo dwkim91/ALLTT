@@ -35,13 +35,13 @@
 							<ul>
 								<li>
 									<a href="${contextPath}/member/naver/login" class="naver" style="font-size: 45px">
-  										<img src="resources/bootstrap/img/icon-id-naver.svg">
+  										<img src="${contextPath}/resources/bootstrap/img/icon-id-naver.svg">
   										NAVER
 									</a>
 								</li>
 								<li>
 									<a href="${contextPath}/member/kakao/login" class="kakao" style="font-size: 45px">
-  										<img src="resources/bootstrap/img/icon-id-kakao.svg">
+  										<img src="${contextPath}/resources/bootstrap/img/icon-id-kakao.svg">
   										KAKAO
 									</a>
 								</li>

@@ -5,11 +5,45 @@
   padding-top: 10px;
 }
 
+.filter-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  padding-top: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nice-select.select-filter {
+	display: flex;
+  	align-items: center;
+  	margin: 1rem;
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
   margin: 0 7px;
 }
+
+.checkbox-platform {
+	display: flex;
+  	align-items: center;
+  	margin: 3rem;
+}
+
+.checkbox-platform input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-platform input[type="checkbox"]:checked + .checkbox-custom {
+  opacity: 1;
+}
+
+.checkbox-platform input[type="checkbox"]:not(:checked) + .checkbox-custom {
+  opacity: 0.5;
+}
+
 
 .checkbox-custom {
   display: flex;
@@ -34,6 +68,8 @@
 .checkbox-label input[type="checkbox"]:not(:checked) + .checkbox-custom {
   opacity: 0.5;
 }
+
+
 
 .platform-container {
   display: flex;
@@ -95,7 +131,7 @@
   animation: blink 1s linear infinite;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 280px) {
 	.checkbox-label {
 		transform: scale(0.8);
 	}
@@ -143,4 +179,89 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 400px;
+}
+#searchContainer {
+  display: flex;
+  align-items: center;
+}
+
+#searchButton {
+  transition: margin-right 0.3s ease;
+}
+
+#searchBarContainer {
+  width: 0;
+  overflow: hidden;
+}
+
+#searchBarContainer.active {
+  width: 100%;
+  padding-left: 20%;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+#searchBar {
+  width: 80%;
+  height: 30px;
+  padding: 5px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f2f2f2;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  text-align: -webkit-center;
+  text-shadow: 0 0 black;
+}
+
+#searchBar:focus {
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.alert-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 20px;
+}
+
+.checkboxfalse {
+	display: none;
+}
+
+.selectfalse {
+	display: none;
+}
+
+.tag.tag-age.tag-age-nineteen {
+	background-image: url('../../img/wish_true.png');
+	width: 3rem;
+	height: 3rem;
+	border-radius: 2rem;
+}
+
+.css-110e4jt {
+	padding: 0.5rem 0.667rem;
+    border-radius: 3px;
+    border: 1px solid rgb(78, 78, 78);
+    font-size: 1.5rem;
+    line-height: 1.4;
+    opacity: 0.7;
+    transition: opacity 0.1s ease 0s;
+    margin-left: 1rem;
+}
+.css-vmfm9q {
+	padding: 0.5rem 0.667rem;
+    border-radius: 3px;
+    border: 1px solid rgb(78, 78, 78);
+    font-size: 1.5rem;
+    line-height: 1.4;
+    opacity: 0.7;
+    transition: opacity 0.1s ease 0s;
+    margin-left: 1rem;
 }

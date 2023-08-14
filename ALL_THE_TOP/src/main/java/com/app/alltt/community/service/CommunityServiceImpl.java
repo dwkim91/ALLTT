@@ -73,8 +73,13 @@ public class CommunityServiceImpl implements CommunityService {
 	}
 
 	@Override
-	public List<PostDTO> getAllPostList(long memberId) {
-		return communityDAO.selectListAllPost(memberId);
+	public List<PostDTO> getAllPostList(long memberId, long contentId) {
+		
+		PostDTO post = new PostDTO();
+		post.setMemberId(memberId);
+		post.setContentId(contentId);
+		
+		return communityDAO.selectListAllPost(post);
 	}
 
 	@Override
@@ -169,6 +174,11 @@ public class CommunityServiceImpl implements CommunityService {
 	@Override
 	public ReplyDTO getReply(long replyId) {
 		return communityDAO.selectOneReply(replyId);
+	}
+
+	@Override
+	public List<ContentDTO> getMostTaggedContent() {
+		return communityDAO.selectMostTaggedContent();
 	}
 
 }

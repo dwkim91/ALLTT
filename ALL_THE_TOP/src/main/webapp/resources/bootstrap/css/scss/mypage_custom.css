@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+.profile-outer-wrap .profile-inner-wrap {
+	background: black;
+}
+
+.nickname-button {
+	font-weight: bold;
+	color: #efefef;
+	cursor: pointer;
+	margin-top: 12px;
+	border-radius: 4px;
+	width: 80px;
+	height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #e53637;
+}
+
+.user-name .nickName {
+	padding-left: 10px;
+	height: 40px;
+	width: 400px;
+	color: #f3dbdb;
+	background: #212121;
+}
+
+.resize-checkbox {
+	width: 30px;
+	height: 30px;
+	background-size: cover;
+}

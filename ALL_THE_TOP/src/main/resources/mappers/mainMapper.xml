@@ -11,27 +11,41 @@
 				MAX(CL.PLATFORM_ID)	AS PLATFORM_ID,
 				C.ENROLL_DT 		AS ENROLL_DT,
 				C.CONTENT_TYPE 		AS CONTENT_TYPE,
-				COUNT(*) 			AS COUNT,
-                CG.GENRE_ID
+				<choose>
+					<when test="genreId != 0">
+						COUNT(*) 			AS COUNT,
+						CG.GENRE_ID
+					</when>
+					<otherwise>
+						COUNT(*)			AS COUNT
+					</otherwise>
+                </choose>
 		FROM
 				CONTENT_LINK CL
 		JOIN
 				CONTENT C ON CL.CONTENT_ID = C.CONTENT_ID
 		LEFT JOIN CONTENT_GENRE CG ON C.CONTENT_ID = CG.CONTENT_ID
 		GROUP BY
-				CL.CONTENT_ID,
-                CG.GENRE_ID
+				<choose>
+					<when test="genreId != 0">				
+						CL.CONTENT_ID,
+						CG.GENRE_ID
+					</when>
+					<otherwise>
+						CL.CONTENT_ID
+					</otherwise>
+				</choose>
 		HAVING
-				CONTENT_TYPE = #{contentType} AND
-				COUNT = 1 AND
-		        <choose>
-		        	<when test="genreId != 0">
-		        		GENRE_ID = #{genreId} AND
-		        	</when>
-		        	<otherwise>
-		        		PLATFORM_ID = #{platformId} AND
-		        	</otherwise>
-		        </choose>
+				CONTENT_TYPE = "series" AND
+				COUNT = 1 				AND
+                <choose>
+                	<when test="genreId != 0">
+                		GENRE_ID = #{genreId} AND
+                	</when>
+                	<otherwise>
+		                PLATFORM_ID = #{platformId} AND                	
+                	</otherwise>
+                </choose>
 		        NOT(ENROLL_DT = 9999)
 		ORDER BY
 				ENROLL_DT DESC
@@ -227,5 +241,39 @@
 		WHERE
 				PLATFORM_ID = #{platformId}	AND
 				CONTENT_ID = #{contentId}
+	</select>
+	
+	<select id="selectListContentByKeyword" parameterType="FilterDTO" resultType="FilteredDTO">
+		SELECT
+		    	C.CONTENT_ID,
+		    	C.TITLE 			AS TITLE,
+		    	C.SUMMARY 			AS SUMMARY,
+		    	C.ENROLL_DT 		AS ENROLL_DT,
+		    	MAX(CL.PLATFORM_ID) AS PLATFORM_ID,
+		    	MAX(CL.IMG_URL) 	AS IMG_URL,
+		    	MAX(CL.URL) 		AS URL,
+		    	MAX(CG.GENRE_ID) 	AS GENRE_ID,
+		    	WL.MEMBER_ID		AS MEMBER_ID
+		FROM
+			    CONTENT C
+			JOIN CONTENT_LINK CL
+			  ON C.CONTENT_ID = CL.CONTENT_ID
+			JOIN CONTENT_GENRE CG
+			  ON C.CONTENT_ID = CG.CONTENT_ID   
+		    LEFT JOIN WISH_LIST WL 
+				   ON C.CONTENT_ID = WL.CONTENT_ID AND WL.MEMBER_ID = #{memberId}
+		WHERE
+			<choose>
+	        	<when test="contentType == null">
+	        	</when>
+	        	<otherwise>
+	        		CONTENT_TYPE = #{contentType} 	AND
+	        	</otherwise>
+	        </choose>
+			TITLE LIKE CONCAT('%', #{searchKey}, '%')
+		GROUP BY C.CONTENT_ID
+		ORDER BY
+			TITLE ASC
+		LIMIT 100
 	</select>
 </mapper>

@@ -31,34 +31,43 @@
 </select>
 
 <!-- community feed 로 들어갈 때, 전체 게시글 리스트 가져오기 -->
-<select id="selectListAllPost" parameterType="long" resultType="PostDTO">
-SELECT
-	p.POST_ID AS POST_ID,
-	p.POST_TITLE AS POST_TITLE,
-	p.MEMBER_ID AS MEMBER_ID,
-	p.CONTENT AS CONTENT,
-	p.READ_CNT AS READ_CNT,
-	p.ENROLL_DT AS ENROLL_DT,
-	count(re.RECMND_ID) AS RECMND_CNT,
-	p.CONTENT_ID AS CONTENT_ID,
-	m.NICK_NAME AS NICK_NAME,
-	c.TITLE AS POST_TAG,
-	count(r.REPLY_ID) AS REPLY_CNT,
-    (SELECT 
-		count(RECMND_ID)
+<select id="selectListAllPost" parameterType="PostDTO" resultType="PostDTO">
+	SELECT
+		p.POST_ID AS POST_ID,
+		p.POST_TITLE AS POST_TITLE,
+		p.MEMBER_ID AS MEMBER_ID,
+		p.CONTENT AS CONTENT,
+		p.READ_CNT AS READ_CNT,
+		p.ENROLL_DT AS ENROLL_DT,
+		count(re.RECMND_ID) AS RECMND_CNT,
+		p.CONTENT_ID AS CONTENT_ID,
+		m.NICK_NAME AS NICK_NAME,
+		c.TITLE AS POST_TAG,
+		(SELECT
+			count(REPLY_ID)
+		FROM
+			REPLY
+		WHERE
+			POST_ID = p.POST_ID) AS REPLY_CNT,
+	    (SELECT 
+			count(RECMND_ID)
+		FROM
+			POST_RECMND
+		WHERE
+			POST_ID = P.POST_ID AND
+			MEMBER_ID = #{memberId}) AS MY_RECMND
 	FROM
-		POST_RECMND
-	WHERE
-		POST_ID = P.POST_ID AND
-		MEMBER_ID = #{memberId}) AS MY_RECMND
-FROM
-	POST p
-LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
-LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
-LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
-LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
-GROUP BY p.POST_ID
-ORDER BY ENROLL_DT DESC;
+		POST p
+	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
+	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
+	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
+	<where>
+	<if test='contentId != null and contentId != ""'>
+		C.CONTENT_ID = #{contentId}
+	</if>
+	</where>
+	GROUP BY p.POST_ID
+	ORDER BY ENROLL_DT DESC;
 </select>
 
 <!-- 게시글 디테일 페이지 가져오기 -->
@@ -211,16 +220,27 @@ ORDER BY ENROLL_DT DESC;
 		p.CONTENT_ID AS CONTENT_ID,
 		m.NICK_NAME AS NICK_NAME,
 		c.TITLE AS POST_TAG,
-        count(r.REPLY_ID) AS REPLY_CNT
+		(SELECT
+			count(REPLY_ID)
+		FROM
+			REPLY
+		WHERE
+			POST_ID = p.POST_ID) AS REPLY_CNT,
+		(SELECT 
+			count(RECMND_ID)
+		FROM
+			POST_RECMND
+		WHERE
+			POST_ID = P.POST_ID AND
+			MEMBER_ID = 17) AS MY_RECMND
 	FROM
 		POST p
 	LEFT JOIN MEMBER m ON p.MEMBER_ID = m.MEMBER_ID
 	LEFT JOIN CONTENT c ON p.CONTENT_ID = c.CONTENT_ID
-	LEFT JOIN REPLY r ON p.POST_ID = r.POST_ID
 	LEFT JOIN POST_RECMND re on p.POST_ID = re.POST_ID
 	WHERE p.MEMBER_ID = #{memberId}
-    GROUP BY p.POST_ID
-   	ORDER BY ENROLL_DT DESC;
+	GROUP BY p.POST_ID
+	ORDER BY ENROLL_DT DESC;
 </select>
 
 <!-- 내가 쓴 댓글 목록 가져오기 -->
@@ -340,5 +360,18 @@ ORDER BY ENROLL_DT DESC;
 	AND
 		POST_ID = #{postId}
 </delete>
+
+<!-- 태그를 많이 당한 content 리스트, 인기 tag -->
+<select id="selectMostTaggedContent" resultType="ContentDTO">
+	SELECT
+		P.CONTENT_ID AS CONTENT_ID,
+	    C.TITLE AS TITLE
+	FROM
+		POST P
+	JOIN CONTENT C ON P.CONTENT_ID = C.CONTENT_ID
+	GROUP BY CONTENT_ID
+	ORDER BY COUNT(*) DESC
+	LIMIT 0,5;
+</select>
 
 </mapper>

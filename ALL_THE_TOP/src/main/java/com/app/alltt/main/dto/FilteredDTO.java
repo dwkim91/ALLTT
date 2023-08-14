@@ -15,6 +15,9 @@ public class FilteredDTO {
 	private int platformId;
 	private long memberId;
 	
+	public FilteredDTO() {
+	}
+	
 	@Override
 	public String toString() {
 		return "FilteredDTO [contentId=" + contentId + ", title=" + title + ", creator=" + creator + ", actors="

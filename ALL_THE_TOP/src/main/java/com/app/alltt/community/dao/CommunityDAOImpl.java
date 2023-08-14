@@ -19,8 +19,8 @@ public class CommunityDAOImpl implements CommunityDAO {
 	private SqlSession sqlSession;
 
 	@Override
-	public List<PostDTO> selectListAllPost(long memberId) {
-		return sqlSession.selectList("communityMapper.selectListAllPost", memberId);
+	public List<PostDTO> selectListAllPost(PostDTO post) {
+		return sqlSession.selectList("communityMapper.selectListAllPost", post);
 	}
 
 	@Override
@@ -131,6 +131,11 @@ public class CommunityDAOImpl implements CommunityDAO {
 	@Override
 	public ReplyDTO selectOneReply(long replyId) {
 		return sqlSession.selectOne("communityMapper.selectOneReply", replyId);
+	}
+
+	@Override
+	public List<ContentDTO> selectMostTaggedContent() {
+		return sqlSession.selectList("communityMapper.selectMostTaggedContent");
 	}
 
 }

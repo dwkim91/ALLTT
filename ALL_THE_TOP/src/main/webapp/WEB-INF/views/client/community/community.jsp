@@ -57,6 +57,7 @@ $(function() {
 				 }
 			});
 	}
+	
 </script>
 </head>
 <body>
@@ -66,7 +67,7 @@ $(function() {
 		<header data-v-36d2ff30="" data-v-f04faaa6="" class="header-wrap left-title header-main">
 		<h1 data-v-36d2ff30="" class="header-title beta"> 커뮤니티 </h1>
 		<!---->
-		<a data-v-f04faaa6="" href="/search" class="header-right-button search" id="searchButton" data-v-36d2ff30=""><img data-v-f04faaa6="" src="https://static.kinolights.com/icon/ic-search.svg" alt="검색"></a>
+		<a data-v-f04faaa6="" href="${contextPath}/community/search" class="header-right-button search" id="searchButton" data-v-36d2ff30=""><img data-v-f04faaa6="" src="https://static.kinolights.com/icon/ic-search.svg" alt="검색"></a>
 		</header>
 		</section>
 		<div data-v-f04faaa6="" class="content-area">
@@ -74,7 +75,7 @@ $(function() {
 				<section data-v-f04faaa6="" class="list-item list-area list-area--home">
 				<div data-v-f04faaa6="" class="list-inner-wrap">
 					<ul data-v-f04faaa6="" id="postList">
-					<c:forEach var="post" items="${postList}">
+					<c:forEach var="post" items="${postList}" varStatus="i">
 						<li data-v-f04faaa6="" class="list-gap">
 							<article data-v-b0785d82="" data-v-f04faaa6="" class="post-wrap">
 								<a data-v-b0785d82="" href="${contextPath}/community/post?postId=${post.postId}" class="" id="postList-nIoYFokBkUHnIaLwUX4I">
@@ -83,8 +84,7 @@ $(function() {
 							<span data-v-b0785d82="" class="user-nickname">${post.nickName}</span>
 						</div>
 						<div data-v-b0785d82="" class="post-info-date-wrap">
-						<!-- 몇분 전, 몇 시간 전에 썼는지 표기하는거 -->
-							<span data-v-b0785d82="" title="getTimeDiff(${post.enrollDt})" class="post-date"></span>
+							<span data-v-b0785d82="" title="${post.enrollDt}" class="post-date">${post.enrollDt}</span>
 						</div>
 						</header>
 						<h2 data-v-b0785d82="" class="post-title">${post.postTitle}</h2>
@@ -92,7 +92,7 @@ $(function() {
 						<c:if test="${post.contentId != 0}">
 							<div data-v-b0785d82="" class="content-list-wrap">
 								<div data-v-b0785d82="" class="content-wrap">
-									<svg data-v-b0785d82="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-b0785d82="" d="M15.51 15.019h-3.675A8.006 8.006 0 0016 7.999C16 3.59 12.411 0 8 0S0 3.589 0 8c0 4.41 3.589 8 8 8h7.51a.49.49 0 100-.981zM.98 7.999A7.027 7.027 0 018 .982 7.027 7.027 0 0115.02 8 7.027 7.027 0 018 15.019a7.027 7.027 0 01-7.02-7.02z" fill="#3B4869"></path><path data-v-b0785d82="" fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm2-12a2 2 0 11-4 0 2 2 0 014 0zm0 8a2 2 0 11-4 0 2 2 0 014 0zm-6-2a2 2 0 100-4 2 2 0 000 4zm10-2a2 2 0 11-4 0 2 2 0 014 0z" fill="#3B4869"></path></svg><span data-v-b0785d82="" class="content-title">${post.postTag}</span>
+									<svg data-v-b0785d82="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-b0785d82="" d="M15.51 15.019h-3.675A8.006 8.006 0 0016 7.999C16 3.59 12.411 0 8 0S0 3.589 0 8c0 4.41 3.589 8 8 8h7.51a.49.49 0 100-.981zM.98 7.999A7.027 7.027 0 018 .982 7.027 7.027 0 0115.02 8 7.027 7.027 0 018 15.019a7.027 7.027 0 01-7.02-7.02z" fill="#6a5656"></path><path data-v-b0785d82="" fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm2-12a2 2 0 11-4 0 2 2 0 014 0zm0 8a2 2 0 11-4 0 2 2 0 014 0zm-6-2a2 2 0 100-4 2 2 0 000 4zm10-2a2 2 0 11-4 0 2 2 0 014 0z" fill="#6a5656"></path></svg><span data-v-b0785d82="" class="content-title">${post.postTag}</span>
 								</div>
 							</div>
 						</c:if>
@@ -109,15 +109,13 @@ $(function() {
 						<c:choose>
 						<c:when test="${post.myRecmnd != 0}">
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary active">
-								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
-								</div>
+								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
 								<span data-v-de3ba2dc="" id="likeCnt${post.postId}">${post.recmndCnt}</span>
 							</button>
 						</c:when>
 						<c:otherwise>
 							<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn${post.postId}" onclick="likePostBtn('${post.postId}')" class="badge-wrap reactionButton button textColorPrimary">
-								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc="">
-								</div>
+								<div data-v-6a12716b="" data-v-b0785d82="" class="icon like" data-v-de3ba2dc=""></div>
 								<span data-v-de3ba2dc="" id="likeCnt${post.postId}">${post.recmndCnt}</span>
 							</button>
 						</c:otherwise>
@@ -131,7 +129,6 @@ $(function() {
 							<svg data-v-07a4f3b7="" viewbox="25 25 50 50" class="circular-loader"><circle data-v-07a4f3b7="" cx="50" cy="50" r="20" fill="none" stroke-width="6" class="loader-path"></circle></svg>
 						</div>
 					</div>
-					<!---->
 				</div>
 				</section><aside data-v-f04faaa6="" class="side-item side-area side-area--home">
 				<div data-v-f04faaa6="" class="user-info-wrap">
@@ -152,8 +149,6 @@ $(function() {
 					<button data-v-f04faaa6="" class="write-btn"><span data-v-f04faaa6="" class="write-btn-text">글 작성하기</span><svg data-v-f04faaa6="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class=""><rect data-v-f04faaa6="" x="8" y="26" width="16" height="2" rx="1" fill="#EFEFEF"></rect><path data-v-f04faaa6="" fill-rule="evenodd" clip-rule="evenodd" d="M20.813 5.2a.677.677 0 00-.96-.001L18.362 6.69a1.003 1.003 0 00-.001 1.416l3.935 3.951a.997.997 0 001.413.002l1.491-1.492a.68.68 0 00.001-.962L20.812 5.2zm-3.525 3.976a.999.999 0 00-1.414-.002l-7.67 7.663a.68.68 0 00-.2.48L8 21.717c0 .375.303.68.678.68l4.263.003c.265 0 .52-.105.707-.292l7.577-7.569a1 1 0 00.001-1.415l-3.938-3.948z" fill="#EFEFEF"></path></svg>
 					</button>
 				</div>
-				<!---->
-				<!---->
 				</aside>
 			</div>
 		</div>
