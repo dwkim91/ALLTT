@@ -46,4 +46,6 @@ public interface CommunityService {
 	public boolean modifyReply(ReplyDTO reply);
 	public boolean removeReply(long replyId);
 	
+	public List<PostDTO> getPostListByTag(String title);
+	public List<PostDTO> getPostList(String title);
 }
