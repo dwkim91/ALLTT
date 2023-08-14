@@ -289,4 +289,16 @@ public class CommunityController {
 		model.addAttribute("tagContent", communityService.getMostTaggedContent());
 		return "/alltt/search";
 	}
+	
+	// post에 태그된 작품 이름 검색
+	@PostMapping("/searchPostByTag")
+	public @ResponseBody List<PostDTO> searchPostByTag(@RequestParam String title){
+		return communityService.getPostListByTag(title);
+	}
+	
+	// post title or content로 post 검색
+	@PostMapping("/searchPost")
+	public @ResponseBody List<PostDTO> searchPost(@RequestParam String title){
+		return communityService.getPostList(title);
+	}
 }
