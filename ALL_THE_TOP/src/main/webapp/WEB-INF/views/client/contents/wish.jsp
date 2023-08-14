@@ -15,7 +15,7 @@
 	<section class="contents_wrap">
 		<div>
 			<section class="myprofile__contents myprofile css-yfyhdz e2z45lx0">
-				<div><table><tr><td>넷플릭스</td><td>티빙</td><td>웨이브</td></tr></table></div>
+				<div><table><tr><td>넷플릭스 ${netflixWishCnt}</td><td>티빙 ${tvingWishCnt}</td><td>웨이브 ${wavveWishCnt}</td></tr></table></div>
 				<div class="css-1fee8qh e2sfx0b0"></div>
 				<div class="page_select btn_type layout__flex-left">
 					<div class="layout__flex-left">
