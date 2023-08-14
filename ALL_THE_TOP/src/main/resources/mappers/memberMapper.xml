@@ -234,4 +234,21 @@
 		group by
 				WL.CONTENT_ID
 	</select>
+	
+	<select id="selectListWishContentByMemberId" parameterType="long" resultType="FilteredDTO">
+		SELECT
+				C.TITLE,
+		        WL.MEMBER_ID,
+		        CL.PLATFORM_ID
+		FROM
+				WISH_LIST WL
+			JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
+		    JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
+		GROUP BY
+				C.TITLE,
+		        MEMBER_ID,
+		        CL.PLATFORM_ID
+		HAVING
+				WL.MEMBER_ID = #{memberId};
+	</select>
 </mapper>

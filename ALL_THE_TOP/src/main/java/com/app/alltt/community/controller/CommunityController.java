@@ -52,11 +52,11 @@ public class CommunityController {
 			memberId = (Long) session.getAttribute("memberId");
 		}
 		
-		String tag = request.getParameter("tag");
+		String searchTag = request.getParameter("tag");
 
 		// 태그 검색도 여기서 받아서 처리
 		// tag가 있다면 로드되는 페이지가 달라져야 함
-		if (tag == null) {
+		if (searchTag == null) {
 			// 로그인한 멤버 정보를 보여주기 위해
 			model.addAttribute("member", communityService.getMemberId(memberId));
 			// 로그인한 멤버가 쓴 글 개수를 보여주기 위해
@@ -64,14 +64,18 @@ public class CommunityController {
 			// 로그인한 멤버가 쓴 댓글 수를 보여주기 위해
 			model.addAttribute("replyCnt", communityService.getReplyCntByMemberId(memberId));
 			// 모든 게시글 리스트
-			model.addAttribute("postList", communityService.getAllPostList(memberId, ""));
+			model.addAttribute("postList", communityService.getAllPostList(memberId, 0));
 			
 			return "/alltt/community";
 		}
 		else {
+			long tag_contentId = Long.parseLong(searchTag);
+			FilteredDTO content = mainService.getContentDetail(tag_contentId);
+			model.addAttribute("tag", searchTag);
 			// tag 와 연관된 게시글 리스트
-			model.addAttribute("tag", tag);
-			model.addAttribute("postList", communityService.getAllPostList(memberId, tag));
+			model.addAttribute("postList", communityService.getAllPostList(memberId, tag_contentId));
+			// tag content 이미지 링크 등
+			model.addAttribute("content", content);
 			
 			return "/alltt/tag";
 		}
@@ -165,6 +169,10 @@ public class CommunityController {
 			if (tab.equals("post")) {
 				model.addAttribute("tab", tab);
 				model.addAttribute("myList", communityService.getPostListByMemberId(memberId));
+				
+				for (PostDTO post : communityService.getPostListByMemberId(memberId)) {
+					System.out.println(post);
+				}
 			}
 			// 내가 작성한 댓글 리스트 넘기기
 			else {
