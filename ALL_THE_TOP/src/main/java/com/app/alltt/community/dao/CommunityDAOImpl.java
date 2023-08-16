@@ -139,8 +139,8 @@ public class CommunityDAOImpl implements CommunityDAO {
 	}
 
 	@Override
-	public List<PostDTO> selectPostListByTag(String title) {
-		return sqlSession.selectList("communityMapper.selectPostListByTag", title);
+	public List<PostDTO> selectPostCountByTag(String title) {
+		return sqlSession.selectList("communityMapper.selectPostCountByTag", title);
 	}
 
 	@Override

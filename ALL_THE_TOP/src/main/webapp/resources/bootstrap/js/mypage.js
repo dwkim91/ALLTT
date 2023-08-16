@@ -114,7 +114,7 @@ function selectChange(selector, value){
 
 // 시리즈 / 영화 필터 설정 
 function setSearchFilter(contentType){
-
+	console.log(contentType);
 	var netflixCheckbox = document.querySelector('#'+contentType+'-filter #netflixCheckbox');
 	var tvingCheckbox = document.querySelector('#'+contentType+'-filter #tvingCheckbox');
 	var wavveCheckbox = document.querySelector('#'+contentType+'-filter #wavveCheckbox');
@@ -146,7 +146,12 @@ function setSearchFilter(contentType){
 
 // selected된 값 가져오기
 function getSelectVal(selector){
+	console.log(selector);
 	var selectedItem = document.querySelector(selector + ' .list li.selected');
+	// 변경시 애러 발생 !!
+	// 선택된 값 확인!
+	console.log(selectedItem.getAttribute('data-value'));
+	//return 1;// test 
 	return selectedItem.getAttribute('data-value');
 }
 

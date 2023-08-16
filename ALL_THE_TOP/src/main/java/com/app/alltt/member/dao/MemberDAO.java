@@ -32,4 +32,5 @@ public interface MemberDAO {
 	public void updateContentFilter(FilterDTO filterDTO);
 	public List<FilteredDTO> selectListWishContentByFilterDTO(FilterDTO filterDTO);
 	public void deleteWishContent(FilteredDTO filteredDTO);
+	public List<FilteredDTO> selectListWishContentByMemberId(long memberId);
 }

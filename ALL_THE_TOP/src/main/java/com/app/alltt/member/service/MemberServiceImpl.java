@@ -1,5 +1,7 @@
 package com.app.alltt.member.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -272,6 +274,30 @@ public class MemberServiceImpl implements MemberService {
 			memberDAO.deleteWishContent(filteredDTO);
 		}
 		
+	}
+
+	@Override
+	public List<Integer> getWishMinimumSubscriptionByMemberId(long memberId) {
+		
+		List<Integer> platformPriority = new ArrayList<Integer>();
+		
+		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberId(memberId);
+		
+		List<String> netflixContent = new ArrayList<String>();
+		List<String> tvingContent = new ArrayList<String>();
+		List<String> wavveContent = new ArrayList<String>();
+		
+		for (int i = 0; i < wishContentList.size(); i++) {
+			if (wishContentList.get(i).getPlatformId() == 1) netflixContent.add(wishContentList.get(i).getTitle());
+			if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
+			if (wishContentList.get(i).getPlatformId() == 3) wavveContent.add(wishContentList.get(i).getTitle());
+		}
+		
+		System.out.println(netflixContent.toString());
+		System.out.println(tvingContent.toString());
+		System.out.println(wavveContent.toString());
+		
+		return platformPriority;
 	}
 	
 }
