@@ -17,7 +17,7 @@ $(function() {
 	});
 	
 	$(".write-btn-text").click(function() {
-		location.href="${contextPath}/community/write";
+		location.href="${contextPath}/community/write?contentId=${content.contentId}";
 	});
 });
 </script>

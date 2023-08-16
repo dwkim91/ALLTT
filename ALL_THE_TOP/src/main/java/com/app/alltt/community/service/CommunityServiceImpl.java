@@ -182,8 +182,8 @@ public class CommunityServiceImpl implements CommunityService {
 	}
 
 	@Override
-	public List<PostDTO> getPostListByTag(String title) {
-		return communityDAO.selectPostListByTag(title);
+	public List<PostDTO> getPostCountByTag(String title) {
+		return communityDAO.selectPostCountByTag(title);
 	}
 
 	@Override

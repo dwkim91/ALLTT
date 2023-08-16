@@ -50,40 +50,49 @@ public class CommunityController {
 		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
-		}
-		
-		String searchTag = request.getParameter("tag");
 
-		// 태그 검색도 여기서 받아서 처리
-		// tag가 있다면 로드되는 페이지가 달라져야 함
-		if (searchTag == null) {
-			// 로그인한 멤버 정보를 보여주기 위해
-			model.addAttribute("member", communityService.getMemberId(memberId));
-			// 로그인한 멤버가 쓴 글 개수를 보여주기 위해
-			model.addAttribute("postCnt", communityService.getPostCntByMember(memberId));
-			// 로그인한 멤버가 쓴 댓글 수를 보여주기 위해
-			model.addAttribute("replyCnt", communityService.getReplyCntByMemberId(memberId));
-			// 모든 게시글 리스트
-			model.addAttribute("postList", communityService.getAllPostList(memberId, 0));
+			String searchTag = request.getParameter("tag");
 			
-			return "/alltt/community";
+			// 태그 검색도 여기서 받아서 처리
+			// tag가 있다면 로드되는 페이지가 달라져야 함
+			if (searchTag == null) {
+				// 로그인한 멤버 정보를 보여주기 위해
+				model.addAttribute("member", communityService.getMemberId(memberId));
+				// 로그인한 멤버가 쓴 글 개수를 보여주기 위해
+				model.addAttribute("postCnt", communityService.getPostCntByMember(memberId));
+				// 로그인한 멤버가 쓴 댓글 수를 보여주기 위해
+				model.addAttribute("replyCnt", communityService.getReplyCntByMemberId(memberId));
+				// 모든 게시글 리스트
+				model.addAttribute("postList", communityService.getAllPostList(memberId, 0));
+				
+				return "/alltt/community";
+			}
+			else {
+				long tag_contentId = Long.parseLong(searchTag);
+				FilteredDTO content = mainService.getContentDetail(tag_contentId);
+				model.addAttribute("tag", searchTag);
+				// tag 와 연관된 게시글 리스트
+				model.addAttribute("postList", communityService.getAllPostList(memberId, tag_contentId));
+				// tag content 이미지 링크 등
+				model.addAttribute("content", content);
+				
+				return "/alltt/tag";
+			}
 		}
 		else {
-			long tag_contentId = Long.parseLong(searchTag);
-			FilteredDTO content = mainService.getContentDetail(tag_contentId);
-			model.addAttribute("tag", searchTag);
-			// tag 와 연관된 게시글 리스트
-			model.addAttribute("postList", communityService.getAllPostList(memberId, tag_contentId));
-			// tag content 이미지 링크 등
-			model.addAttribute("content", content);
-			
-			return "/alltt/tag";
+			return "/alltt/login";
 		}
 	}
 	
 	// 새 게시글 작성
 	@GetMapping("/write")
-	public String write() {
+	public String write(Model model, @RequestParam(required = false) String contentId) {
+		
+		if (contentId != null) {
+			long contentId_long = Long.parseLong(contentId);
+			model.addAttribute("content", mainService.getContentDetail(contentId_long));
+		}
+		
 		return "/alltt/write";
 	}
 	
@@ -169,10 +178,6 @@ public class CommunityController {
 			if (tab.equals("post")) {
 				model.addAttribute("tab", tab);
 				model.addAttribute("myList", communityService.getPostListByMemberId(memberId));
-				
-				for (PostDTO post : communityService.getPostListByMemberId(memberId)) {
-					System.out.println(post);
-				}
 			}
 			// 내가 작성한 댓글 리스트 넘기기
 			else {
@@ -293,12 +298,28 @@ public class CommunityController {
 	// post에 태그된 작품 이름 검색
 	@PostMapping("/searchPostByTag")
 	public @ResponseBody List<PostDTO> searchPostByTag(@RequestParam String title){
-		return communityService.getPostListByTag(title);
+		return communityService.getPostCountByTag(title);
 	}
 	
 	// post title or content로 post 검색
 	@PostMapping("/searchPost")
 	public @ResponseBody List<PostDTO> searchPost(@RequestParam String title){
 		return communityService.getPostList(title);
+	}
+	
+	// 검색 내역 확장
+	@GetMapping("/keyword")
+	public String searchKeyword(Model model, @RequestParam(required = false) String tag, @RequestParam(required = false) String keyword) {
+		
+		if (tag != null) {
+			model.addAttribute("tag", tag);
+			model.addAttribute("tagList", communityService.getPostCountByTag(tag));
+		}
+		if (keyword != null) {
+			model.addAttribute("keyword", keyword);
+			model.addAttribute("postList", communityService.getPostList(keyword));
+		}
+		
+		return "/alltt/keyword";
 	}
 }
