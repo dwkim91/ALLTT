@@ -2,6 +2,7 @@ package com.app.alltt.member.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -289,13 +290,35 @@ public class MemberServiceImpl implements MemberService {
 		
 		for (int i = 0; i < wishContentList.size(); i++) {
 			if (wishContentList.get(i).getPlatformId() == 1) netflixContent.add(wishContentList.get(i).getTitle());
-			if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
-			if (wishContentList.get(i).getPlatformId() == 3) wavveContent.add(wishContentList.get(i).getTitle());
+			else if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
+			else if (wishContentList.get(i).getPlatformId() == 3) wavveContent.add(wishContentList.get(i).getTitle());
 		}
 		
-		System.out.println(netflixContent.toString());
-		System.out.println(tvingContent.toString());
-		System.out.println(wavveContent.toString());
+		List<List<String>> platformContent = new ArrayList<List<String>>();
+		platformContent.add(netflixContent);
+		platformContent.add(tvingContent);
+		platformContent.add(wavveContent);
+		
+		List<String> platformSet = new ArrayList<String>();
+		platformSet.add("n" + netflixContent.size());
+		platformSet.add("t" + tvingContent.size());
+		platformSet.add("w" + wavveContent.size());
+		
+		Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
+		
+		for (int i = 0; i < platformSet.size(); i++) {
+			if (platformSet.get(i).indexOf("n") == 0) platformSet.set(i, "0");
+			if (platformSet.get(i).indexOf("t") == 0) platformSet.set(i, "1");
+			if (platformSet.get(i).indexOf("w") == 0) platformSet.set(i, "2");
+		}
+		
+		System.out.println(platformContent.toString());
+		
+		platformContent.get(Integer.parseInt(platformSet.get(1))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
+		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
+		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(1))));
+		
+		System.out.println(platformContent.toString());
 		
 		return platformPriority;
 	}
