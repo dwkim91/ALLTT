@@ -30,4 +30,5 @@ public interface MemberService {
 	public void setMemberFilter(long newMemberId);
 	public List<FilteredDTO> getWishContentByFilterDTO(FilterDTO filterDTO);
 	public void removeWishContentByFilterDTOList(List<FilteredDTO> filteredDTOList);
+	public List<Integer> getWishMinimumSubscriptionByMemberId(long memberId);
 }

@@ -374,4 +374,33 @@
 	LIMIT 0,5;
 </select>
 
+<!-- 태그 작품 검색 -->
+<select id="selectPostListByTag" parameterType="String" resultType="PostDTO">
+	SELECT
+		C.TITLE AS POST_TAG,
+		C.CONTENT_ID AS CONTENT_ID,
+		COUNT(P.POST_ID) AS POST_CNT
+	FROM
+		POST P
+	LEFT JOIN
+		CONTENT C
+	ON P.CONTENT_ID = C.CONTENT_ID
+	WHERE
+		C.TITLE LIKE CONCAT('%', #{title}, '%')
+	GROUP BY C.TITLE, C.CONTENT_ID
+	ORDER BY 2;
+</select>
+
+<!-- 게시글 검색 -->
+<select id="selectPostList" parameterType="String" resultType="PostDTO">
+	SELECT
+		*
+	FROM
+		POST
+	WHERE
+		POST_TITLE LIKE CONCAT('%', #{title}, '%')
+	OR
+		CONTENT LIKE CONCAT('%', #{title}, '%');
+</select>
+
 </mapper>
