@@ -375,7 +375,7 @@
 </select>
 
 <!-- 태그 작품 검색 -->
-<select id="selectPostListByTag" parameterType="String" resultType="PostDTO">
+<select id="selectPostCountByTag" parameterType="String" resultType="PostDTO">
 	SELECT
 		C.TITLE AS POST_TAG,
 		C.CONTENT_ID AS CONTENT_ID,
