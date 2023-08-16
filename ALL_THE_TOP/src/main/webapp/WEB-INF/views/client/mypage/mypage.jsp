@@ -294,7 +294,10 @@
 						</div>
 						<div data-v-014a8b00="" class="contents-container">
 							<div data-v-014a8b00="" class="empty-contents-wrap">
+								<!--
 								<a data-v-014a8b00="" href="javascript:withdrawMember('${member.socialNm}')"
+								-->
+								<a data-v-014a8b00="" href="${contextPath}/member/withdraw"
 									class="" id="userBestContentsBtn" title="탈퇴하기"><button
 										data-v-014a8b00="" class="empty-contents-button"
 										style="background: #e53637;">

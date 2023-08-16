@@ -380,6 +380,15 @@ public class MemberController {
 		return 0;
 	}
 	
+	// 탈퇴
+	@GetMapping("/withdraw")
+	@ResponseBody
+	public ModelAndView withdraw(HttpServletRequest request, HttpSession session) {
+		ModelAndView mv = new ModelAndView();
+		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		mv.setViewName("/alltt/withdraw");
+		return mv;
+	}
 	
 	// session 검증용 method
 	public void getSessionStatus(HttpSession session) {
