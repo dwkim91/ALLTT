@@ -312,13 +312,15 @@ public class MemberServiceImpl implements MemberService {
 			if (platformSet.get(i).indexOf("w") == 0) platformSet.set(i, "2");
 		}
 		
-		System.out.println(platformContent.toString());
-		
 		platformContent.get(Integer.parseInt(platformSet.get(1))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
 		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
 		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(1))));
 		
-		System.out.println(platformContent.toString());
+		platformPriority.add(platformContent.get(0).size());
+		platformPriority.add(platformContent.get(1).size());
+		platformPriority.add(platformContent.get(2).size());
+		
+		System.out.println(platformPriority.toString());
 		
 		return platformPriority;
 	}
