@@ -37,32 +37,46 @@ $(function() {
 					<button data-v-455cd5b8="" class="btn-back"><i data-v-455cd5b8="" class="kino-icon kino-icon--header-back"></i></button>
 				</div>
 			</div>
-			<section data-v-6608d693="" class="list-area">
 			<c:choose>
 			<c:when test="${keyword != null}">
-			<c:forEach var="post" items="${postList}">
-			<div data-v-6608d693="">
-				<a data-v-0bcef72e="" data-v-6608d693="" href="${contextPath}/community/post?postId=${post.postId}" class="">
-				<div data-v-0bcef72e="" class="community-search-item">
-					<div data-v-0bcef72e="" class="info-wrap">
-						<p data-v-0bcef72e="" class="title"> ${post.postTitle} </p>
-						<p data-v-0bcef72e="" class="body"> ${post.content} </p>
-						<p data-v-0bcef72e="" class="created"> ${post.enrollDt} </p>
+				<section data-v-6608d693="" class="list-area">
+				<c:forEach var="post" items="${postList}">
+					<div data-v-6608d693="">
+						<a data-v-0bcef72e="" data-v-6608d693="" href="${contextPath}/community/post?postId=${post.postId}" class="">
+							<div data-v-0bcef72e="" class="community-search-item">
+								<div data-v-0bcef72e="" class="info-wrap">
+									<p data-v-0bcef72e="" class="title"> ${post.postTitle} </p>
+									<p data-v-0bcef72e="" class="body"> ${post.content} </p>
+									<p data-v-0bcef72e="" class="created"> ${post.enrollDt} </p>
+								</div>
+							</div>
+						</a>
+						<div data-v-6bdd51b8="" data-v-6608d693="" class="target" style="--offset: 300px;">
+						</div>
+					</div>
+				</c:forEach>
+				<!-- 무한스크롤 -->
+				<div data-v-07a4f3b7="" data-v-6608d693="" class="default-bottom-loader">
+					<div data-v-07a4f3b7="" class="loader">
+						<svg data-v-07a4f3b7="" viewbox="25 25 50 50" class="circular-loader"><circle data-v-07a4f3b7="" cx="50" cy="50" r="20" fill="none" stroke-width="6" class="loader-path"></circle></svg>
 					</div>
 				</div>
-				</a>
-				<div data-v-6bdd51b8="" data-v-6608d693="" class="target" style="--offset: 300px;">
+				<div data-v-6608d693="" class="link-area">
+					<a data-v-6e512271="" data-v-6608d693="" href="${contextPath}/community" class="link-wrap" id="communityHomeButton">
+					<p data-v-6e512271="" class="text">
+						🤓 놓치면 아쉬운 <b data-v-6e512271="">인기글</b> 보러갈까요?!<i data-v-6e512271="" class="kino-icon kino-icon--more-gray" style="width: 20px; height: 20px;"></i>
+					</p>
+					</a>
 				</div>
-			</div>
-			</c:forEach>
 			</c:when>
 			<c:otherwise>
-			<ul data-v-214515f0="">
-			<c:forEach var="tag" items="${tagList}">
+				<section data-v-214515f0="" class="list-area">
+				<ul data-v-214515f0="">
+				<c:forEach var="tag" items="${tagList}">
 				<li data-v-214515f0="" class="tag-wrap">
 					<a data-v-5b1cfcdf="" data-v-214515f0="" href="${contextPath}/community/feed?tag=${tag.contentId}" class="tag" id="hashtag_0">
 						<div data-v-5b1cfcdf="" class="tag__icon result">
-							<svg data-v-5b1cfcdf="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class=""><path data-v-5b1cfcdf="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#98A4B7"></path></svg>
+							<svg data-v-5b1cfcdf="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class=""><path data-v-5b1cfcdf="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#b79898"></path></svg>
 						</div>
 						<div data-v-5b1cfcdf="" class="tag__info">
 							<p data-v-5b1cfcdf="" class="info__text with-count"> ${tag.postTag} </p>
@@ -75,19 +89,6 @@ $(function() {
 			</c:otherwise>
 			</c:choose>
 
-			<!-- 무한스크롤 -->
-			<div data-v-07a4f3b7="" data-v-6608d693="" class="default-bottom-loader">
-				<div data-v-07a4f3b7="" class="loader">
-					<svg data-v-07a4f3b7="" viewbox="25 25 50 50" class="circular-loader"><circle data-v-07a4f3b7="" cx="50" cy="50" r="20" fill="none" stroke-width="6" class="loader-path"></circle></svg>
-				</div>
-			</div>
-			<div data-v-6608d693="" class="link-area">
-				<a data-v-6e512271="" data-v-6608d693="" href="${contextPath}/community" class="link-wrap" id="communityHomeButton">
-				<p data-v-6e512271="" class="text">
-					🤓 놓치면 아쉬운 <b data-v-6e512271="">인기글</b> 보러갈까요?!<i data-v-6e512271="" class="kino-icon kino-icon--more-gray" style="width: 20px; height: 20px;"></i>
-				</p>
-				</a>
-			</div>
 			</section></main>
 		</div>
 	</div>

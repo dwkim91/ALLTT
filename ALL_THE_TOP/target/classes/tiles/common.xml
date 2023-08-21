@@ -50,6 +50,12 @@
 		<put-attribute name="title" value="mypage"/>	
 	</definition>
 	
+	<!-- 탈퇴페이지 -->
+	<definition name="/alltt/withdraw" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/client/mypage/withdraw.jsp"/>	
+		<put-attribute name="title" value="withdraw"/>	
+	</definition>
+	
 	<!-- 커뮤니티 -->
 	<definition name="/alltt/community" extends="alltt">
 		<put-attribute name="header" value=" "/>
@@ -98,7 +104,8 @@
 	<!-- 게시글 수정 -->
 	<definition name="/alltt/modify" extends="alltt">
 		<put-attribute name="header" value=" "/>
-		<put-attribute name="body"	value="/WEB-INF/views/client/community/modify.jsp"/>	
+		<put-attribute name="body"	value="/WEB-INF/views/client/community/modify.jsp"/>
+		<put-attribute name="footer" value=" " />
 		<put-attribute name="title" value="modify"/>	
 	</definition>
 

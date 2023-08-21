@@ -30,30 +30,6 @@ $(function() {
 			targetBtn.toggleClass("active");
 			
 			var param = {
-				"memberId" : "${member.memberId}",
-				"postId" : postId
-			};
-			
-			$.ajax({
-				 url : "${contextPath}/community/postRecmnd",
-				 async : true,
-				 type : "POST",
-				 data : param,
-				 success : function(result) {
-					targetBtn.find("span").html(result);
-				 }
-			});
-	}
-</script>
-<script>
-	// 좋아요 표시
-	function likePostBtn(postId){
-		  	// 클릭된 버튼에만 클래스 변경을 적용하기 위해 id 값을 사용
-		  	var btnId = "likeBtn" + postId;
-		  	var targetBtn = $("#" + btnId);
-			targetBtn.toggleClass("active");
-			
-			var param = {
 				"memberId" : "${sessionScope.memberId}",
 				"postId" : postId
 			};
@@ -94,7 +70,7 @@ $(function() {
 						<p data-v-1d0e5362="" class="tag-subtitle"> 태그 모아보기 </p>
 						<div data-v-1d0e5362="" class="tags-wrap">
 							<div data-v-1d0e5362="" class="tag-wrap">
-								<svg data-v-1d0e5362="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-1d0e5362="" fill-rule="evenodd" clip-rule="evenodd" d="M9.705 3.02a1.286 1.286 0 00-1.49 1.043L7.745 6.74H5.572a1.286 1.286 0 000 2.571H7.29l-.907 5.143H4.286a1.286 1.286 0 100 2.571H5.93l-.393 2.231a1.286 1.286 0 102.532.447l.472-2.678h5.103l-.393 2.231a1.286 1.286 0 102.532.447l.472-2.678h2.173a1.286 1.286 0 000-2.571h-1.72l.907-5.143h2.1a1.286 1.286 0 100-2.571h-1.646l.393-2.23a1.286 1.286 0 10-2.532-.447l-.473 2.677h-5.102l.393-2.23a1.286 1.286 0 00-1.043-1.49zm4.392 11.434l.907-5.143H9.901l-.907 5.143h5.103z" fill="#637DEA"></path></svg><span data-v-1d0e5362="" class="tag">${content.title}</span>
+								<svg data-v-1d0e5362="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-1d0e5362="" fill-rule="evenodd" clip-rule="evenodd" d="M9.705 3.02a1.286 1.286 0 00-1.49 1.043L7.745 6.74H5.572a1.286 1.286 0 000 2.571H7.29l-.907 5.143H4.286a1.286 1.286 0 100 2.571H5.93l-.393 2.231a1.286 1.286 0 102.532.447l.472-2.678h5.103l-.393 2.231a1.286 1.286 0 102.532.447l.472-2.678h2.173a1.286 1.286 0 000-2.571h-1.72l.907-5.143h2.1a1.286 1.286 0 100-2.571h-1.646l.393-2.23a1.286 1.286 0 10-2.532-.447l-.473 2.677h-5.102l.393-2.23a1.286 1.286 0 00-1.043-1.49zm4.392 11.434l.907-5.143H9.901l-.907 5.143h5.103z" fill="#ea6363"></path></svg><span data-v-1d0e5362="" class="tag">${content.title}</span>
 							</div>
 						</div>
 					</div>
@@ -122,7 +98,7 @@ $(function() {
 							<p data-v-29756cf4="" class="post-body">${post.content}</p>
 							<div data-v-29756cf4="" class="content-list-wrap">
 								<div data-v-29756cf4="" class="content-wrap">
-									<svg data-v-29756cf4="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-29756cf4="" d="M15.51 15.019h-3.675A8.006 8.006 0 0016 7.999C16 3.59 12.411 0 8 0S0 3.589 0 8c0 4.41 3.589 8 8 8h7.51a.49.49 0 100-.981zM.98 7.999A7.027 7.027 0 018 .982 7.027 7.027 0 0115.02 8 7.027 7.027 0 018 15.019a7.027 7.027 0 01-7.02-7.02z" fill="#3B4869"></path><path data-v-29756cf4="" fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm2-12a2 2 0 11-4 0 2 2 0 014 0zm0 8a2 2 0 11-4 0 2 2 0 014 0zm-6-2a2 2 0 100-4 2 2 0 000 4zm10-2a2 2 0 11-4 0 2 2 0 014 0z" fill="#3B4869"></path></svg><span data-v-29756cf4="" class="content-title">${post.postTag}</span>
+									<svg data-v-29756cf4="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><path data-v-29756cf4="" d="M15.51 15.019h-3.675A8.006 8.006 0 0016 7.999C16 3.59 12.411 0 8 0S0 3.589 0 8c0 4.41 3.589 8 8 8h7.51a.49.49 0 100-.981zM.98 7.999A7.027 7.027 0 018 .982 7.027 7.027 0 0115.02 8 7.027 7.027 0 018 15.019a7.027 7.027 0 01-7.02-7.02z" fill="#693b3b"></path><path data-v-29756cf4="" fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm2-12a2 2 0 11-4 0 2 2 0 014 0zm0 8a2 2 0 11-4 0 2 2 0 014 0zm-6-2a2 2 0 100-4 2 2 0 000 4zm10-2a2 2 0 11-4 0 2 2 0 014 0z" fill="#693b3b"></path></svg><span data-v-29756cf4="" class="content-title">${post.postTag}</span>
 								</div>
 								<!---->
 							</div>
@@ -130,7 +106,7 @@ $(function() {
 							<footer data-v-29756cf4="" class="post-footer">
 							<div data-v-29756cf4="" class="badge-wrap">
 								<div data-v-de3ba2dc="" data-v-29756cf4="" class="badge-wrap textColorPrimary">
-									<svg data-v-29756cf4="" data-v-de3ba2dc="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class="icon-color-navy06"><path data-v-29756cf4="" data-v-de3ba2dc="" fill-rule="evenodd" clip-rule="evenodd" d="M28.784 14.794c-4.01-5.263-8.372-7.93-12.97-7.789-3.711.103-6.82 1.995-9.019 3.884-2.2 1.89-3.507 3.793-3.615 3.952v.001c-.25.373-.238.855.028 1.214 4.06 5.47 8.388 8.277 12.88 8.277.159 0 .318-.006.473-.011h.001c3.682-.162 6.707-2.179 8.827-4.178 2.122-2 3.357-4 3.459-4.17.224-.372.2-.834-.064-1.18l-.133.093.133-.093zm-17.164.788c0-2.444 2.072-4.436 4.62-4.436 2.546 0 4.618 1.992 4.618 4.436 0 2.445-2.072 4.437-4.619 4.437-2.547 0-4.619-1.992-4.619-4.436z" fill="#98A4B7"></path></svg><span data-v-de3ba2dc="">${post.readCnt}</span>
+									<svg data-v-29756cf4="" data-v-de3ba2dc="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class="icon-color-navy06"><path data-v-29756cf4="" data-v-de3ba2dc="" fill-rule="evenodd" clip-rule="evenodd" d="M28.784 14.794c-4.01-5.263-8.372-7.93-12.97-7.789-3.711.103-6.82 1.995-9.019 3.884-2.2 1.89-3.507 3.793-3.615 3.952v.001c-.25.373-.238.855.028 1.214 4.06 5.47 8.388 8.277 12.88 8.277.159 0 .318-.006.473-.011h.001c3.682-.162 6.707-2.179 8.827-4.178 2.122-2 3.357-4 3.459-4.17.224-.372.2-.834-.064-1.18l-.133.093.133-.093zm-17.164.788c0-2.444 2.072-4.436 4.62-4.436 2.546 0 4.618 1.992 4.618 4.436 0 2.445-2.072 4.437-4.619 4.437-2.547 0-4.619-1.992-4.619-4.436z" fill="#b79898"></path></svg><span data-v-de3ba2dc="">${post.readCnt}</span>
 								</div>
 								<div data-v-de3ba2dc="" data-v-29756cf4="" class="badge-wrap textColorPrimary">
 									<svg data-v-29756cf4="" data-v-de3ba2dc="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class="icon-color-navy06"><path data-v-29756cf4="" data-v-de3ba2dc="" fill-rule="evenodd" clip-rule="evenodd" d="M13 5a9 9 0 00-5.79 15.89c.342 2.296-.657 4.867-1.055 5.773a.207.207 0 00.22.286c3.867-.575 6.027-2.341 7.22-3.949H19a9 9 0 100-18h-6z" fill="#eee"></path></svg><span data-v-de3ba2dc="">${post.replyCnt}</span>
