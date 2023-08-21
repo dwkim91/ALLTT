@@ -17,9 +17,9 @@ $(function() {
 	});
 
 	$("#content").keyup(function() {
-		var replyContent = $(this).text();
+		var content = $(this).val();
 
-		if (replyContent != "${post.content}") {
+		if (content != "${post.content}") {
 			$("#modifyBtn").removeClass("disabled").prop("disabled", false);
 		}
 		else {
@@ -27,7 +27,6 @@ $(function() {
 		}
 
 	});
-	
 
 	// 태그 검색창 띄우기
 	$("#tagBtn").click(function() {
@@ -135,6 +134,10 @@ $(function() {
 
 					// 생성된 HTML 코드를 movie_list 요소의 자식 태그로 추가
 					$('.movie_list').append(html);
+					
+					// 저장 버튼 활성화
+					$("#modifyBtn").removeClass("disabled").prop("disabled", false);
+					$("#modifyBtn").addClass("disabled").prop("disabled", true);
 			}
 		});
 	});
@@ -150,7 +153,7 @@ $(function() {
 		// 비밀번호 인풋이 있어야 함
 		if ($("#passwd").val().length > 0) {
 			var title = $("#title").val();
-			var content = $("#content").text();
+			var content = $("#content").val();
 			var passwd = $("#passwd").val();
 			var postId = "${post.postId}";
 			var contentId = $(".movie_item__poster").attr("id");
@@ -216,9 +219,7 @@ $(function() {
 						</div>
 						<div data-v-4179835d="" class="post_editor__main">
 							<!---->
-							<div data-v-4179835d="" contenteditable="true" class="main__writer" id="content">
-								${post.content}
-							</div>
+							<textarea class="main__writer" id="content" data-v-4179835d="">${post.content}</textarea>
 						</div>
 						<div data-v-4179835d="" class="post_editor__footer">
 							<button class="footer__hash-tag-button" id="tagBtn" data-v-4179835d="">
@@ -228,9 +229,11 @@ $(function() {
 										fill="#98A4B7" data-v-4179835d=""></path></svg>
 							</button>
 						</div>
-						<div data-v-4179835d="" class="post_editor__footer">
-							<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
-						</div>
+							<div data-v-4179835d="" class="post_editor__footer">
+								<form data-v-4179835d="" class="footer__passwd">
+									<input data-v-4179835d="" class="pwin" type="password" id="passwd" placeholder="  비밀번호를 입력하세요. (4자 이상 10자 이하)">
+								</form>
+							</div>
 					</div>
 					<div data-v-4179835d="" class="movie_list">
 					<c:if test="${post.postTag != null }">
@@ -270,7 +273,7 @@ $(function() {
 									<svg data-v-2e4bbd00="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="">
 										<path data-v-2e4bbd00=""
 												d="M5.432 7.256h1.36l-.336 2.048H5v1.072h1.296l-.544 3.36H6.76l.528-3.36h1.76l-.528 3.36h.992l.528-3.36h1.472V9.304h-1.296l.32-2.048h1.408V6.2h-1.216L11.24 3h-.992l-.512 3.2H7.96L8.472 3H7.48l-.512 3.2H5.432v1.056zm2.352 0h1.76l-.32 2.048H7.448l.336-2.048z"
-												fill="#637DEA"></path>
+												fill="#ea6363"></path>
 									</svg>
 									</label>
 									<input data-v-2e4bbd00="" id="input-search" placeholder="태그 검색" type="text" class="form__input">

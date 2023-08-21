@@ -11,7 +11,7 @@
 <script type="text/javascript">
 $(function() {
 	
-	if ("${content != null}") {
+	if ("${content}".length > 0) {
 		var html = '<div data-v-5dec5019="" data-v-4179835d="" class="movie_item">';
 		html += '<div data-v-5dec5019="" class="movie_item__poster" id=${content.contentId}>';
 		html += '<img data-v-7874c524="" data-v-3090f2a6="" data-v-5dec5019="" alt=${content.title} class="poster__img" data-src=${content.imgUrl} src=${content.imgUrl} lazy="loaded">';
@@ -45,18 +45,18 @@ $(function() {
 		var postContent = $(this).val();
 
 		if (postContent.length > 0) {
-			$("#addPostBtn").removeClass("disabled").addClass("btn");
+			$("#addPostBtn").removeClass("disabled");
 		} else {
-			$("#addPostBtn").removeClass("btn").addClass("disabled");
+			$("#addPostBtn").addClass("disabled");
 		}
 
 	});
-
+	
 	// 게시글 추가하기
 	$("#addPostBtn").click(function() {
 
 		// 비밀번호 설정이 되어있는 경우에만
-		if ($("#passwd").val().length > 0) {
+		if ($("#passwd").val().length > 3 && $("#passwd").val().length < 11) {
 			var title = $("#title").val();
 			var content = $("#content").val();
 			var passwd = $("#passwd").val();
@@ -79,8 +79,12 @@ $(function() {
 				}
 			});
 		}
-		else {
+		else if ($("#passwd").val().length == 0){
 			alert("게시글 비밀번호를 입력해주세요.");
+			$("#passwd").focus();
+		}
+		else {
+			alert("비밀번호는 4자 이상 10자 이하로 설정해주세요.");
 			$("#passwd").focus();
 		}
 	});
@@ -203,6 +207,8 @@ $(function() {
 					$('.movie_list').append(html);
 			}
 		});
+		
+		$("#tag_list").empty();
 	});
 
 	// 추가된 tag 삭제
@@ -247,17 +253,19 @@ $(function() {
 								<div class="post_editor__main" data-v-4179835d="">
 									<div class="placeholder main__placeholder" data-v-376be9e4="" data-v-4179835d="">
 									</div>
-									<textarea id="content" class="main__writer" data-v-4179835d="" data-v-0c949614="" placeholder="#태그로 작품이 등록된 게시글은 따로 모아 확인할 수 있어요."></textarea>
+									<textarea id="content" class="main__writer" data-v-4179835d="" data-v-0c949614="" placeholder="작품이 등록된 게시글은 따로 모아 확인할 수 있어요."></textarea>
 								</div>
 								<div data-v-4179835d="" class="post_editor__footer">
-									<input data-v-4179835d="" type="password" id="passwd" placeholder="비밀번호를 입력하세요.">
+									<form data-v-4179835d="" class="footer__passwd">
+										<input data-v-4179835d="" class="pwin" type="password" id="passwd" placeholder="  비밀번호를 입력하세요. (4자 이상 10자 이하)">
+									</form>
 								</div>
 								<div class="post_editor__footer" data-v-4179835d="">
 									<button class="footer__hash-tag-button" id="tagBtn" data-v-4179835d="">
 										<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-v-4179835d="" class="">
 											<path fill-rule="evenodd" clip-rule="evenodd"
 												d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z"
-												fill="#98A4B7" data-v-4179835d=""></path></svg>
+												fill="#b79898" data-v-4179835d=""></path></svg>
 									</button>
 								</div>
 							</div>
@@ -272,7 +280,7 @@ $(function() {
 												<svg data-v-2e4bbd00="" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="">
 													<path data-v-2e4bbd00=""
 															d="M5.432 7.256h1.36l-.336 2.048H5v1.072h1.296l-.544 3.36H6.76l.528-3.36h1.76l-.528 3.36h.992l.528-3.36h1.472V9.304h-1.296l.32-2.048h1.408V6.2h-1.216L11.24 3h-.992l-.512 3.2H7.96L8.472 3H7.48l-.512 3.2H5.432v1.056zm2.352 0h1.76l-.32 2.048H7.448l.336-2.048z"
-															fill="#637DEA"></path>
+															fill="#ea6363"></path>
 												</svg>
 												</label>
 												<input data-v-2e4bbd00="" id="input-search" placeholder="태그 검색" type="text" class="form__input">
@@ -283,7 +291,7 @@ $(function() {
 														<path data-v-2e4bbd00="" fill-rule="evenodd"
 															clip-rule="evenodd"
 															d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5.234-3.766a.797.797 0 00-.618-.232.907.907 0 00-.7.264L12 10.714 9.552 8.266a.907.907 0 00-.7-.264.797.797 0 00-.85.85.907.907 0 00.264.7L10.714 12l-2.448 2.448a.907.907 0 00-.264.7.797.797 0 00.85.85.907.907 0 00.7-.264L12 13.286l2.448 2.448c.192.192.448.28.7.264a.797.797 0 00.85-.85.907.907 0 00-.264-.7L13.286 12l2.448-2.448a.907.907 0 00.264-.7.797.797 0 00-.232-.618z"
-															fill="#98A4B7"></path></svg>
+															fill="#b79898"></path></svg>
 												</button>
 											</form>
 											<div data-v-2e4bbd00="" class="body__container">
