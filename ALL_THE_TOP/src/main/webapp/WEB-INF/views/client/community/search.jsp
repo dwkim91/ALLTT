@@ -140,6 +140,14 @@ $(function() {
 		}
 
 	});
+	
+	$("#communityTagMoreButton").click(function() {
+		location.href="${contextPath}/community/keyword?tag=" + $("#search").val();
+	});
+	
+	$("#communityMoreButton").click(function() {
+		location.href="${contextPath}/community/keyword?keyword=" + $("#search").val();
+	});
 })
 </script>
 </head>
@@ -196,7 +204,7 @@ $(function() {
 					<div data-v-2f928022="" class="section-title-wrapper community">
 						<h3 data-v-2f928022="" class="section-title community"> 커뮤니티 태그 <span data-v-2f928022="" class="search-tag-count"></span>
 						<!---->
-						<a data-v-2f928022="" href="/search/tags?keyword=f" class="section-more-btn" id="communityTagMoreButton" title="커뮤니티 태그 더보기"><i data-v-2f928022="" class="kino-icon kino-icon--more-main"></i></a></h3>
+						<a data-v-2f928022="" class="section-more-btn" id="communityTagMoreButton" title="커뮤니티 태그 더보기"><i data-v-2f928022="" class="kino-icon kino-icon--more-main"></i></a></h3>
 					</div>
 					<div data-v-2f928022="" class="content-wrap" style="">
 						<div data-v-53eafb8a="" data-v-2f928022="" class="filcking">
@@ -213,7 +221,7 @@ $(function() {
 					<section data-v-2f928022="" class="result-section search-community-area" id="post-area" style="display: none;">
 						<div data-v-2f928022="" class="section-title-wrapper community">
 							<h3 data-v-2f928022="" class="section-title community"> 커뮤니티 게시글 <span data-v-2f928022="" class="search-post-count"></span>
-								<a data-v-2f928022="" href="/search/community?keyword=f" class="section-more-btn" id="communityMoreButton" title="커뮤니티 게시글 더보기"><i data-v-2f928022="" class="kino-icon kino-icon--more-main"></i></a></h3>
+								<a data-v-2f928022="" class="section-more-btn" id="communityMoreButton" title="커뮤니티 게시글 더보기"><i data-v-2f928022="" class="kino-icon kino-icon--more-main"></i></a></h3>
 						</div>
 						<div data-v-2f928022="" class="content-wrap" style="">
 							<div data-v-53eafb8a="" data-v-2f928022="" class="filcking">
