@@ -1,12 +1,17 @@
 package com.app.alltt.member.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +66,7 @@ public class MemberController {
 	
 	// 회원 가입 및 탈퇴 메서드
 	@GetMapping("/{service}/{source}")
-	public ModelAndView srviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
+	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
 		
 		ModelAndView mv = new ModelAndView();
@@ -386,8 +391,23 @@ public class MemberController {
 	public ModelAndView withdraw(HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		// 로그인한 멤버DTO
+		mv.addObject("member", memberService.getMemberByMemberId(memberId));
 		mv.setViewName("/alltt/withdraw");
 		return mv;
+	}
+	
+	// 탈퇴test
+	@PostMapping("/test99")
+	public ModelAndView handlePostRequest(@RequestParam("data1") String data1, @RequestParam("data2") String data2, @RequestParam("data3") String data3) {
+
+		System.out.println(data1);
+		System.out.println(data2);
+		System.out.println(data3);
+		
+		ModelAndView modelAndView = new ModelAndView("test");
+		
+		return modelAndView;
 	}
 	
 	// session 검증용 method
