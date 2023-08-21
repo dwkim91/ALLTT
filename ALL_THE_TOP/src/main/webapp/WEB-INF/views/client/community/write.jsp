@@ -11,6 +11,31 @@
 <script type="text/javascript">
 $(function() {
 	
+	if ("${content != null}") {
+		var html = '<div data-v-5dec5019="" data-v-4179835d="" class="movie_item">';
+		html += '<div data-v-5dec5019="" class="movie_item__poster" id=${content.contentId}>';
+		html += '<img data-v-7874c524="" data-v-3090f2a6="" data-v-5dec5019="" alt=${content.title} class="poster__img" data-src=${content.imgUrl} src=${content.imgUrl} lazy="loaded">';
+		html += '</div>';
+		html += '<div data-v-5dec5019="" class="movie_item__description">';
+		html += '<h5 data-v-5dec5019="" class="description__title">${content.title}</h5>';
+		html += '<p data-v-5dec5019="" class="description__subtitle">${content.contentType}</p>';
+		if ("${content.enrollDt} != 9999") {
+			html += '<span data-v-5c10ad9e="" class="description__subtitle">${content.enrollDt}</span>';
+		}
+		html += '<div data-v-5dec5019="" class="description__bottom">';
+		html += '<img data-v-5dec5019="" src="" class="light">';
+		html += '<!---->';
+		html += '</div>';
+		html += '</div>';
+		html += '<div data-v-5dec5019="" class="movie_item__more">';
+		html += '<button data-v-5dec5019="" class="more__btn" id="deleteBtn">삭제</button>';
+		html += '</div>';
+		html += '</div>';
+
+		// 생성된 HTML 코드를 movie_list 요소의 자식 태그로 추가
+		$('.movie_list').append(html);
+	};
+	
 	// 뒤로가기
 	$("#backBtn").click(function() {
 		location.href="${contextPath}/community";
