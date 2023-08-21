@@ -123,7 +123,6 @@ function withdrawMember(socialNm){
 			<div id="root" data-v-c827bb7e="">
 				<main data-v-214537f9="" data-v-c827bb7e="" id="contents">
 					<div data-v-214537f9="" class="wrapper">
-					<form action="member/test99" method="post">
 						<div data-v-214537f9="" class="main-contents-wrap" style="padding-top: 100px;">
 							<div data-v-214537f9="" class="main-title">
 								<h4 data-v-214537f9="">
@@ -166,11 +165,9 @@ function withdrawMember(socialNm){
 									data-v-214537f9="" class="checkbox-text"><label
 									data-v-214537f9="" for="d_agree">위 내용을 모두 확인하였으며, 이에
 										동의합니다.</label></span>
-								<input type="hidden" id="checkbox1Hidden" name="checkbox1Hidden" value="false">		
 							</div>
-							<button type="submit" data-v-214537f9="" class="primary-btn" id="withdrawButton" onclick="">탈퇴 하기</button>
+							<button data-v-214537f9="" class="primary-btn" id="withdrawButton" onclick="withdrawMember('${member.socialNm}')">탈퇴 하기</button>
 						</div>
-					</form>	
 					</div>
 					<!---->
 				</main>
