@@ -2049,18 +2049,6 @@ input,textarea {
 	margin:24px 5px;
 	cursor:pointer
 }
-.post_editor .main__writer span.hashtag {
-	cursor:pointer;
-	padding:0 6px;
-	font-size:13px;
-	letter-spacing:-.1px;
-	background-color:rgba(99,125,234,.2);
-	border-radius:2px;
-	height:20px;
-	line-height:20px;
-	color:#6a5656;
-	display:inline-block
-}
 .post_editor .main__writer .og-link {
 	margin:16px 0 24px;
 	background:#d79090;
