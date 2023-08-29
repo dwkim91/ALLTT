@@ -115,7 +115,8 @@ $(function() {
 	$("#deletePost").click(function() {
 		// 한번 더 검증
 		if ("${post.memberId}" == "${sessionScope.memberId}") {
-			location.href="${contextPath}/community/delete?postId=${post.postId}";
+			
+			// 모달창 열어서 여기서 처리하자 #deleteModal
 		}
 		else {
 			alert("잘못된 접근입니다.");
@@ -288,11 +289,6 @@ $(function() {
 								<!---->
 								<div data-v-4179835d="" class="main__writer">
 									<div>${post.content}</div>
-									<div>
-									<c:if test="${post.postTag != null}">
-										<span class="hashtag" id="${post.contentId}">#${post.postTag}</span>
-									</c:if>
-									</div>
 								</div>
 							</div>
 							<!---->
@@ -310,8 +306,6 @@ $(function() {
 						<div data-v-de3ba2dc="" data-v-af062606="" class="badge-wrap textColorPrimary">
 							<svg data-v-af062606="" data-v-de3ba2dc="" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32" class="icon-color-navy06"><path data-v-af062606="" data-v-de3ba2dc="" fill-rule="evenodd" clip-rule="evenodd" d="M13 5a9 9 0 00-5.79 15.89c.342 2.296-.657 4.867-1.055 5.773a.207.207 0 00.22.286c3.867-.575 6.027-2.341 7.22-3.949H19a9 9 0 100-18h-6z" fill="#eee"></path></svg><span data-v-de3ba2dc="">${replyList.size()}</span>
 						</div>
-					</div>
-					<div data-v-af062606="" class="badge-wrap">
 					<c:choose>
 					<c:when test="${post.myRecmnd == 0}">
 						<button data-v-de3ba2dc="" data-v-b0785d82="" id="likeBtn" class="badge-wrap reactionButton button textColorPrimary">
@@ -441,17 +435,30 @@ $(function() {
 			<div data-v-3478b392="" data-v-327582cc="" class="outerModal" style="">
 				<div data-v-3478b392="" class="innerModal" style="position: relative;">
 					<ul data-v-3478b392="" class="contents-wrap">
-						<li data-v-3478b392=""><button data-v-3478b392="" id="modifyPost">
-						<!---->
-						 게시글 수정하기 </button></li>
-						<li data-v-3478b392=""><button data-v-3478b392="" id="deletePost">
-						<!---->
-						 게시글 삭제하기 </button></li>
+						<li data-v-3478b392=""><button data-v-3478b392="" id="modifyPost"> 게시글 수정하기 </button></li>
+						<li data-v-3478b392=""><button data-v-3478b392="" id="deletePost"> 게시글 삭제하기 </button></li>
 					</ul>
 					<object style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; pointer-events: none; z-index: -1; opacity: 0;" class="resize-sensor" tabindex="-1" type="text/html" data="about:blank"></object>
 				</div>
 			</div>
 		</div>
+		<!-- 게시글 삭제 컨펌 -->
+		<div data-v-48d16333="" class="modal-layer" style="display: none;" id="deleteModal">
+			<div data-v-7e7b7a4d="" data-v-48d16333="" class="confirm-modal-container">
+				<div data-v-7e7b7a4d="" class="confirm-modal-header">
+					<h2 data-v-7e7b7a4d="" name="header">작성중인 내용이 모두 삭제됩니다.</h2>
+				</div>
+				<div data-v-7e7b7a4d="" class="confirm-modal-body">
+					<h3 data-v-7e7b7a4d="" name="body">내용을 삭제하시겠어요?</h3>
+				</div>
+				<div data-v-7e7b7a4d="" class="confirm-modal-footer">
+					<div data-v-7e7b7a4d="" name="footer">
+						<button data-v-7e7b7a4d="" id="closeButton" class="gray-btn"><span data-v-7e7b7a4d="" class="건너뛰기">뒤로가기</span></button><button data-v-7e7b7a4d="" id="confirmButton" class="primary-btn"><span data-v-7e7b7a4d="" class="text">삭제하기</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 			<!-- 댓글 수정, 삭제하기 창 -->
 		<div data-v-327582cc="" class="modal-layer" id="replyModal" style="display: none;">
 			<div data-v-3478b392="" data-v-327582cc="" class="outerModal" style="">
