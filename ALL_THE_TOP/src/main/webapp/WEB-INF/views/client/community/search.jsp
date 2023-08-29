@@ -51,16 +51,16 @@ $(function() {
 				async : true,
 				success : function(result) {
 					if (result.length > 0) {
+						
 						tag_result_found = true;
 						$(".default-not-found").css("display", "none");
 						$("#tag-area").css("display", "block");
 						
 						// need to empty inside of UL tag
 						search_tag_ul.empty();
-						search_tag_count.text(" " + result.length);
+						search_tag_count.text(result.length);
 		                // Loop through the result and create li elements
 		                result.forEach(function(tag) {
-		                	if ($("#tag-result li").length > 3) return;
 		                		
 		                    var li = $("<li>").attr("data-v-53eafb8a", "").addClass("tag-wrap");
 		                    var a = $("<a>").attr({
@@ -72,7 +72,7 @@ $(function() {
 		                        "keyword": "f"
 		                    });
 		                    var iconDiv = $("<div>").attr("data-v-5b1cfcdf", "").addClass("tag__icon result");
-		                    var svg = '<svg data-v-5b1cfcdf="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class=""><path data-v-5b1cfcdf="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#98A4B7"></path></svg>';
+		                    var svg = '<svg data-v-5b1cfcdf="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class=""><path data-v-5b1cfcdf="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#b79898"></path></svg>';
 		                    var infoDiv = $("<div>").attr("data-v-5b1cfcdf", "").addClass("tag__info");
 		                    var textP = $("<p>").attr("data-v-5b1cfcdf", "").addClass("info__text with-count").text(tag.postTag);
 		                    var countP = $("<p>").attr("data-v-5b1cfcdf", "").addClass("info__count").text("게시글 " + tag.postCnt + "개");
@@ -83,6 +83,8 @@ $(function() {
 		                    a.append(iconDiv, infoDiv);
 		                    li.append(a);
 		                    search_tag_ul.append(li);
+
+		                    if (search_tag_ul.find("li").length > 3) return false;
 	                	});
 					}
 					else {
@@ -90,6 +92,7 @@ $(function() {
 					}
  				}
 			});
+			
 			// post title, content list
 			$.ajax({
 				url : "${contextPath}/community/searchPost",
@@ -98,35 +101,41 @@ $(function() {
 				async : true,
 				success : function(result) {
 					if (result.length > 0) {
+						
 						post_result_found = true;
 						$(".default-not-found").css("display", "none");
 						$("#post-area").css("display", "block");
 
 						// need to empty inside of UL tag
 						search_post_ul.empty();
-						search_post_count.text(" " + result.length);
-						result.forEach(function (post) {
-							var li = $("<li>").attr("data-v-53eafb8a", "").addClass("");
-							var a = $("<a>").attr({
-								"data-v-0bcef72e": "",
-								"data-v-53eafb8a": "",
-								"href": "${contextPath}/community/post?postId=" + post.postId,
-								"class": "",
-								"id": "communityPost-" + post.postId
-							});
-							var communityItemDiv = $("<div>").attr("data-v-0bcef72e", "").addClass("community-search-item");
-							var infoWrapDiv = $("<div>").attr("data-v-0bcef72e", "").addClass("info-wrap");
-							var titleP = $("<p>").attr("data-v-0bcef72e", "").addClass("title").text(post.postTitle);
-							var bodyP = $("<p>").attr("data-v-0bcef72e", "").addClass("body").text(post.content);
-							var createdP = $("<p>").attr("data-v-0bcef72e", "").addClass("created").text(post.enrollDt);
+						search_post_count.text(result.length);
 
-							// Append elements
-							infoWrapDiv.append(titleP, bodyP, createdP);
-							communityItemDiv.append(infoWrapDiv);
-							a.append(communityItemDiv);
-							li.append(a);
-							search_post_ul.append(li);
-						});
+			            for (var i = 0; i < result.length; i++) {
+			                var post = result[i];
+			                var li = $("<li>").attr("data-v-53eafb8a", "").addClass("");
+			                var a = $("<a>").attr({
+			                    "data-v-0bcef72e": "",
+			                    "data-v-53eafb8a": "",
+			                    "href": "${contextPath}/community/post?postId=" + post.postId,
+			                    "class": "",
+			                    "id": "communityPost-" + post.postId
+			                });
+			                var communityItemDiv = $("<div>").attr("data-v-0bcef72e", "").addClass("community-search-item");
+			                var infoWrapDiv = $("<div>").attr("data-v-0bcef72e", "").addClass("info-wrap");
+			                var titleP = $("<p>").attr("data-v-0bcef72e", "").addClass("title").text(post.postTitle);
+			                var bodyP = $("<p>").attr("data-v-0bcef72e", "").addClass("body").text(post.content);
+			                var createdP = $("<p>").attr("data-v-0bcef72e", "").addClass("created").text(post.enrollDt);
+
+			                // Append elements
+			                infoWrapDiv.append(titleP, bodyP, createdP);
+			                communityItemDiv.append(infoWrapDiv);
+			                a.append(communityItemDiv);
+			                li.append(a);
+			                search_post_ul.append(li);
+
+			                if (i > 2) break;
+			            }
+						
 					}
 					else {
 						$("#post-area").css("display", "none");
@@ -181,7 +190,7 @@ $(function() {
 							<a data-v-93ed3f00="" data-v-21cc99af="" href="${contextPath}/community/feed?tag=${content.contentId}" class="tag" id="hotTag_${i}">
 							<div data-v-93ed3f00="" class="tag__icon">
 							<svg data-v-93ed3f00="" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" class="">
-								<path data-v-93ed3f00="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#98A4B7"/>
+								<path data-v-93ed3f00="" fill-rule="evenodd" clip-rule="evenodd" d="M10.216 5.015a1 1 0 00-1.159.812L8.69 7.909H7a1 1 0 100 2h1.337l-.705 4H6a1 1 0 100 2h1.28l-.307 1.735a1 1 0 001.97.348l.367-2.083h3.969l-.306 1.735a1 1 0 101.97.348l.367-2.083H17a1 1 0 100-2h-1.338l.705-4h1.634a1 1 0 100-2h-1.28l.305-1.735a1 1 0 10-1.97-.347l-.367 2.082h-3.968l.306-1.735a1 1 0 00-.811-1.159zm3.415 8.894l.706-4h-3.969l-.705 4h3.968z" fill="#b79898"/>
 							</svg>
 							</div>
 							<span data-v-93ed3f00="" class="tag__text">${content.title}</span>

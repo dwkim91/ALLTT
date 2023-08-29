@@ -59,5 +59,20 @@ public class MainServiceImpl implements MainService {
 	public List<FilteredDTO> getMoreContentByKeyword(FilterDTO filterDTO) {
 		return mainDAO.selectListContentByKeyword(filterDTO);
 	}
+
+	@Override
+	public FilterDTO getFilterByMemberId(FilterDTO filter) {
+		return mainDAO.selectOneFilterByMemberId(filter);
+	}
+
+	@Override
+	public boolean getWishByMemberId(FilteredDTO filteredDTO) {
+		boolean isWishCheck = false;
+		
+		if (mainDAO.selectOneWishByMemberId(filteredDTO) > 0) {
+			isWishCheck = true; 
+		}
+		return isWishCheck;
+	}
 	
 }

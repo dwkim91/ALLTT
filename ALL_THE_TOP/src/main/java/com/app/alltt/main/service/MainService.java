@@ -28,4 +28,8 @@ public interface MainService {
 
 	List<FilteredDTO> getMoreContentByKeyword(FilterDTO filterDTO);
 
+	FilterDTO getFilterByMemberId(FilterDTO filter);
+
+	boolean getWishByMemberId(FilteredDTO filteredDTO);
+
 }
