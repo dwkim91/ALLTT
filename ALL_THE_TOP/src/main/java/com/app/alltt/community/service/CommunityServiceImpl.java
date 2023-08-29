@@ -12,6 +12,7 @@ import com.app.alltt.community.dto.PostDTO;
 import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.crawling.dto.ContentDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 @Service
@@ -189,6 +190,19 @@ public class CommunityServiceImpl implements CommunityService {
 	@Override
 	public List<PostDTO> getPostList(String title) {
 		return communityDAO.selectPostList(title);
+	}
+
+	@Override
+	@Transactional
+	public boolean insertWishContent(FilteredDTO wishDTO) {
+		boolean isInserted = false;
+		
+		if (communityDAO.selectWishContent(wishDTO) == 0) {
+			communityDAO.insertWishContent(wishDTO);
+			isInserted = true;
+		}
+		
+		return isInserted;
 	}
 
 }

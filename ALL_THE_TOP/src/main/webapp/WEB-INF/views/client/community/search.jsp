@@ -23,7 +23,9 @@ $(function() {
 		var search_tag_ul = $("#tag-result");
 		// 태그 리스트 count
 		var search_tag_count = $(".search-tag-count");
+		// 게시글 리스트 넣을 ul
 		var search_post_ul = $("#post-result");
+		// 게시글 리스트 count
 		var search_post_count = $(".search-post-count");
 		var tag_result_found = false;
 		var post_result_found = false;
@@ -60,7 +62,14 @@ $(function() {
 						search_tag_ul.empty();
 						search_tag_count.text(result.length);
 		                // Loop through the result and create li elements
+		                
+		                var addedTagCount = 0; // 추가된 태그 개수를 추적합니다.
+		                
 		                result.forEach(function(tag) {
+		                	
+		                    if (addedTagCount >= 3) {
+		                        return false; // 3개 이상이면 중단합니다.
+		                    }
 		                		
 		                    var li = $("<li>").attr("data-v-53eafb8a", "").addClass("tag-wrap");
 		                    var a = $("<a>").attr({
@@ -84,7 +93,7 @@ $(function() {
 		                    li.append(a);
 		                    search_tag_ul.append(li);
 
-		                    if (search_tag_ul.find("li").length > 3) return false;
+							addedTagCount += 1;
 	                	});
 					}
 					else {
@@ -110,9 +119,17 @@ $(function() {
 						search_post_ul.empty();
 						search_post_count.text(result.length);
 
-			            for (var i = 0; i < result.length; i++) {
-			                var post = result[i];
+						var addedTagCount = 0; // 추가된 게시글 개수를 추적합니다.
+
+			            result.forEach(function(post) {
+
+							if (addedTagCount >= 3) {
+		                        return false; // 3개 이상이면 중단합니다.
+		                    }
+
+							console.log(post);
 			                var li = $("<li>").attr("data-v-53eafb8a", "").addClass("");
+			                var hr = $("<hr>").attr("data-v-0bcef72e", "").addClass("divider");
 			                var a = $("<a>").attr({
 			                    "data-v-0bcef72e": "",
 			                    "data-v-53eafb8a": "",
@@ -124,17 +141,22 @@ $(function() {
 			                var infoWrapDiv = $("<div>").attr("data-v-0bcef72e", "").addClass("info-wrap");
 			                var titleP = $("<p>").attr("data-v-0bcef72e", "").addClass("title").text(post.postTitle);
 			                var bodyP = $("<p>").attr("data-v-0bcef72e", "").addClass("body").text(post.content);
-			                var createdP = $("<p>").attr("data-v-0bcef72e", "").addClass("created").text(post.enrollDt);
-
+			                
+			                // Convert timestamp to date format
+			                var createdDate = new Date(parseInt(post.enrollDt));
+			                var formattedDate = createdDate.toLocaleDateString(); // Adjust to your preferred date format
+			                var createdP = $("<p>").attr("data-v-0bcef72e", "").addClass("created").text(formattedDate);
+			                
 			                // Append elements
+			               	if (addedTagCount > 0) li.append(hr);
 			                infoWrapDiv.append(titleP, bodyP, createdP);
 			                communityItemDiv.append(infoWrapDiv);
 			                a.append(communityItemDiv);
 			                li.append(a);
 			                search_post_ul.append(li);
 
-			                if (i > 2) break;
-			            }
+							addedTagCount += 1;
+			            });
 						
 					}
 					else {
@@ -212,7 +234,6 @@ $(function() {
 					<section data-v-2f928022="" class="result-section search-community-area" id="tag-area" style="display: none;">
 					<div data-v-2f928022="" class="section-title-wrapper community">
 						<h3 data-v-2f928022="" class="section-title community"> 커뮤니티 태그 <span data-v-2f928022="" class="search-tag-count"></span>
-						<!---->
 						<a data-v-2f928022="" class="section-more-btn" id="communityTagMoreButton" title="커뮤니티 태그 더보기"><i data-v-2f928022="" class="kino-icon kino-icon--more-main"></i></a></h3>
 					</div>
 					<div data-v-2f928022="" class="content-wrap" style="">

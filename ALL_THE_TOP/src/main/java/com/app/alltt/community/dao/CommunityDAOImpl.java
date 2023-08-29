@@ -10,6 +10,7 @@ import com.app.alltt.community.dto.PostDTO;
 import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.crawling.dto.ContentDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 @Repository
@@ -146,6 +147,16 @@ public class CommunityDAOImpl implements CommunityDAO {
 	@Override
 	public List<PostDTO> selectPostList(String title) {
 		return sqlSession.selectList("communityMapper.selectPostList", title);
+	}
+
+	@Override
+	public int selectWishContent(FilteredDTO wishDTO) {
+		return sqlSession.selectOne("communityMapper.selectWishContent", wishDTO);
+	}
+
+	@Override
+	public void insertWishContent(FilteredDTO wishDTO) {
+		sqlSession.insert("communityMapper.insertWishContent", wishDTO);
 	}
 
 }
