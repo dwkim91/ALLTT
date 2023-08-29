@@ -40,8 +40,11 @@ $(function() {
 			<c:choose>
 			<c:when test="${keyword != null}">
 				<section data-v-6608d693="" class="list-area">
-				<c:forEach var="post" items="${postList}">
+				<c:forEach var="post" items="${postList}" varStatus="i">
 					<div data-v-6608d693="">
+					<c:if test="${!i.first}">
+						<hr data-v-0bcef72e="" class="divider">
+					</c:if>
 						<a data-v-0bcef72e="" data-v-6608d693="" href="${contextPath}/community/post?postId=${post.postId}" class="">
 							<div data-v-0bcef72e="" class="community-search-item">
 								<div data-v-0bcef72e="" class="info-wrap">
