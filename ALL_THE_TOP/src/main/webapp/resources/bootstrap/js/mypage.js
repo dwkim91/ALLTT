@@ -196,3 +196,55 @@ function updateMemberFilter(contentType) {
 	
 }
 
+// 프로필변경 파일업로드 요소 클릭
+function openFileInput() {
+    // 파일 업로드(input type="file) 요소를 클릭
+    document.getElementById("fileInput").click();
+}
+// 프로필이미지 저장 및 변경
+$("#fileInput").on("change", function() {
+    var fileInput = document.getElementById("fileInput");
+    var uploadFile = fileInput.files[0];
+
+    if (uploadFile) {
+        var formData = new FormData();
+        formData.append("uploadFile", uploadFile);
+
+        $.ajax({
+			url: '/member/changeThumbnailImg',
+			type: 'POST',
+			data: formData,
+			processData: false, // 데이터 처리 방지
+			contentType: false, // 컨텐츠 타입 설정
+			success: function(response) {
+            	
+				if (response.startsWith("Error :")) {
+					alert(response);
+				}
+				else {
+					// 업로드 완료 후 이미지 업데이트
+					changeThumbnailImg(response);
+				}
+            },
+            error: function() {
+                // 업로드 실패 시 처리
+                console.error("파일 업로드 실패");
+            }
+        });
+    }
+});
+
+// 이미지 3개요소 변경 메서드
+function changeThumbnailImg(newFileName) {
+	
+	var thumbnailImg = document.querySelector(".thumbnailImg");
+	thumbnailImg.src = '/resources/bootstrap/img/thumbnailImg/' + newFileName;
+	// 우측상단 이미지 요소 선택
+	var firstImgElement = document.querySelector('.menu_my .loaded.css-1doy9ip.euf32k22');
+	// src 값 변경
+	firstImgElement.setAttribute('src', '/resources/bootstrap/img/thumbnailImg/' + newFileName);
+	// 이미지 요소 선택
+	var secondImgElement = document.querySelector('.menu_my_content.wrap_margin .loaded.css-1doy9ip.euf32k22');
+	// src 값 변경
+	secondImgElement.setAttribute('src', '/resources/bootstrap/img/thumbnailImg/' + newFileName);
+}

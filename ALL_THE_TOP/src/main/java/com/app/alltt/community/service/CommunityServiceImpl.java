@@ -191,4 +191,32 @@ public class CommunityServiceImpl implements CommunityService {
 		return communityDAO.selectPostList(title);
 	}
 
+	@Override
+	public boolean removeAllPost(long memberId) {
+		
+		boolean isRemoved = false;
+		
+		try {
+			communityDAO.deleteAllPost(memberId);
+			isRemoved = true;
+		} catch (Exception e) {e.printStackTrace();}
+		
+		return isRemoved;
+		
+	}
+
+	@Override
+	public boolean removeAllReply(long memberId) {		
+
+		boolean isRemoved = false;
+		
+		try {
+			communityDAO.deleteAllReply(memberId);
+			isRemoved = true;
+		} catch (Exception e) {e.printStackTrace();}
+		
+		return isRemoved;
+		
+	}
+
 }

@@ -1,11 +1,20 @@
 package com.app.alltt.member.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -140,7 +149,6 @@ public class MemberServiceImpl implements MemberService {
 	
 	@Override
 	public void addNewMember(MemberDTO member) {
-		
 		memberDAO.insertMember(member);
 	}
 	
@@ -323,6 +331,77 @@ public class MemberServiceImpl implements MemberService {
 		System.out.println(platformPriority.toString());
 		
 		return platformPriority;
+	}
+
+	@Override
+	public void changeThumbnailImg(MemberDTO memberDTO) {
+		
+		memberDAO.updateThumbnailImg(memberDTO);
+		
+	}
+	
+	public MemberDTO imgDownload (MemberDTO member, String filePath) {
+		MemberDTO memberDTO = member;
+		String imgUrl = memberDTO.getThumbnailImg();
+		
+		// URL에서 파일 이름 부분 추출
+		String[] urlParts = imgUrl.split("/");
+		String fileName = urlParts[urlParts.length - 1];
+		
+		// 파일 이름에서 확장자 추출
+		String[] fileNameParts = fileName.split("\\.");
+		String fileExtension = fileNameParts[fileNameParts.length - 1];
+		
+		// 허용된 이미지 확장자
+    	List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
+
+    	if (allowedExtensions.contains(fileExtension.toLowerCase())) {
+	
+    		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+			// 파일이름생성
+			String newFileName = fmt.format(new Date()) + "_" + UUID.randomUUID() + "_" + fileName;
+			String outputFilePath = filePath + newFileName; // 저장할 파일 경로 및 이름
+			try {
+	            // URL 연결 설정
+	            URL url = new URL(imgUrl);
+	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+	            // 이미지 다운로드
+	            InputStream inputStream = connection.getInputStream();
+	            FileOutputStream outputStream = new FileOutputStream(outputFilePath);
+	            byte[] buffer = new byte[1024];
+	            int bytesRead;
+	            while ((bytesRead = inputStream.read(buffer)) != -1) {
+	                outputStream.write(buffer, 0, bytesRead);
+	            }
+	            outputStream.close();
+	            inputStream.close();
+	            
+	            memberDTO.setThumbnailImg(newFileName);
+	            
+	            System.out.println("이미지 다운로드 완료: " + outputFilePath);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+    		
+    	}
+    	else {
+    		
+    		memberDTO.setThumbnailImg("default_profile.png");
+    		
+    	}
+		return memberDTO;
+	}
+
+	@Override
+	public void deleteThumbnailImg(String currentThumbnailImg, String filePath) {
+		if (currentThumbnailImg != null && !currentThumbnailImg.isEmpty()) {
+			// 현재 프로필 이미지 파일 삭제
+			File currentThumbnailImgFile = new File(filePath + currentThumbnailImg);
+			if (currentThumbnailImgFile.exists()) {
+				currentThumbnailImgFile.delete();
+			}
+		}
 	}
 	
 }

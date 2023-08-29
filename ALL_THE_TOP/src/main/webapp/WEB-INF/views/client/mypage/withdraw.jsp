@@ -3,111 +3,48 @@
 <html>
 <head>
 <script>
-//탈퇴하기
-/*
- * 
- 
-function withdrawMember(socialNm) {
-	var service = socialNm;
-	if (confirm("정말 탈퇴 하시겠습니까?")) {
-		location.href = '/member/' + service + '/withdraw';
-		alert("다음에 다시 만나요.");
-	} else {
-		alert("감사합니다 ^^");
-	}
-}
-*/
-
-//탈퇴버튼에 클릭 이벤트 리스너 연결
-/*
-document.getElementById('withdrawButton').addEventListener('click', function() {
-    var socialNm = ${member.socialNm};
-    withdrawMember(socialNm);
-});
-*/
 
 //탈퇴하기
 function withdrawMember(socialNm){
 	console.log(socialNm);
 
-	// 각 체크박스 상태를 저장하는 변수들을 초기화합니다.
-	var d_post = 0;
-	var d_reply = 0;
-	var d_agree = 0;
-	
-	var dPostCheckbox = document.getElementById('d_post');
-    var dReplyCheckbox = document.getElementById('d_reply');
+	// 각 체크박스 상태를 저장하는 변수들을 초기화합니다.	
+	var dPostCheckbox = document.getElementById('dPostYn');
+    var dReplyCheckbox = document.getElementById('dReplyYn');
     var dAgreeCheckbox = document.getElementById('d_agree');
-    d_agree = dAgreeCheckbox.checked ? 1 : 0;
+    d_agree = dAgreeCheckbox.checked ? "Y" : "N";
     
-	if (d_agree === 0){
+	if (d_agree === "N"){
 		alert("탈퇴 동의를 체크해 주세요.");
 	}
-	else if (d_agree === 1){
+	else if (d_agree === "Y"){
 		
-		var filterData = {
-			"d_post"  : d_post = dPostCheckbox.checked   ? 1 : 0,
-			"d_reply" : d_reply = dReplyCheckbox.checked ? 1 : 0,
-		};
-		console.log('d_post:', d_post, 'd_reply:', d_reply, 'd_agree:', d_agree);
-		/*
-		$.ajax({
-			url : '/member/' + service + '/withdraw',
-			type : 'POST',
-			data : JSON.stringify(filterData),
-			contentType : 'application/json',
-			success : function(response) {
-				alert(response);
-			}
-		});
-		*/
+		if (confirm("정말 탈퇴 하시겠습니까?")) {
+			
+			var delete_data = {
+				"dPostYn"  : dPostCheckbox.checked   ? "Y" : "N",
+				"dReplyYn" : dReplyCheckbox.checked ? "Y" : "N",
+			};
+			
+			$.ajax({
+				url : '/member/deleteMyPost',
+				type : 'POST',
+				data : JSON.stringify(delete_data),
+				contentType : 'application/json',
+				success : function(response) {
+					alert(response);
+					alert("다음에 다시 만나요.");
+					var service = socialNm;	
+					location.href = '/member/' + service + '/withdraw';
+				}
+			});
+				
+		} else {
+			alert("감사합니다 ^^");
+		}
+		
 		
 	}
-	/*
-	checkboxElements.forEach(function(checkbox) {
-	    checkbox.addEventListener('change', function() {
-	    	if (checkbox.id === 'reason-0') {
-	            ch1 = checkbox.checked ? 1 : 0;
-	        } else if (checkbox.id === 'reason-1') {
-	            ch2 = checkbox.checked ? 1 : 0;
-	        } else if (checkbox.id === 'reason-2') {
-	            ch3 = checkbox.checked ? 1 : 0;
-	        } else if (checkbox.id === 'agree') {
-	            ch4 = checkbox.checked ? 1 : 0;
-	        }
-	        console.log('ch1:', ch1, 'ch2:', ch2, 'ch3:', ch3, 'ch4:', ch4);
-	    });
-	});
-	*/
-	
-	/*
-	var netflixCheckbox = document.querySelector('#'+contentType+'-filter #netflixCheckbox');
-	var tvingCheckbox = document.querySelector('#'+contentType+'-filter #tvingCheckbox');
-	var wavveCheckbox = document.querySelector('#'+contentType+'-filter #wavveCheckbox');
-	var genreId = getSelectVal('.' + contentType + '-g-select');
-	var wishIncludeYn = getSelectVal('.' + contentType + '-w-select');
-	var sortType = getSelectVal('.' + contentType + '-s-select');
-	
-	var filterData = {
-		"netflixId" : netflixCheckbox.checked ? Number(netflixCheckbox.value) : 0,
-		"tvingId" : tvingCheckbox.checked ? Number(tvingCheckbox.value) : 0,
-		"wavveId" : wavveCheckbox.checked ? Number(wavveCheckbox.value) : 0,
-		"genreId" : genreId,
-		"wishIncludeYn" : wishIncludeYn,
-		"sortType" : sortType,
-		"contentType" : contentType,
-	};
-	
-	$.ajax({
-		url : '/member/' + service + '/withdraw',
-		type : 'POST',
-		data : JSON.stringify(filterData),
-		contentType : 'application/json',
-		success : function(response) {
-			alert(response);
-		}
-	});
-	*/
 
 }
 </script>
@@ -123,7 +60,6 @@ function withdrawMember(socialNm){
 			<div id="root" data-v-c827bb7e="">
 				<main data-v-214537f9="" data-v-c827bb7e="" id="contents">
 					<div data-v-214537f9="" class="wrapper">
-					<form action="member/test99" method="post">
 						<div data-v-214537f9="" class="main-contents-wrap" style="padding-top: 100px;">
 							<div data-v-214537f9="" class="main-title">
 								<h4 data-v-214537f9="">
@@ -134,21 +70,21 @@ function withdrawMember(socialNm){
 							<div data-v-214537f9="" class="reason-list">
 								<div data-v-214537f9="" class="checkbox-item">
 									<span data-v-214537f9="" class="dark-default-check-wrap"><input
-										data-v-214537f9="" type="checkbox" id="d_post"
+										data-v-214537f9="" type="checkbox" id="dPostYn"
 										class="filter-checkbox" value="게시글 지우기"><label
-										data-v-214537f9="" for="d_post" class="checker"><span
+										data-v-214537f9="" for="dPostYn" class="checker"><span
 											data-v-214537f9=""></span></label></span><span data-v-214537f9=""
 										class="checkbox-text"><label data-v-214537f9=""
-										for="d_post">게시글 지우기</label></span>
+										for="dPostYn">게시글 지우기</label></span>
 								</div>
 								<div data-v-214537f9="" class="checkbox-item">
 									<span data-v-214537f9="" class="dark-default-check-wrap"><input
-										data-v-214537f9="" type="checkbox" id="d_reply"
+										data-v-214537f9="" type="checkbox" id="dReplyYn"
 										class="filter-checkbox" value="댓글 지우기"><label
-										data-v-214537f9="" for="d_reply" class="checker"><span
+										data-v-214537f9="" for="dReplyYn" class="checker"><span
 											data-v-214537f9=""></span></label></span><span data-v-214537f9=""
 										class="checkbox-text"><label data-v-214537f9=""
-										for="d_reply">댓글 지우기</label></span>
+										for="dReplyYn">댓글 지우기</label></span>
 								</div>
 							</div>
 							<div data-v-214537f9="" class="divider"></div>
@@ -166,11 +102,9 @@ function withdrawMember(socialNm){
 									data-v-214537f9="" class="checkbox-text"><label
 									data-v-214537f9="" for="d_agree">위 내용을 모두 확인하였으며, 이에
 										동의합니다.</label></span>
-								<input type="hidden" id="checkbox1Hidden" name="checkbox1Hidden" value="false">		
 							</div>
-							<button type="submit" data-v-214537f9="" class="primary-btn" id="withdrawButton" onclick="">탈퇴 하기</button>
+							<button type="submit" data-v-214537f9="" class="primary-btn" id="withdrawButton" onclick="withdrawMember('${member.socialNm}')">탈퇴 하기</button>
 						</div>
-					</form>	
 					</div>
 					<!---->
 				</main>
