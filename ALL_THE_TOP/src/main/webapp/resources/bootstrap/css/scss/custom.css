@@ -126,11 +126,6 @@
   }
 }
 
-#wishContent {
-  border: 2px solid black;
-  animation: blink 1s linear infinite;
-}
-
 @media screen and (max-width: 280px) {
 	.checkbox-label {
 		transform: scale(0.8);
@@ -239,10 +234,22 @@
 }
 
 .tag.tag-age.tag-age-nineteen {
+	background-image: url('../../img/wish_false.png');
+	width: 3rem;
+	height: 3rem;
+	border-radius: 2rem;
+}
+
+.tag.tag-age.tag-age-nineteen_true {
 	background-image: url('../../img/wish_true.png');
 	width: 3rem;
 	height: 3rem;
 	border-radius: 2rem;
+}
+
+#wishContent {
+  border: 2px solid black;
+  animation: blink 1s linear infinite;
 }
 
 .css-110e4jt {

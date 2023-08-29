@@ -26,6 +26,9 @@ public interface MainDAO {
 	public String selectOnePlatformByDetailUrl(FilteredDTO filteredDTO);
 
 	public List<FilteredDTO> selectListContentByKeyword(FilterDTO filterDTO);
-	
+
+	public FilterDTO selectOneFilterByMemberId(FilterDTO filter);
+
+	public long selectOneWishByMemberId(FilteredDTO filteredDTO);
 	
 }
