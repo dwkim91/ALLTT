@@ -13,7 +13,7 @@
 $(function() {
 	
 	$(".back-btn").click(function() {
-		location.href="${contextPath}/community/post?postId=${post.postId}";
+		history.go(-1);
 	});
 
 	$("#content").keyup(function() {

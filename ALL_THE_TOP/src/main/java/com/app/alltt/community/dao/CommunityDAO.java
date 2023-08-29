@@ -6,6 +6,7 @@ import com.app.alltt.community.dto.PostDTO;
 import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.crawling.dto.ContentDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 public interface CommunityDAO {
@@ -47,4 +48,12 @@ public interface CommunityDAO {
 	
 	public List<PostDTO> selectPostCountByTag(String title);
 	public List<PostDTO> selectPostList(String title);
+
+	public void deleteAllPost(long memberId);
+	public void deleteAllReply(long memberId);
+
+	
+	public int selectWishContent(FilteredDTO wishDTO);
+	public void insertWishContent(FilteredDTO wishDTO);
+
 }

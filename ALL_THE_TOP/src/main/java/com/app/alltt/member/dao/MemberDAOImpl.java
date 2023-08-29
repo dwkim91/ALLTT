@@ -135,5 +135,10 @@ public class MemberDAOImpl implements MemberDAO {
 	public List<FilteredDTO> selectListWishContentByMemberId(long memberId) {
 		return sqlSession.selectList("memberMapper.selectListWishContentByMemberId", memberId);
 	}
+
+	@Override
+	public void updateThumbnailImg(MemberDTO memberDTO) {
+		sqlSession.update("memberMapper.updateThumbnailImg", memberDTO);		
+	}
 	
 }

@@ -81,7 +81,7 @@ $(function() {
 					<div data-v-1d0e5362="" class="list-inner-wrap">
 						<p data-v-1d0e5362="" class="list-count"> 총 ${postList.size()}개 </p>
 						<ul data-v-1d0e5362="">
-						<c:forEach var="post" items="${postList}">
+						<c:forEach var="post" items="${postList}" varStatus="i">
 							<li data-v-1d0e5362="" class="list-gap">
 							<article data-v-29756cf4="" data-v-1d0e5362="" class="post-wrap">
 							<a data-v-29756cf4="" href="${contextPath}/community/post?postId=${post.postId}" class="" id="postList-IbAJQokB9cnBH0U-kIpa">

@@ -46,7 +46,15 @@
 											class="user-profile-wrap">
 											<div data-v-c30698f4="" class="circle-profile-wrap">
 												<div data-v-c30698f4="" class="default-circle">
+													
+													<img class="thumbnailImg" src="/resources/bootstrap/img/thumbnailImg/${member.thumbnailImg}" onclick="openFileInput()" style="cursor: pointer;">
+													<input type="file" id="fileInput" style="display: none;">
+													<!-- 
+													<img class="thumbnailImg" src="/resources/bootstrap/img/thumbnailImg/galaxy_sm.jpg">
+													 -->
+													<!-- 
 													<img class="thumbnailImg" src="${member.thumbnailImg}">
+													 -->
 												</div>
 											</div>
 										</div>
@@ -264,7 +272,7 @@
 									<div class="movie-g-select">
 										<select id="m-genreId" style="display: none;">
 											<option value="0">전체</option>
-										<c:forEach var="movie_genreDTO" items="${movieList}">
+										<c:forEach var="m_genreDTO" items="${movieList}">
 											<option value="${m_genreDTO.genreId}">${m_genreDTO.genreNm}</option>
 										</c:forEach>
 										</select>
@@ -294,9 +302,6 @@
 						</div>
 						<div data-v-014a8b00="" class="contents-container">
 							<div data-v-014a8b00="" class="empty-contents-wrap">
-								<!--
-								<a data-v-014a8b00="" href="javascript:withdrawMember('${member.socialNm}')"
-								-->
 								<a data-v-014a8b00="" href="${contextPath}/member/withdraw"
 									class="" id="userBestContentsBtn" title="탈퇴하기"><button
 										data-v-014a8b00="" class="empty-contents-button"
