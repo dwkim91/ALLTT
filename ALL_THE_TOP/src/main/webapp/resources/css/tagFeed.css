@@ -382,3 +382,10 @@ html{font-family:-apple-system,sans-serif,Dotum,NotoSansKR,system-ui,Segoe UI,Ro
     bottom: var(--offset);
     left: 0;
 }
+
+.divider[data-v-0bcef72e] {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    background: #361717;
+    opacity: 1;
+}
