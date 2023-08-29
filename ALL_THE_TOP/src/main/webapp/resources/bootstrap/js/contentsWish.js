@@ -31,10 +31,14 @@ $("#container").on("click",".item__thumb.item__thumb-25x36", function(event) {
 			// 요소의 id가 "wishContent"인 경우 id 속성 제거
 			if (id == "wishContent") {
 				element.attr("id", "");
+				var wishButton = $(event.target).closest(".tag.tag-age.tag-age-nineteen_true");
+				wishButton.removeClass("tag-age-nineteen_true").addClass("tag-age-nineteen");
 			}
 			// 요소의 id가 "wishContent"가 아닌 경우 id 속성을 "wishContent"로 설정하고 isWishContent 값을 true로 설정
 			else {
 				element.attr("id", "wishContent");
+				var wishButton = $(event.target).closest(".tag.tag-age.tag-age-nineteen");
+				wishButton.removeClass("tag-age-nineteen").addClass("tag-age-nineteen_true");
 			}
 
 			// 위시 데이터 객체 생성

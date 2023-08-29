@@ -6,6 +6,17 @@
 <script src="${contextPath}/resources/bootstrap/js/contents.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/contentsWish.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/contentSearch.js" type="module"></script>
+<script>
+	$(document).ready(function() {
+	    var netflixId = ${filterDTO.netflixId};
+	    var tvingId = ${filterDTO.tvingId};
+	    var wavveId = ${filterDTO.wavveId};
+	
+	    $("#netflixCheckbox").prop("checked", netflixId === 0 ? false : true);
+	    $("#tvingCheckbox").prop("checked", tvingId === 0 ? false : true);
+	    $("#wavveCheckbox").prop("checked", wavveId === 0 ? false : true);
+	});
+</script>
 </head>
 <body>
 	<main class="is-desktop css-p5l6tq eeennqe0">
@@ -36,10 +47,10 @@
 						</select>
 						<select id="isWishInclude" class="select-filter">
 							<option value="ture">찜 포함</option>
-							<option value="false">찜 제외</option>
+							<option value="false" ${!filterDTO.isWishInclude ? 'selected' : ''}>찜 제외</option>
 						</select> <select id="sortType" class="select-filter">
 							<option value="latest">최신순</option>
-							<option value="title">이름순</option>
+							<option value="title" ${filterDTO.sortType == 'title' ? 'selected' : ''}>이름순</option>
 						</select> 
 						  <div id="searchBarContainer">
 						    <input type="text" id="searchBar" placeholder="검색어를 입력하세요" />
@@ -62,7 +73,14 @@
 									</c:choose>
 									<div class="item__tags" style="pointer-events: auto;">
 										<div class="item__tags-right">
-											<button class="tag tag-age tag-age-nineteen" id="wishButton"></button>
+											<c:choose>
+												<c:when test="${content.memberId == 0}">
+													<button class="tag tag-age tag-age-nineteen" id="wishButton"></button>
+												</c:when>
+												<c:otherwise>
+													<button class="tag tag-age tag-age-nineteen_true" id="wishButton"></button>
+												</c:otherwise>
+											</c:choose>
 										</div>
 									</div>
 									<div class="item__image lazy">

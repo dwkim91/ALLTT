@@ -1,5 +1,7 @@
 package com.app.alltt.main.controller;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.app.alltt.community.dto.PostDTO;
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -86,6 +89,10 @@ public class MainController {
 		
 		// 컨텐츠의 모든정보 (1개씩)
 		FilteredDTO filteredDTO = mainService.getContentDetail(contentId);
+		filteredDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		if (!mainService.getWishByMemberId(filteredDTO)) filteredDTO.setMemberId(0);
+		System.out.println(filteredDTO);
 		mv.addObject("filteredDTO", filteredDTO);
 		
 		// 컨텐츠의 장르 (모두)
@@ -108,7 +115,7 @@ public class MainController {
 		mv.addObject("wavveUrl",mainService.getPlatformByDetailUrl(filteredDTO));
 		
 		mv.addObject("postList", communityService.getPostListByContent(contentId));
-		System.out.println(communityService.getPostListByContent(contentId));
+		
 		return mv;
 	}
 	
@@ -124,19 +131,17 @@ public class MainController {
 		
 		mv.setViewName("/alltt/series");
 
-		// 기본필터
-		FilterDTO filterDTO = new FilterDTO();
-		filterDTO.setNetflixId(1);
-		filterDTO.setTvingId(2);
-		filterDTO.setWavveId(3);
-		filterDTO.setSortType("latest");
-		filterDTO.setContentType("series");
-		filterDTO.setLastItemCnt(0);
-		filterDTO.setIsWishInclude(true);
-		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		// 회원필터
+		FilterDTO filter = new FilterDTO();
+		filter.setMemberId((long) session.getAttribute("memberId"));
+		filter.setContentType("series");
+		FilterDTO filterDTO = mainService.getFilterByMemberId(filter);
+		if (filterDTO.getWishIncludeYn().equals("Y")) filterDTO.setIsWishInclude(true);
+		else filterDTO.setIsWishInclude(false);
 		
 		mv.addObject("contentList", mainService.getMoreFilteredContent(filterDTO));
 		mv.addObject("genreList"  , mainService.getMoreGenreList(filterDTO));
+		mv.addObject("filterDTO", filterDTO);
 		
 		return mv;
 	}
@@ -153,19 +158,17 @@ public class MainController {
 		
 		mv.setViewName("/alltt/movie");
 		
-		// 기본필터
-		FilterDTO filterDTO = new FilterDTO();
-		filterDTO.setNetflixId(1);
-		filterDTO.setTvingId(2);
-		filterDTO.setWavveId(3);
-		filterDTO.setSortType("latest");
-		filterDTO.setContentType("movie");
-		filterDTO.setLastItemCnt(0);
-		filterDTO.setIsWishInclude(true);
-		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		// 회원필터
+		FilterDTO filter = new FilterDTO();
+		filter.setMemberId((long) session.getAttribute("memberId"));
+		filter.setContentType("movie");
+		FilterDTO filterDTO = mainService.getFilterByMemberId(filter);
+		if (filterDTO.getWishIncludeYn().equals("Y")) filterDTO.setIsWishInclude(true);
+		else filterDTO.setIsWishInclude(false);
 		
 		mv.addObject("contentList", mainService.getMoreFilteredContent(filterDTO));
 		mv.addObject("genreList"  , mainService.getMoreGenreList(filterDTO));
+		mv.addObject("filterDTO", filterDTO);
 		
 		return mv;
 	}
