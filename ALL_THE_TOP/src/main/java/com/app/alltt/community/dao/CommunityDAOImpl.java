@@ -148,4 +148,14 @@ public class CommunityDAOImpl implements CommunityDAO {
 		return sqlSession.selectList("communityMapper.selectPostList", title);
 	}
 
+	@Override
+	public void deleteAllPost(long memberId) {
+		sqlSession.delete("communityMapper.deleteAllPost", memberId);
+	}
+
+	@Override
+	public void deleteAllReply(long memberId) {
+		sqlSession.delete("communityMapper.deleteAllReply", memberId);
+	}
+
 }
