@@ -134,7 +134,6 @@ public class CommunityController {
 		}
 		
 		PostDTO post = communityService.getPostDetail(postId, memberId, true);
-		
 		// 같은 contentId를 태그한 게시글들 모두 가져오기
 		List<PostDTO> relatedPostList = communityService.getPostListByContent(post.getContentId());
 		
@@ -321,5 +320,16 @@ public class CommunityController {
 		}
 		
 		return "/alltt/keyword";
+	}
+	
+	@PostMapping("/addMyContent")
+	public @ResponseBody String addMyContent(@RequestParam long memberId, @RequestParam long contentId) {
+		FilteredDTO wishDTO = new FilteredDTO();
+		wishDTO.setMemberId(memberId);
+		wishDTO.setContentId(contentId);
+		
+		if (communityService.insertWishContent(wishDTO)) return "added";
+		else return "false";
+		
 	}
 }
