@@ -47,7 +47,7 @@ import com.app.alltt.member.sns.SnsValue;
 @RequestMapping("/member")
 public class MemberController {
 	
-	private String FILE_REPO_PATH = "C:\\Users\\dwkim\\Documents\\ALLTT\\ALL_THE_TOP\\src\\main\\webapp\\resources\\bootstrap\\img\\thumbnailImg\\";
+	private String FILE_REPO_PATH = "C:\\Users\\dudan\\OneDrive\\문서\\ALLTT\\ALL_THE_TOP\\src\\main\\webapp\\resources\\bootstrap\\img\\thumbnailImg\\";
 	
 	@Autowired
 	private MemberService memberService;
