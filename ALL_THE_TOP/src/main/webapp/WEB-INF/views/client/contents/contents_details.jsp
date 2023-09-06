@@ -14,6 +14,8 @@
 	display: none;
 }
 </style>
+<script src="${contextPath}/resources/bootstrap/js/detailWish.js" type="module"></script>
+
 </head>
 <body>
 	<div class="container">
@@ -74,8 +76,15 @@
 									</ul>
 									<ul>
 										<div class="anime__details__btn">
-											<a href="#" class="follow-btn" id="addWish">
-												<i class="fa fa-heart-o"></i> 컨텐츠 찜
+											<a href="#" class="follow-btn" id="addWish" data-id="${filteredDTO.contentId}">
+											<c:choose>
+												<c:when test="${filteredDTO.memberId > 0}">
+													<i class="fa fa-heart"></i> 컨텐츠 찜											
+												</c:when>
+												<c:otherwise>
+													<i class="fa fa-heart-o"></i> 컨텐츠 찜
+												</c:otherwise>											
+											</c:choose>
 											</a>
 										</div>
 									</ul>
@@ -90,16 +99,61 @@
 												<li>
 													<a href="/community/post?postId=${post.postId}">
 														<div class="anime__review__item">
-															<div class="anime__review__item__text">
-																<h6>
-																	${post.nickName}<span> - ${post.enrollDt}</span>
-																	<span class="subject_over" style="width: 100%;"> ${post.content} </span>
+															<div class="anime__review__item__text" style="background-color: #212121;">
+																<h6 style="color:#efefef;">
+																	${post.nickName} - 
+																	<span style="color:#705a5a;" class="formattedTime">${post.enrollDt}</span>
+																	<span class="subject_over" style="width: 100%; color: #f0a9a9;"> ${post.content} </span>
 																</h6>
 															</div>
 														</div>
 													</a>
 												<li>
 											</c:forEach>
+											<script>
+											window.onload = function() {
+												var formattedTimeElements = document.getElementsByClassName("formattedTime");
+												for (var i = 0; i < formattedTimeElements.length; i++) {
+													formattedTimeElements[i].textContent = dateFormat(formattedTimeElements[i].textContent);
+												}
+												function dateFormat (enrollDt) {
+													
+													// 주어진 문자열을 파싱하여 Date 객체로 변환
+													var dateString = enrollDt.replace('KST', '');
+													var dateObject = new Date(dateString);
+
+													// 현재 시간 구하기
+													var currentTime = new Date();
+
+													// 두 시간 사이의 차이 계산 (밀리초 단위)
+													var timeDifferenceInMilliseconds = currentTime - dateObject;
+
+													// 시간 간격 계산 함수
+													function getTimeIntervalText(timeDifference) {
+													    var seconds = Math.floor(timeDifference / 1000);
+													    var minutes = Math.floor(seconds / 60);
+													    var hours = Math.floor(minutes / 60);
+													    var days = Math.floor(hours / 24);
+													    var weeks = Math.floor(days / 7);
+													    var months = Math.floor(days / 30); // 달은 평균 30일로 가정
+													    var years = Math.floor(months / 12);
+
+													    if (years > 0) return years + "년 전";
+													    if (months > 0) return months + "달 전";
+													    if (weeks > 0) return weeks + "주 전";
+													    if (days > 1) return days + "일 전";
+													    if (days === 1) return "어제";
+													    if (hours > 0) return hours + "시간 전";
+													    if (minutes > 0) return minutes + "분 전";
+													    if (seconds > 0) return "방금 전";
+													    return "지금";
+													}
+
+													var timeIntervalText = getTimeIntervalText(timeDifferenceInMilliseconds);
+													return timeIntervalText;
+												}
+											}
+											</script>
 										</ul>
 									</div>
 								</div>
@@ -123,7 +177,7 @@
 								<div class="hidden-horizontal-scrollbar__items"></div>
 								<div>
 									<div class="section-title" style="margin-bottom: 20px;">
-										<h5>${filteredDTO.genreNm}최신 컨텐츠</h5>
+										<h5>${filteredDTO.genreNm} 최신 컨텐츠</h5>
 									</div>
 									<section class="lists lists__noneLazy">
 										<div

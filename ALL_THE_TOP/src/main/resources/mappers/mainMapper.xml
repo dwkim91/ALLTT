@@ -276,4 +276,24 @@
 			TITLE ASC
 		LIMIT 100
 	</select>
+	
+	<select id="selectOneFilterByMemberId" parameterType="FilterDTO" resultType="FilterDTO">
+		SELECT
+				*
+		FROM
+				SEARCH_FILTER
+		WHERE
+				MEMBER_ID = #{memberId} AND
+				CONTENT_TYPE = #{contentType}
+	</select>
+	
+	<select id="selectOneWishByMemberId" parameterType="FilteredDTO" resultType="long">
+		SELECT
+				COUNT(*)
+		FROM
+				WISH_LIST
+		WHERE
+				MEMBER_ID = #{memberId} AND
+				CONTENT_ID = #{contentId}
+	</select>
 </mapper>

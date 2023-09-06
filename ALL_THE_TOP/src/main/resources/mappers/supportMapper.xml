@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="supportMapper">
+	
+	<!-- 문의사항 등록하기 -->
+	<insert id="insertInquiry" parameterType="SupportDTO">
+		INSERT INTO
+				SUPPORT (
+						MEMBER_ID, 
+						QUESTION_TYPE, 
+						SUGGESTION, 
+						EMAIL
+					)
+				VALUES (
+						#{memberId}, 
+						#{questionType}, 
+						#{suggestion}, 
+						#{email}
+				)
+	</insert>
+	
+	<!-- 문의 목록 가져오기 -->
+	<select id="selectInquiryList" resultType="SupportDTO">
+		SELECT
+				*
+		FROM
+			SUPPORT
+	</select>
+	
+	
+</mapper>

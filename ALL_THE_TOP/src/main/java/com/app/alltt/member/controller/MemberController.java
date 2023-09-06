@@ -3,20 +3,13 @@ package com.app.alltt.member.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -38,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -51,8 +43,14 @@ import com.app.alltt.member.sns.SnsValue;
 @Controller
 @RequestMapping("/member")
 public class MemberController {
+
+	// 이미지 저장 상대 경로용 서버에 올려서는 서버 내의 별도 이미지경로의 절대 경로 사용 예정
+	private static String THUMBNAIL_IMG_PATH = "/resources/bootstrap/img/thumbnailImg/";
 	
-	private String FILE_REPO_PATH = "C:\\Users\\dwkim\\Documents\\ALLTT\\ALL_THE_TOP\\src\\main\\webapp\\resources\\bootstrap\\img\\thumbnailImg\\";
+	public static String getThumbnailImagePath(HttpSession session) {
+        return session.getServletContext().getRealPath(THUMBNAIL_IMG_PATH);		
+    }
+
 	
 	@Autowired
 	private MemberService memberService;
@@ -158,7 +156,7 @@ public class MemberController {
 				// 닉네임 자동 생성
 				loginMember.setNickName(memberService.genNickName());		
 				// 프로필 이미지 저장 후 새 회원 추가
-				memberService.addNewMember(memberService.imgDownload(loginMember, FILE_REPO_PATH));
+				memberService.addNewMember(memberService.imgDownload(loginMember, getThumbnailImagePath(session)));
 				// 로그인을 위해서 다시 가져와서 memberId 확인
 				MemberDTO newMember = memberService.getMemberByUserId(loginMember.getUserId());
 				long newMemberId = newMember.getMemberId();
@@ -190,7 +188,7 @@ public class MemberController {
 	// 회원 탈퇴 메서드
 	@RequestMapping(value = "/{service}/callback/withdraw", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
-		System.out.println("탈퇴 콜백 메서드");
+		
 		// state 값 검증
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
@@ -212,7 +210,7 @@ public class MemberController {
 				if (authModule.withdraw(authModule.getAccessToken(code))) {
 					// 세션과 DB에서 모두 날린다
 					MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
-					memberService.deleteThumbnailImg(memberDTO.getThumbnailImg(), FILE_REPO_PATH);
+					memberService.deleteThumbnailImg(memberDTO.getThumbnailImg(), getThumbnailImagePath(session));
 					memberService.removeMember(memberId);
 					
 					session.invalidate();
@@ -448,7 +446,7 @@ public class MemberController {
 	@RequestMapping(value="/changeThumbnailImg", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, HttpSession session) throws Exception, IOException {
-		
+
 	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    String result = "";
 	    
@@ -473,16 +471,16 @@ public class MemberController {
 	    			MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
 	    			// 기존 프로필이미지 삭제
 	    			String currentThumbnailImg = memberDTO.getThumbnailImg();
-	    			memberService.deleteThumbnailImg(currentThumbnailImg, FILE_REPO_PATH);
+	    			memberService.deleteThumbnailImg(currentThumbnailImg, getThumbnailImagePath(session));
 	    			
 	    			SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 	    			// 파일이름생성
 	    			String newFileName = fmt.format(new Date()) + "_" + UUID.randomUUID() + "_" + uploadFile.getOriginalFilename();
 	    			// 프로필이미지 저장
-	    			uploadFile.transferTo(new File(FILE_REPO_PATH + newFileName)); 
+	    			uploadFile.transferTo(new File(getThumbnailImagePath(session) + newFileName)); 
 	    			
 	    			// 이미지 업로드 및 저장 후 딜레이
-	    			Thread.sleep(6000); // 1초 딜레이
+	    			//Thread.sleep(1000); // 1초 딜레이 // 경로 변경 후 딜레이없이가능???
 	    			
 	    			System.out.println(newFileName);
 	    			memberDTO.setThumbnailImg(newFileName);

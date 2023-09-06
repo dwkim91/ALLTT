@@ -20,8 +20,15 @@ export function contentsSearchAjax(searchKey) {
 					html += '<div class="item__thumb item__thumb-25x36">';										
 				}
 				html += '<div class="item__tags" style="pointer-events: auto;">';
-				html += '<div class="item__tags-right"><button class="tag tag-age tag-age-nineteen" id="wishButton"></button></div>';
-				html += '</div>'
+				html += '<div class="item__tags-right">';
+				if (dto.memberId != 0) {
+					html += '<button class="tag tag-age tag-age-nineteen_true" id="wishButton">';
+				}
+				else {
+					html += '<button class="tag tag-age tag-age-nineteen" id="wishButton">';					
+				}
+				html += '</button></div>';
+				html += '</div>';
 				html += '<div class="item__image lazy">';
 				html += '<img class="loaded css-1doy9ip euf32k22" src="' + dto.imgUrl + '" alt="' + dto.title + '"></div></div>';
 				html += '<div class="item__info ">';

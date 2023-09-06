@@ -6,6 +6,7 @@ import com.app.alltt.community.dto.PostDTO;
 import com.app.alltt.community.dto.RecmndDTO;
 import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.crawling.dto.ContentDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
 
 public interface CommunityService {
@@ -53,4 +54,7 @@ public interface CommunityService {
 	public boolean removeAllPost(long memberId);
 	// 댓글 전체 삭제
 	public boolean removeAllReply(long memberId);
+
+	public boolean insertWishContent(FilteredDTO wishDTO);
+
 }
