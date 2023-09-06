@@ -1,11 +1,20 @@
 package com.app.alltt.member.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,8 +30,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.app.alltt.community.dto.ReplyDTO;
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -35,7 +46,9 @@ import com.app.alltt.member.sns.SnsValue;
 @Controller
 @RequestMapping("/member")
 public class MemberController {
-
+	
+	private String FILE_REPO_PATH = "C:\\Users\\dudan\\OneDrive\\문서\\ALLTT\\ALL_THE_TOP\\src\\main\\webapp\\resources\\bootstrap\\img\\thumbnailImg\\";
+	
 	@Autowired
 	private MemberService memberService;
 	
@@ -60,7 +73,6 @@ public class MemberController {
 	@GetMapping("/{service}/{source}")
 	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
-		
 		ModelAndView mv = new ModelAndView();
 		
 		SnsValue sns = null;
@@ -138,10 +150,10 @@ public class MemberController {
 			}
 			// DB에서 확인되지 않는 member라면
 			else {
-				// 닉네임 처리 방향 논의 필요, 자동 생성할건지, 아니면 회원이 만들도록 할건지
-				loginMember.setNickName(memberService.genNickName());
-				// 새 회원 추가하고
-				memberService.addNewMember(loginMember);
+				// 닉네임 자동 생성
+				loginMember.setNickName(memberService.genNickName());		
+				// 프로필 이미지 저장 후 새 회원 추가
+				memberService.addNewMember(memberService.imgDownload(loginMember, FILE_REPO_PATH));
 				// 로그인을 위해서 다시 가져와서 memberId 확인
 				MemberDTO newMember = memberService.getMemberByUserId(loginMember.getUserId());
 				long newMemberId = newMember.getMemberId();
@@ -173,7 +185,7 @@ public class MemberController {
 	// 회원 탈퇴 메서드
 	@RequestMapping(value = "/{service}/callback/withdraw", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
-		
+		System.out.println("탈퇴 콜백 메서드");
 		// state 값 검증
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
@@ -190,10 +202,14 @@ public class MemberController {
 			session.removeAttribute("state");
 			// 지금 로그인 중이라면, session의 memberId 값이 있다면
 			if (session.getAttribute("memberId") != null) {
-				// NAVER 에서 profile 정보를 지우고
+				long memberId = ((Long) session.getAttribute("memberId")).longValue();
+				// sns에서 profile 정보를 지우고
 				if (authModule.withdraw(authModule.getAccessToken(code))) {
 					// 세션과 DB에서 모두 날린다
-					memberService.removeMember(((Long) session.getAttribute("memberId")).longValue());
+					MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
+					memberService.deleteThumbnailImg(memberDTO.getThumbnailImg(), FILE_REPO_PATH);
+					memberService.removeMember(memberId);
+					
 					session.invalidate();
 					
 					jsScript += "alert('탈퇴되었습니다.');";
@@ -271,9 +287,23 @@ public class MemberController {
 		filterDTO.setIsWishInclude(true);
 		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		mv.addObject("seriesList", mainService.getMoreGenreList(filterDTO));
+		// test
+		System.out.println("-----------seriesList-----------");
+		List<FilterDTO> seriesList = mainService.getMoreGenreList(filterDTO); 
+		for (FilterDTO f : seriesList) {
+			System.out.println(f.getGenreNm());
+		}
+		// test
+		System.out.println("-----------movieList-----------");
 		// 영화 장르 리스트
 		filterDTO.setContentType("movie");
 		mv.addObject("movieList", mainService.getMoreGenreList(filterDTO));
+		List<FilterDTO> movieList = mainService.getMoreGenreList(filterDTO); 
+		for (FilterDTO f : movieList) {
+			System.out.println(f.getGenreNm());
+		}
+		// test
+				System.out.println("----------------------");
 		return mv;
 	}
 	
@@ -340,9 +370,9 @@ public class MemberController {
 	    
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
-	    System.out.println(filterDTO);
+	    System.out.println(filterDTO); //  test용
 	    List<FilterDTO> filterList = mainService.getMoreGenreList(filterDTO);
-	    checkSessionTime(session);
+	    checkSessionTime(session); //  test용
 	    return filterList;
 	    
 	}
@@ -389,17 +419,90 @@ public class MemberController {
 		return mv;
 	}
 	
-	// 탈퇴test
-	@PostMapping("/test99")
-	public ModelAndView handlePostRequest(@RequestParam("data1") String data1, @RequestParam("data2") String data2, @RequestParam("data3") String data3) {
+	// 탈퇴전 글/댓글 삭제
+	@RequestMapping(value="/deleteMyPost", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String deleteMyPost(@RequestBody MemberDTO memberDTO, HttpSession session) {
+		
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
 
-		System.out.println(data1);
-		System.out.println(data2);
-		System.out.println(data3);
+	    // 글 삭제
+	    if (memberDTO.getdPostYn().equals("Y")) {
+	    	communityService.removeAllPost(memberId);
+	    }
+	    // 댓글 삭제
+	    if (memberDTO.getdReplyYn().equals("Y")) {
+	    	communityService.removeAllReply(memberId);
+	    }
+	    
+	    System.out.println(memberDTO);
+	    return "선택된 정보가 삭제되었습니다.";
+	}
+	
+	/// 프로필사진 변경
+	@RequestMapping(value="/changeThumbnailImg", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, HttpSession session) throws Exception, IOException {
 		
-		ModelAndView modelAndView = new ModelAndView("test");
-		
-		return modelAndView;
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    String result = "";
+	    
+	    // 파일 업로드 처리
+	    if (!uploadFile.isEmpty()) {
+	    	
+	    	// 파일 이름 저장
+	    	String originalFilename = uploadFile.getOriginalFilename();
+	    	// 파일 확장자 추출 
+	    	String fileExtension = FilenameUtils.getExtension(originalFilename);
+	    	// 허용된 이미지 확장자
+	    	List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
+
+	    	if (allowedExtensions.contains(fileExtension.toLowerCase())) {
+	    		
+	    		long maxFileSizeInBytes = 5 * 1024 * 1024; // 5MB 이하 허용
+	    		long fileSize = uploadFile.getSize();
+	    		// 파일 크기 제한 
+	    		if (fileSize < maxFileSizeInBytes) {
+
+	    			// 현재 프로필 이미지 파일 경로 가져오기
+	    			MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
+	    			// 기존 프로필이미지 삭제
+	    			String currentThumbnailImg = memberDTO.getThumbnailImg();
+	    			memberService.deleteThumbnailImg(currentThumbnailImg, FILE_REPO_PATH);
+	    			
+	    			SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+	    			// 파일이름생성
+	    			String newFileName = fmt.format(new Date()) + "_" + UUID.randomUUID() + "_" + uploadFile.getOriginalFilename();
+	    			// 프로필이미지 저장
+	    			uploadFile.transferTo(new File(FILE_REPO_PATH + newFileName)); 
+	    			
+	    			// 이미지 업로드 및 저장 후 딜레이
+	    			Thread.sleep(6000); // 1초 딜레이
+	    			
+	    			System.out.println(newFileName);
+	    			memberDTO.setThumbnailImg(newFileName);
+	    			memberService.changeThumbnailImg(memberDTO);
+	    			
+	    			result = newFileName;
+	    			
+	    		}
+	    		else {
+	    			// 파일 크기가 허용 범위를 초과하는 경우 처리
+	    			result = "Error : 파일 크기가 너무 큽니다. 5MB 이하의 파일을 선택해 주세요.";
+	    		}
+				
+	    	}
+	    	else {
+	    		// 허용되지 않는 확장자인 경우 처리
+	    		result = "Error : 허용되지 않는 파일 형식입니다. (jpg, jpeg , png, gif)";
+	    	}
+            
+        } else {
+            // 업로드된 파일이 비어 있을 경우 처리
+        	result = "Error : 파일이 비어 있습니다.";
+        }
+	    
+	    return result;
 	}
 	
 	// session 검증용 method
@@ -488,7 +591,7 @@ public class MemberController {
 	@ResponseBody
 	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
 		filterDTO.setMemberId((long)session.getAttribute("memberId"));
-
+		
 		return memberService.getWishContentByFilterDTO(filterDTO);
 	}
 	

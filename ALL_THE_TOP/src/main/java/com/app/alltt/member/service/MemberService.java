@@ -1,7 +1,6 @@
 package com.app.alltt.member.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -31,4 +30,8 @@ public interface MemberService {
 	public List<FilteredDTO> getWishContentByFilterDTO(FilterDTO filterDTO);
 	public void removeWishContentByFilterDTOList(List<FilteredDTO> filteredDTOList);
 	public List<Integer> getWishMinimumSubscriptionByMemberId(long memberId);
+	public void changeThumbnailImg(MemberDTO memberDTO);
+	public MemberDTO imgDownload (MemberDTO memberDTO, String filePath);
+	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
+	
 }

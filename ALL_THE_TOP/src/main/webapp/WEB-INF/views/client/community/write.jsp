@@ -97,6 +97,7 @@ $(function() {
 		}
 		else {
 			$("#addContentId").css("display", "block");
+			$("#input-search").focus();
 			$("body").css("overflow", "hidden"); // 스크롤바 제거
 			
 			// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
@@ -194,8 +195,6 @@ $(function() {
 						html += '<span data-v-5c10ad9e="" class="description__subtitle">' + content.enrollDt + '</span>';
 					}
 					html += '<div data-v-5dec5019="" class="description__bottom">';
-					html += '<img data-v-5dec5019="" src="" class="light">';
-					html += '<!---->';
 					html += '</div>';
 					html += '</div>';
 					html += '<div data-v-5dec5019="" class="movie_item__more">';

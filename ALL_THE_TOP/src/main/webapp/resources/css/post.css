@@ -378,15 +378,47 @@ html{font-family:-apple-system,sans-serif,Dotum,NotoSansKR,system-ui,Segoe UI,Ro
 
 
 
-Navigation
-Login
-Topics
-Tools
-Games
+.modal-layer[data-v-48d16333] {
+    z-index: 999901;
+}
 
- 
- /etc
+.modal-bg[data-v-327582cc], .modal-layer[data-v-48d16333] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
 
-RSS feed
- 
-© 2004-2023 by Anthony Lieuallen, arantius.com. All rights reserved. Terms.
+.modal-layer .confirm-modal-container .confirm-modal-body .pwIn[data-v-7e7b7a4d] {
+    background-color: #534343;
+    border: 0;
+    width: 97%;
+    height: 35px;
+    border-radius: 5px;
+    color: #fff1f1;
+}
+
+.outerModal .innerModal[data-v-31e4f0c0] {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 10px 16px 0;
+    height: 476px;
+    display: flex;
+    flex-direction: column;
+    background: #172036;
+}
+
+.outerModal.lg .innerModal[data-v-31e4f0c0] {
+    width: 100%;
+    border-radius: 20px;
+    padding-top: 12px;
+    height: 440px;
+}
+
+.outerModal .contents-wrap .btn-round[data-v-31e4f0c0] {
+    cursor: pointer;
+    background: #25304a;
+    border-radius: 6px;
+    height: 48px;
+    text-align: center;
+}
