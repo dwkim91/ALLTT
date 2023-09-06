@@ -10,8 +10,16 @@
 <link rel="stylesheet" href="${contextPath}/resources/css/tagFeed.css" type="text/css">
 <link rel="stylesheet" href="${contextPath}/resources/css/footerCustom.css" type="text/css">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
 <script type="text/javascript">
 $(function() {
+
+	$(".created").each(function() {
+		const enrollDt = $(this).attr("title"); // 등록일자 데이터 가져오기
+		const formattedDate = elapsedTime(enrollDt); // 시간 간격 변환
+		$(this).text(formattedDate); // 변환된 시간 간격으로 표시
+	});
+
 	$(".btn-back").click(function() {
 		location.href="${contextPath}/community/search";
 	});
@@ -50,7 +58,7 @@ $(function() {
 								<div data-v-0bcef72e="" class="info-wrap">
 									<p data-v-0bcef72e="" class="title"> ${post.postTitle} </p>
 									<p data-v-0bcef72e="" class="body"> ${post.content} </p>
-									<p data-v-0bcef72e="" class="created"> ${post.enrollDt} </p>
+									<p data-v-0bcef72e="" title="${post.enrollDt}" class="created">  </p>
 								</div>
 							</div>
 						</a>

@@ -10,8 +10,16 @@
 <link rel="stylesheet" href="${contextPath}/resources/css/tagFeed.css" type="text/css">
 <link rel="stylesheet" href="${contextPath}/resources/css/footerCustom.css" type="text/css">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
 <script type="text/javascript">
 $(function() {
+
+	$(".post-date").each(function(){
+		const enrollDt = $(this).attr("title"); // 등록일자 데이터 가져오기
+		const formattedDate = elapsedTime(enrollDt); // 시간 간격 변환
+		$(this).text(formattedDate); // 변환된 시간 간격으로 표시
+	});
+
 	$(".back-btn").click(function() {
 		history.go(-1);
 	});
@@ -91,7 +99,7 @@ $(function() {
 								<!---->
 							</div>
 							<div data-v-29756cf4="" class="post-info-date-wrap">
-								<span data-v-29756cf4="" title="2023-07-11 08:01:10" class="post-date">${post.enrollDt}</span>
+								<span data-v-29756cf4="" title="${post.enrollDt}" class="post-date">${post.enrollDt}</span>
 							</div>
 							</header>
 							<h2 data-v-29756cf4="" class="post-title">${post.postTitle}</h2>
