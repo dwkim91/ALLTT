@@ -9,22 +9,22 @@
 <link rel="stylesheet" href="${contextPath}/resources/css/post.css" type="text/css">
 <link data-n-head="ssr" rel="icon" type="image/png" sizes="32x32" href="https://nujhrcqkiwag1408085.cdn.ntruss.com/static/common/icon/favicon-33x33.png">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js" type="text/javascript"></script>
+<script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
 <script>
 $(function() {
 
-// ~ 시간 전 처리
-//	$(".post-date").each(function() {
-//		const enrollDt = $(this).attr("title"); // 등록일자 데이터 가져오기
-//		const formattedDate = elapsedTime(enrollDt); // 시간 간격 변환
-//		$(this).text(formattedDate); // 변환된 시간 간격으로 표시
-//	});
+	$(".post-date").each(function() {
+		const enrollDt = $(this).attr("title"); // 등록일자 데이터 가져오기
+		const formattedDate = elapsedTime(enrollDt); // 시간 간격 변환
+		$(this).text(formattedDate); // 변환된 시간 간격으로 표시
+	});
 	
-//	$(".date").each(function() {
-//		const replyId = $(this).attr("replyId");
-//		const enrollDt = $(this).attr("title");
-//		const formattedDate = elapsedTime(enrollDt);
-//		$(this).text(formattedDate);
-//	});
+	$(".date").each(function() {
+		const replyId = $(this).attr("replyId");
+		const enrollDt = $(this).attr("title");
+		const formattedDate = elapsedTime(enrollDt);
+		$(this).text(formattedDate);
+	});
 	
 	// 뒤로가기
 	$(".back-btn").click(function() {
@@ -184,7 +184,9 @@ $(function() {
 		}
 	});
 
-	// 컨텐츠 + 버튼
+	// 컨텐츠 + 버튼 
+	// 내가 찜한 컨텐츠면 취소되도록, 찜 안한 컨텐츠면 찜 되도록 수정해야함
+	// 이미지는 like_before, like_after 사용
 	$(".movie_more_button").click(function() {
 		event.preventDefault(); // 기본 클릭 동작을 중단 -> 컨텐츠 디테일 페이지로 넘어가지 않도록
 
@@ -355,30 +357,6 @@ $(function() {
 		}
 	}
 </script>
-<script>
-function elapsedTime(date) {
-	  const start = new Date(date);
-	  const end = new Date();
-	  const diff = (end - start) / 1000;
-	  
-	  const times = [
-	    { name: '년', milliSeconds: 60 * 60 * 24 * 365 },
-	    { name: '개월', milliSeconds: 60 * 60 * 24 * 30 },
-	    { name: '일', milliSeconds: 60 * 60 * 24 },
-	    { name: '시간', milliSeconds: 60 * 60 },
-	    { name: '분', milliSeconds: 60 }
-	  ];
-
-	  for (const value of times) {
-	    const betweenTime = Math.floor(diff / value.milliSeconds);
-
-	    if (betweenTime > 0) {
-	      return `${betweenTime}${value.name} 전`;
-	    }
-	  }
-	  return '방금 전';
-}
-</script>
 </head>
 <body>
 
@@ -471,8 +449,7 @@ function elapsedTime(date) {
 									</div>
 								</div>
 								<button data-v-5761e1ae="" data-v-5c10ad9e="" type="button" title="보고 싶은 작품을 찜해 보세요" class="movie_more_button content_option_button">
-									<svg data-v-5761e1ae="" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-label="option" viewbox="0 0 32 32" preserveaspectratio="none" class=""><path data-v-5761e1ae="" fill-rule="evenodd" clip-rule="evenodd" d="M16 5a2 2 0 00-2 2v7H7a2 2 0 100 4h7v7a2 2 0 104 0v-7h7a2 2 0 100-4h-7V7a2 2 0 00-2-2z" fill="#EFEFEF"/>
-									</svg>
+									<img src="${contextPath}/resources/bootstrap/img/like_before.png" style="max-width: 90%; max-height: 90%;" >
 								</button>
 							</div>
 						</a>

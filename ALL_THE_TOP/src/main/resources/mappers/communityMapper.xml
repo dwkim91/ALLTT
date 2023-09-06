@@ -405,6 +405,22 @@
 		ENROLL_DT DESC;
 </select>
 
+<!-- 모든 글 삭제 -->
+<delete id="deleteAllPost" parameterType="long">
+	DELETE FROM
+		POST
+	WHERE
+		MEMBER_ID = #{memberId}
+</delete>
+
+<!-- 모든 댓글 삭제 -->
+<delete id="deleteAllReply" parameterType="long">
+	DELETE FROM
+		REPLY
+	WHERE
+		MEMBER_ID = #{memberId}
+</delete>
+
 <!-- 컨텐츠 찜이 되어있나 확인 -->
 <select id="selectWishContent" parameterType="FilteredDTO" resultType="int">
 	SELECT

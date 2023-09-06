@@ -150,6 +150,15 @@ public class CommunityDAOImpl implements CommunityDAO {
 	}
 
 	@Override
+	public void deleteAllPost(long memberId) {
+		sqlSession.delete("communityMapper.deleteAllPost", memberId);
+	}
+
+	@Override
+	public void deleteAllReply(long memberId) {
+		sqlSession.delete("communityMapper.deleteAllReply", memberId);
+	}
+	
 	public int selectWishContent(FilteredDTO wishDTO) {
 		return sqlSession.selectOne("communityMapper.selectWishContent", wishDTO);
 	}

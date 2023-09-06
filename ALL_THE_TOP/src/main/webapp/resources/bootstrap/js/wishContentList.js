@@ -107,13 +107,28 @@ $("#wishContainer").on("click",".thumb_summary",function(event){
 	// 이벤트가 발생된 요소
 	var clickedElement = $(event.target);
 	
-	var hasChildClass = clickedElement.find(".false").length > 0;
+	var elementClasses = event.target.className.split(' ');
 	
-	if (hasChildClass) {
-		clickedElement.find(".btn__check").removeClass("false").addClass("click_on");
+	if (elementClasses[0] == 'thumb_summary') {
+		var hasChildClass = clickedElement.find(".false").length > 0;
+		
+		if (hasChildClass) {
+			clickedElement.find(".btn__check").removeClass("false").addClass("click_on");
+		}
+		else {
+			clickedElement.find(".btn__check").removeClass("click_on").addClass("false");
+		}
+		
 	}
-	else {
-		clickedElement.find(".btn__check").removeClass("click_on").addClass("false");
+	else if (elementClasses[0] == 'btn__check') {
+		
+		if (elementClasses[1] == 'false') {
+			clickedElement.removeClass("false").addClass("click_on");
+		}
+		else {
+			clickedElement.removeClass("click_on").addClass("false");			
+		}
+		
 	}
 	var itemCount = document.querySelectorAll('.btn__check.click_on').length;
 	

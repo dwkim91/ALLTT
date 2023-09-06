@@ -48,7 +48,12 @@ public interface CommunityDAO {
 	
 	public List<PostDTO> selectPostCountByTag(String title);
 	public List<PostDTO> selectPostList(String title);
+
+	public void deleteAllPost(long memberId);
+	public void deleteAllReply(long memberId);
+
 	
 	public int selectWishContent(FilteredDTO wishDTO);
 	public void insertWishContent(FilteredDTO wishDTO);
+
 }

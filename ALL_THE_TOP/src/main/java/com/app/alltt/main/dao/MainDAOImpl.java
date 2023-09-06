@@ -59,5 +59,15 @@ public class MainDAOImpl implements MainDAO {
 	public List<FilteredDTO> selectListContentByKeyword(FilterDTO filterDTO) {
 		return sqlSession.selectList("mainMapper.selectListContentByKeyword", filterDTO);
 	}
+
+	@Override
+	public FilterDTO selectOneFilterByMemberId(FilterDTO filter) {
+		return sqlSession.selectOne("mainMapper.selectOneFilterByMemberId", filter);
+	}
+
+	@Override
+	public long selectOneWishByMemberId(FilteredDTO filteredDTO) {
+		return sqlSession.selectOne("mainMapper.selectOneWishByMemberId", filteredDTO);
+	}
 	
 }

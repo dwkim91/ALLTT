@@ -50,5 +50,11 @@ public interface CommunityService {
 	public List<PostDTO> getPostCountByTag(String title);
 	public List<PostDTO> getPostList(String title);
 	
+	// 게시글 전체 삭제
+	public boolean removeAllPost(long memberId);
+	// 댓글 전체 삭제
+	public boolean removeAllReply(long memberId);
+
 	public boolean insertWishContent(FilteredDTO wishDTO);
+
 }
