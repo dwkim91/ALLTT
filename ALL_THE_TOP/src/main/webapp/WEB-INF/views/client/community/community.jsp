@@ -10,8 +10,14 @@
 <link rel="stylesheet" href="${contextPath}/resources/css/community.css" type="text/css">
 <link rel="stylesheet" href="${contextPath}/resources/css/footerCustom.css" type="text/css">
 <script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
 <script>
 $(function() {
+
+	$("span.post-date").each(function() {
+		var elapsedDate = elapsedTime($(this).attr("title"));
+		$(this).text(elapsedDate);
+	});
 	
 	// 로그인한 멤버의 정보와 게시글 및 댓글 수를 보여주기 위해
 	$(".user-name").text("${member.nickName}");
