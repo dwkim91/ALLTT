@@ -19,6 +19,7 @@
 		<typeAlias type="com.app.alltt.community.dto.PostDTO"			alias="PostDTO"/>
 		<typeAlias type="com.app.alltt.community.dto.ReplyDTO"			alias="ReplyDTO"/>
 		<typeAlias type="com.app.alltt.community.dto.RecmndDTO"			alias="RecmndDTO"/>
+		<typeAlias type="com.app.alltt.support.dto.SupportDTO"			alias="SupportDTO"/>
 		
 	</typeAliases>
 
