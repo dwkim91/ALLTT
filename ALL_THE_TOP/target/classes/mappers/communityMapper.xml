@@ -433,6 +433,7 @@
 		CONTENT_ID = #{contentId}
 </select>
 
+<!-- 찜 컨텐츠 추가 -->
 <insert id="insertWishContent" parameterType="FilteredDTO">
 	INSERT INTO WISH_LIST (
 			MEMBER_ID,
@@ -443,5 +444,15 @@
 			#{contentId}
 	)
 </insert>
+
+<!-- 찜 컨텐츠 삭제 -->
+<delete id="deleteWishContent" parameterType="FilteredDTO">
+	DELETE FROM
+		WISH_LIST
+	WHERE
+		MEMBER_ID = #{memberId}
+	AND
+		CONTENT_ID = #{contentId}
+</delete>
 
 </mapper>

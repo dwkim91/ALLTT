@@ -88,7 +88,14 @@ $(function() {
 								<a data-v-b0785d82="" href="${contextPath}/community/post?postId=${post.postId}" class="" id="postList-nIoYFokBkUHnIaLwUX4I">
 						<header data-v-b0785d82="" class="post-info-wrap">
 						<div data-v-b0785d82="" class="post-info-user-wrap">
-							<span data-v-b0785d82="" class="user-nickname">${post.nickName}</span>
+							<c:choose>
+							<c:when test="${post.nickName != null}">
+								<span data-v-b0785d82="" class="user-nickname">${post.nickName}</span>
+							</c:when>
+							<c:otherwise>
+								<span data-v-b0785d82="" class="user-nickname">탈퇴한 회원입니다</span>
+							</c:otherwise>
+							</c:choose>
 						</div>
 						<div data-v-b0785d82="" class="post-info-date-wrap">
 							<span data-v-b0785d82="" title="${post.enrollDt}" class="post-date">${post.enrollDt}</span>

@@ -66,6 +66,14 @@ public class MainController {
 		return mv;
 	}
 	
+	@GetMapping("/main2")
+	public ModelAndView main2() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/alltt/main2");
+		
+		return mv;
+	}
+	
 	@PostMapping("/contentLoad")
 	@ResponseBody
 	public List<FilteredDTO> mainFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
