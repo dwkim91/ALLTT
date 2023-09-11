@@ -50,7 +50,6 @@ public class MemberController {
 	public static String getThumbnailImagePath(HttpSession session) {
         return session.getServletContext().getRealPath(THUMBNAIL_IMG_PATH);		
     }
-
 	
 	@Autowired
 	private MemberService memberService;
