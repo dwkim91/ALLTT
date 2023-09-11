@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -296,6 +297,7 @@ public class MemberServiceImpl implements MemberService {
 		List<String> tvingContent = new ArrayList<String>();
 		List<String> wavveContent = new ArrayList<String>();
 		
+		// 플랫폼별 찜컨텐츠 분류
 		for (int i = 0; i < wishContentList.size(); i++) {
 			if (wishContentList.get(i).getPlatformId() == 1) netflixContent.add(wishContentList.get(i).getTitle());
 			else if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
@@ -312,18 +314,22 @@ public class MemberServiceImpl implements MemberService {
 		platformSet.add("t" + tvingContent.size());
 		platformSet.add("w" + wavveContent.size());
 		
+		// 우선순위 sort
 		Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
 		
+		// 플랫폼 식별자 분류
 		for (int i = 0; i < platformSet.size(); i++) {
 			if (platformSet.get(i).indexOf("n") == 0) platformSet.set(i, "0");
 			if (platformSet.get(i).indexOf("t") == 0) platformSet.set(i, "1");
 			if (platformSet.get(i).indexOf("w") == 0) platformSet.set(i, "2");
 		}
 		
+		// 우선순위를 기준으로 컨텐츠 중복제거
 		platformContent.get(Integer.parseInt(platformSet.get(1))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
 		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
 		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(1))));
 		
+		// 중복제거된 컨텐츠 size 저장
 		platformPriority.add(platformContent.get(0).size());
 		platformPriority.add(platformContent.get(1).size());
 		platformPriority.add(platformContent.get(2).size());
@@ -402,6 +408,76 @@ public class MemberServiceImpl implements MemberService {
 				currentThumbnailImgFile.delete();
 			}
 		}
+	}
+
+	@Override
+	public List<List<Integer>> getInfoByContentCnt(Map<String, Object> requestData) {
+		
+		long memberId = (long)requestData.get("memberId");
+		
+		// 결과값 저장 변수
+		List<Integer> platformPriority = new ArrayList<Integer>();
+		
+		// 해당 회원의 찜컨텐츠 리스트
+		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberId(memberId);
+		
+		// 플랫폼별 컨텐츠 리스트
+		List<String> netflixContent = new ArrayList<String>();
+		List<String> tvingContent = new ArrayList<String>();
+		List<String> wavveContent = new ArrayList<String>();
+		
+		// 플랫폼별 분류
+		for (int i = 0; i < wishContentList.size(); i++) {
+			if (wishContentList.get(i).getPlatformId() == 1) netflixContent.add(wishContentList.get(i).getTitle());
+			else if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
+			else if (wishContentList.get(i).getPlatformId() == 3) wavveContent.add(wishContentList.get(i).getTitle());
+		}
+		
+		List<List<String>> platformContent = new ArrayList<List<String>>();
+		platformContent.add(netflixContent);
+		platformContent.add(tvingContent);
+		platformContent.add(wavveContent);
+		
+		// 식별자 추가
+		List<String> platformSet = new ArrayList<String>();
+		platformSet.add("n" + netflixContent.size());
+		platformSet.add("t" + tvingContent.size());
+		platformSet.add("w" + wavveContent.size());
+		
+		if (requestData.get("buttonVal").equals("infoBtn")) { // 구독정보
+			// 구독정보리스트
+			List<Integer> subscription = memberDAO.selectListSubscription(memberId);
+		}
+		else if (requestData.get("buttonVal").equals("platformBtn")) { // 플랫폼
+			// 컨텐츠 많은 순 sort
+			Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
+			
+		}
+		else if (requestData.get("buttonVal").equals("expenseBtn")) { // 구독비
+			// 컨텐츠 많은 순 sort
+			Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
+		}
+		
+		// 플랫폼 식별자 분류
+		for (int i = 0; i < platformSet.size(); i++) {
+			if (platformSet.get(i).indexOf("n") == 0) platformSet.set(i, "0");
+			if (platformSet.get(i).indexOf("t") == 0) platformSet.set(i, "1");
+			if (platformSet.get(i).indexOf("w") == 0) platformSet.set(i, "2");
+		}
+		
+		// 우선순위를 기준으로 컨텐츠 중복제거
+		platformContent.get(Integer.parseInt(platformSet.get(1))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
+		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
+		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(1))));
+		
+		// 중복제거된 컨텐츠 size 저장
+		platformPriority.add(platformContent.get(0).size());
+		platformPriority.add(platformContent.get(1).size());
+		platformPriority.add(platformContent.get(2).size());
+		
+		System.out.println(platformContent.toString());
+		
+		return null;
 	}
 	
 }

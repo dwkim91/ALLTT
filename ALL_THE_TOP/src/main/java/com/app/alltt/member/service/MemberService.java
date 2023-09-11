@@ -1,6 +1,7 @@
 package com.app.alltt.member.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -33,5 +34,6 @@ public interface MemberService {
 	public void changeThumbnailImg(MemberDTO memberDTO);
 	public MemberDTO imgDownload (MemberDTO memberDTO, String filePath);
 	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
+	public List<List<Integer>> getInfoByContentCnt(Map<String, Object> requestData);
 	
 }

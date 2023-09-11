@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -607,5 +608,16 @@ public class MemberController {
 		memberService.removeWishContentByFilterDTOList(filteredDTOList);
 		
 		return ResponseEntity.ok("Success");
+	}
+	
+	@PostMapping("/wishSolution")
+	@ResponseBody
+	public List<List<Integer>> wishSolution(@RequestBody Map<String, Object> requestData, HttpSession session) {
+		long memberId = (long)session.getAttribute("memberId");
+		
+		requestData.put("memberId", memberId);
+		
+		
+		return memberService.getInfoByContentCnt(requestData);
 	}
 }
