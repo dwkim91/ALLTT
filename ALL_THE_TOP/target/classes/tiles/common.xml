@@ -13,6 +13,13 @@
 		<put-attribute name="body"	value="/WEB-INF/views/client/main/main.jsp"/> 					
 		<put-attribute name="title"	value="main"/> 											
 	</definition>
+
+	<!-- 메인2 -->
+	<definition name="/alltt/main2" extends="alltt">												
+		<put-attribute name="body"	value="/WEB-INF/views/client/main/main2.jsp"/> 					
+		<put-attribute name="title"	value="main2"/>
+		<put-attribute name="footer" value="" />							
+	</definition>
 	
 	<!-- Content 상세 -->
 	<definition name="/alltt/detail" extends="alltt">												
@@ -122,6 +129,18 @@
 		<put-attribute name="body"	value="/WEB-INF/views/client/community/keyword.jsp"/>
 		<put-attribute name="footer" value=" " />
 		<put-attribute name="title" value="keyword"/>	
+	</definition>
+	
+	<!-- 고객 센터-->
+	<definition name="/alltt/support" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/client/support/support.jsp"/>	
+		<put-attribute name="title" value="support"/>	
+	</definition>
+	
+	<!-- 문의 리스트 -->
+	<definition name="/alltt/inquiryList" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/admin/support/inquiryList.jsp"/>	
+		<put-attribute name="title" value="inquiryList"/>	
 	</definition>
 	
 	

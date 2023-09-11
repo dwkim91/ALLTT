@@ -78,15 +78,13 @@
 							</div>
 							<div class="profile_info">
 								<p class="profile_info_name">닉네임 입력</p>
-								<button type="button" class="profile_info_change">
-									<span><img src="${contextPath}/resources/bootstrap/img/timer.png" style="width: 14px;" >세션 시간 확인</span>
-								</button>
+								<li><a href="/support/inquiryList" style="color: #f0a9a9;">문의 리스트 확인</a></li>
 							</div>
 						</div>
 						<hr>
 						<ul class="menu_my_btn_wrap">
 							<li><a class="btn_my" href="${contextPath}/member/mypage" style="color: #f0a9a9;">마이페이지</a></li>
-							<li><a href="/help" style="color: #f0a9a9;">고객센터</a></li>
+							<li><a href="/support/inquiry" style="color: #f0a9a9;">고객센터</a></li>
 							<li><a class="btn_logout" href="/member/logout" style="color: #f0a9a9;">로그아웃</a></li>
 						</ul>
 					</div>

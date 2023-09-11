@@ -55,5 +55,6 @@ public interface CommunityDAO {
 	
 	public int selectWishContent(FilteredDTO wishDTO);
 	public void insertWishContent(FilteredDTO wishDTO);
+	public void deleteWishContent(FilteredDTO wishDTO);
 
 }

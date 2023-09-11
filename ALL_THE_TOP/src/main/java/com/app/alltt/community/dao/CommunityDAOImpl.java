@@ -167,5 +167,10 @@ public class CommunityDAOImpl implements CommunityDAO {
 	public void insertWishContent(FilteredDTO wishDTO) {
 		sqlSession.insert("communityMapper.insertWishContent", wishDTO);
 	}
+	
+	@Override
+	public void deleteWishContent(FilteredDTO wishDTO) {
+		sqlSession.delete("communityMapper.deleteWishContent", wishDTO);
+	}
 
 }

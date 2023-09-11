@@ -95,8 +95,14 @@ $(function() {
 							<a data-v-29756cf4="" href="${contextPath}/community/post?postId=${post.postId}" class="" id="postList-IbAJQokB9cnBH0U-kIpa">
 							<header data-v-29756cf4="" class="post-info-wrap">
 							<div data-v-29756cf4="" class="post-info-user-wrap">
+								<c:choose>
+								<c:when test="${post.nickName != null}">
 								<span data-v-29756cf4="" class="user-nickname">${post.nickName}</span>
-								<!---->
+								</c:when>
+								<c:otherwise>
+								<span data-v-29756cf4="" class="user-nickname">탈퇴한 회원입니다</span>
+								</c:otherwise>
+								</c:choose>
 							</div>
 							<div data-v-29756cf4="" class="post-info-date-wrap">
 								<span data-v-29756cf4="" title="${post.enrollDt}" class="post-date">${post.enrollDt}</span>

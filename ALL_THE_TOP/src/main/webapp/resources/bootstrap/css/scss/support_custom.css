@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.primary-btn[data-v-c162d46e]:enabled {
+            background-color: #e53637;
+            color: #efefef;
+}
+
+.primary-btn[data-v-c162d46e]:disabled {
+	background: #212121;
+	color: #efefef;
+}

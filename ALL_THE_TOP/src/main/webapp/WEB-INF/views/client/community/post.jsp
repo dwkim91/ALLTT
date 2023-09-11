@@ -26,6 +26,8 @@ $(function() {
 		$(this).text(formattedDate);
 	});
 	
+	checkContentWish();
+	
 	// 뒤로가기
 	$(".back-btn").click(function() {
 		history.go(-1);
@@ -186,54 +188,34 @@ $(function() {
 
 	// 컨텐츠 + 버튼 
 	// 내가 찜한 컨텐츠면 취소되도록, 찜 안한 컨텐츠면 찜 되도록 수정해야함
-	// 이미지는 like_before, like_after 사용
 	$(".movie_more_button").click(function() {
 		event.preventDefault(); // 기본 클릭 동작을 중단 -> 컨텐츠 디테일 페이지로 넘어가지 않도록
 
-		$("div[data-v-327582cc][data-v-00101c0c]").css("display", "block");
-		$("#contentsModal").css("display", "block");
-		$("body").css("overflow", "hidden");
-
-		// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
-		$("body").on("click", ".modal-bg", function() {
-			$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-			$("#contentsModal").css("display", "none");
-			$("body").css("overflow", "auto");
-		});
 		
-		$("#contentCloseBtn").click(function() {
-			$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-			$("#contentsModal").css("display", "none");
-			$("body").css("overflow", "auto");
-		});
+		var param = {
+			"memberId"  : "${sessionScope.memberId}",
+			"contentId" : "${content.contentId}"
+		};
 		
-		$("#addMyContent").click(function() {
+		$.ajax({
 			
-			var param = {
-				"memberId" : "${sessionScope.memberId}",
-				"contentId" : "${content.contentId}"
-			};
-			
-			$.ajax({
+			url : "${contextPath}/community/addMyContent",
+			data : param,
+			async : true,
+			type : "POST",
+			success : function(result) {
 				
-				url : "${contextPath}/community/addMyContent",
-				data : param,
-				async : true,
-				type : "POST",
-				success : function(result) {
-					
-					if (result == "added") alert("찜 되었습니다.");
-					else alert("이미 찜 되어있습니다.");
-					
-					$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-					$("#contentsModal").css("display", "none");
-					$("body").css("overflow", "auto");
+				if (result) {
+					alert("찜 되었습니다.");
+					$("#contentWish").attr("src", "${contextPath}/resources/bootstrap/img/like_after.png");
+				}
+				else {
+					alert("찜 해제되었습니다.");
+					$("#contentWish").attr("src", "${contextPath}/resources/bootstrap/img/like_before.png");
 				}
 				
-			});
-			
+			}
 		});
-		
 	});
 	
 });
@@ -291,10 +273,6 @@ $(function() {
 						var content = $("#replyArea").val();
 						var memberId = "${sessionScope.memberId}";
 						
-						console.log(postId);
-						console.log(content);
-						console.log(memberId);
-					
 						var param = {
 							"postId" : postId,
 							"content" : content,
@@ -356,6 +334,16 @@ $(function() {
 			});
 		}
 	}
+	
+function checkContentWish() {
+	// 찜 이미지 로그인한 멤버에 맞춰서 표시
+	if ("${checkContentMyWish}" == "true") {
+		$("#contentWish").attr("src", "${contextPath}/resources/bootstrap/img/like_after.png");
+	}
+	else {
+		$("#contentWish").attr("src", "${contextPath}/resources/bootstrap/img/like_before.png");
+	}
+}
 </script>
 </head>
 <body>
@@ -387,7 +375,14 @@ $(function() {
 					<div data-v-af062606="" class="post-info-wrap section-divider">
 						<div data-v-af062606="" class="post-info-user-wrap">
 							<div data-v-af062606="" class="post-author-wrap">
+								<c:choose>
+								<c:when test="${post.nickName != null}">
 								<span data-v-af062606="" class="user-nickname">${post.nickName}</span>
+								</c:when>
+								<c:otherwise>
+								<span data-v-af062606="" class="user-nickname">탈퇴한 회원입니다</span>
+								</c:otherwise>
+								</c:choose>
 							</div>
 							<div data-v-af062606="" class="post-info-date-wrap">
 								<span data-v-af062606="" class="post-date" title="${post.enrollDt}">${post.enrollDt}</span>
@@ -449,7 +444,7 @@ $(function() {
 									</div>
 								</div>
 								<button data-v-5761e1ae="" data-v-5c10ad9e="" type="button" title="보고 싶은 작품을 찜해 보세요" class="movie_more_button content_option_button">
-									<img src="${contextPath}/resources/bootstrap/img/like_before.png" style="max-width: 90%; max-height: 90%;" >
+									<img src="${contextPath}/resources/bootstrap/img/like_before.png" id="contentWish" style="max-width: 90%; max-height: 90%;" >
 								</button>
 							</div>
 						</a>
@@ -465,7 +460,14 @@ $(function() {
 									<div data-v-4851ddd6="" data-v-ed47b9c6="" class="comment" style="--depth: 0;">
 										<div data-v-4851ddd6="" class="comment-header">
 											<div data-v-4851ddd6="" class="left-area">
+												<c:choose>
+												<c:when test="${reply.nickName != null}">
 												<span data-v-4851ddd6="" class="name">${reply.nickName}</span>
+												</c:when>
+												<c:otherwise>
+												<span data-v-4851ddd6="" class="name">탈퇴한 회원입니다</span>
+												</c:otherwise>
+												</c:choose>
 											</div>
 											<div data-v-4851ddd6="" class="right-area">
 												<span data-v-4851ddd6="" data-replyId="${reply.replyId}" title="${reply.enrollDt}" class="date">${reply.enrollDt}</span>
@@ -591,22 +593,6 @@ $(function() {
 			</div>
 		</div>
 		<!-- 컨텐츠 관련 modal -->
-		<!-- 이렇게 할건가? 일단 바로 찜해버리는 기능으로 넣어버리자 -->
-		<div data-v-327582cc="" class="modal-layer" id="contentsModal" style="display: none;">
-			<div data-v-7e7b7a4d="" data-v-327582cc="" class="confirm-modal-container">
-				<div data-v-7e7b7a4d="" class="confirm-modal-header">
-					<h2 data-v-7e7b7a4d="" name="header"> ${content.title} </h2>
-				</div>
-				<div data-v-7e7b7a4d="" class="confirm-modal-body">
-					<h3 data-v-7e7b7a4d="" name="body">해당 컨텐츠를 찜하시겠어요?</h3>
-				</div>
-				<div data-v-7e7b7a4d="" class="confirm-modal-footer">
-					<div data-v-7e7b7a4d="" name="footer">
-						<button data-v-7e7b7a4d="" id="contentCloseBtn" class="gray-btn"><span data-v-7e7b7a4d="" class="건너뛰기">뒤로가기</span></button><button data-v-7e7b7a4d="" id="addMyContent" class="primary-btn"><span data-v-7e7b7a4d="" class="text">찜하기</span></button>
-					</div>
-				</div>
-			</div>
-		</div>
 
 	</div>
 

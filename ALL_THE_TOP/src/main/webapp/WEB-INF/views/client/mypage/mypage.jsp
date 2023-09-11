@@ -46,15 +46,8 @@
 											class="user-profile-wrap">
 											<div data-v-c30698f4="" class="circle-profile-wrap">
 												<div data-v-c30698f4="" class="default-circle">
-													
 													<img class="thumbnailImg" src="/resources/bootstrap/img/thumbnailImg/${member.thumbnailImg}" onclick="openFileInput()" style="cursor: pointer;">
 													<input type="file" id="fileInput" style="display: none;">
-													<!-- 
-													<img class="thumbnailImg" src="/resources/bootstrap/img/thumbnailImg/galaxy_sm.jpg">
-													 -->
-													<!-- 
-													<img class="thumbnailImg" src="${member.thumbnailImg}">
-													 -->
 												</div>
 											</div>
 										</div>
@@ -80,7 +73,7 @@
 					<section data-v-014a8b00="" class="profile-contents-wrap"
 						style="background: black;">
 						<div data-v-014a8b00="" class="profile-contents-container">
-							<a data-v-014a8b00="" href="/wish" class="content-wrap"
+							<a data-v-014a8b00="" href="/member/wish" class="content-wrap"
 								id="interestLabel" title=""><span data-v-014a8b00=""
 								class="content-count">${wishCnt}</span><span data-v-014a8b00=""
 								class="content-label">찜 컨텐츠</span></a><a data-v-014a8b00=""
