@@ -143,5 +143,13 @@
 		<put-attribute name="title" value="inquiryList"/>	
 	</definition>
 	
+	<!-- 문의 디테일 -->
+	<definition name="/alltt/inquiryDetail" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/admin/support/inquiryDetail.jsp"/>	
+		<put-attribute name="title" value="inquiryDetail"/>	
+	</definition>
+	
+	
+	
 	
 </tiles-definitions>
