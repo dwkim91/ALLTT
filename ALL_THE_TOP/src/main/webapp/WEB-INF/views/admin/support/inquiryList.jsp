@@ -26,44 +26,52 @@
 			<div class="container-fluid pt-4 px-4">
 				<div class="row g-4">
 					<div class="col-sm-6 col-xl-3">
-						<div
-							class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-							<i class="fa fa-chart-line fa-3x text-primary"></i>
-							<div class="ms-3">
-								<p class="mb-2">Today 문의</p>
-								<h6 class="mb-0">$1234</h6>
+						<a href="/support/inquiryList/all">
+							<div
+								class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+								<i class="fa fa-chart-line fa-3x text-primary"></i>
+								<div class="ms-3">
+									<p class="mb-2">전체</p>
+									<h6 class="mb-0">${totalCnt} 건</h6>
+								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 					<div class="col-sm-6 col-xl-3">
-						<div
-							class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-							<i class="fa fa-chart-bar fa-3x text-primary"></i>
-							<div class="ms-3">
-								<p class="mb-2">Total 문의</p>
-								<h6 class="mb-0">$1234</h6>
+						<a href="/support/inquiryList/new">
+							<div
+								class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+								<i class="fa fa-chart-bar fa-3x text-primary"></i>
+								<div class="ms-3">
+									<p class="mb-2">신규</p>
+									<h6 class="mb-0">${newCnt} 건</h6>
+								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 					<div class="col-sm-6 col-xl-3">
-						<div
-							class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-							<i class="fa fa-chart-area fa-3x text-primary"></i>
-							<div class="ms-3">
-								<p class="mb-2">처리 미완료</p>
-								<h6 class="mb-0">$1234</h6>
+						<a href="/support/inquiryList/in progress">
+							<div
+								class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+								<i class="fa fa-chart-area fa-3x text-primary"></i>
+								<div class="ms-3">
+									<p class="mb-2">진행</p>
+									<h6 class="mb-0">${inProgressCnt} 건</h6>
+								</div>
 							</div>
-						</div>
+						</a>	
 					</div>
 					<div class="col-sm-6 col-xl-3">
-						<div
-							class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-							<i class="fa fa-chart-pie fa-3x text-primary"></i>
-							<div class="ms-3">
-								<p class="mb-2">처리 완료</p>
-								<h6 class="mb-0">$1234</h6>
+						<a href="/support/inquiryList/done">
+							<div
+								class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+								<i class="fa fa-chart-pie fa-3x text-primary"></i>
+								<div class="ms-3">
+									<p class="mb-2">완료</p>
+									<h6 class="mb-0">${doneCnt} 건</h6>
+								</div>
 							</div>
-						</div>
+						</a>	
 					</div>
 				</div>
 			</div>
@@ -80,16 +88,13 @@
 			<div class="container-fluid pt-4 px-4">
 				<div class="bg-secondary text-center rounded p-4">
 					<div class="d-flex align-items-center justify-content-between mb-4">
-						<h6 class="mb-0">Recent Salse</h6>
-						<a href="">Show All</a>
+						<h6 class="mb-0">고객 문의 리스트</h6>
 					</div>
 					<div class="table-responsive">
 						<table
 							class="table text-start align-middle table-bordered table-hover mb-0">
 							<thead>
 								<tr class="text-white">
-									<th scope="col"><input class="form-check-input"
-										type="checkbox"></th>
 									<th scope="col">Date</th>
 									<th scope="col">MemberId</th>
 									<th scope="col">Question Type</th>
@@ -102,11 +107,9 @@
 							<tbody>
 								<c:forEach var="supportDTO" items="${inquiryList}">
 									<tr>
-										<td><input class="form-check-input" type="checkbox"></td>
 										<td><fmt:formatDate value="${supportDTO.enrollDt}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 										<td>${supportDTO.memberId}</td>
 										<td>${supportDTO.questionType}</td>
-										
 										<c:set var="maxLength" value="20" />
 									    <script>
 									        var suggestion = "${supportDTO.suggestion}";
@@ -120,7 +123,7 @@
 									    </script>
 										<td>${supportDTO.email}</td>
 										<td>${supportDTO.supportStatus}</td>
-										<td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
+										<td><a class="btn btn-sm btn-primary" href="${contextPath }/support/inquiryDetail?supportId=${supportDTO.supportId}">Detail</a></td>
 									</tr>
 								</c:forEach>
 							</tbody>

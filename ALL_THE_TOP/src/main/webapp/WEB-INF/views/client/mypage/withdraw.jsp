@@ -2,54 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script>
-
-//탈퇴하기
-function withdrawMember(socialNm){
-	console.log(socialNm);
-
-	// 각 체크박스 상태를 저장하는 변수들을 초기화합니다.	
-	var dPostCheckbox = document.getElementById('dPostYn');
-    var dReplyCheckbox = document.getElementById('dReplyYn');
-    var dAgreeCheckbox = document.getElementById('d_agree');
-    d_agree = dAgreeCheckbox.checked ? "Y" : "N";
-    
-	if (d_agree === "N"){
-		alert("탈퇴 동의를 체크해 주세요.");
-	}
-	else if (d_agree === "Y"){
-		
-		if (confirm("정말 탈퇴 하시겠습니까?")) {
-			
-			var delete_data = {
-				"dPostYn"  : dPostCheckbox.checked   ? "Y" : "N",
-				"dReplyYn" : dReplyCheckbox.checked ? "Y" : "N",
-			};
-			
-			$.ajax({
-				url : '/member/deleteMyPost',
-				type : 'POST',
-				data : JSON.stringify(delete_data),
-				contentType : 'application/json',
-				success : function(response) {
-					alert(response);
-					alert("다음에 다시 만나요.");
-					var service = socialNm;	
-					location.href = '/member/' + service + '/withdraw';
-				}
-			});
-				
-		} else {
-			alert("감사합니다 ^^");
-		}
-		
-		
-	}
-
-}
-</script>
-
 	<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/withdraw.css" type="text/css">
+	<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/withdraw_custom.css" type="text/css">
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -103,7 +57,7 @@ function withdrawMember(socialNm){
 									data-v-214537f9="" for="d_agree">위 내용을 모두 확인하였으며, 이에
 										동의합니다.</label></span>
 							</div>
-							<button type="submit" data-v-214537f9="" class="primary-btn" id="withdrawButton" onclick="withdrawMember('${member.socialNm}')">탈퇴 하기</button>
+							<button type="submit" data-v-214537f9="" class="primary-btn" id="withdrawButton" disabled="disabled" onclick="withdrawMember('${member.socialNm}')">탈퇴 하기</button>
 						</div>
 					</div>
 					<!---->
@@ -111,6 +65,6 @@ function withdrawMember(socialNm){
 			</div>
 		</div>
 	</div>
-
+	<script src="${contextPath}/resources/bootstrap/js/withdraw.js"></script>
 </body>
 </html>

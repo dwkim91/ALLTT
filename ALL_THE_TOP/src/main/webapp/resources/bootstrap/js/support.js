@@ -104,6 +104,7 @@ function sendInquiry(){
         contentType: "application/json",
 		success : function(response) {
 			alert(response);
+			window.location.href = '/support/inquiry';
 		}
 	});
 	

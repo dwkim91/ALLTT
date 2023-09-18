@@ -23,5 +23,35 @@ public class SupportDAOImpl implements SupportDAO {
 	public List<SupportDTO> selectInquiryList() {
 		return sqlSession.selectList("supportMapper.selectInquiryList");
 	}
-	
+
+	@Override
+	public SupportDTO selectOneInquiry(long supportId) {
+		return sqlSession.selectOne("supportMapper.selectOneInquiry", supportId);
+	}
+
+	@Override
+	public void updateAnswer(SupportDTO supportDTO) {
+		sqlSession.update("supportMapper.updateAnswer", supportDTO);
+	}
+
+	@Override
+	public int selectDone() {
+		return sqlSession.selectOne("supportMapper.selectDone");
+	}
+
+	@Override
+	public int selectNew() {
+		return sqlSession.selectOne("supportMapper.selectNew");
+	}
+
+	@Override
+	public int selectInProgress() {
+		return sqlSession.selectOne("supportMapper.selectInProgress");
+	}
+
+	@Override
+	public List<SupportDTO> selectInquiryListByStatus(String status) {
+		return sqlSession.selectList("supportMapper.selectInquiryListByStatus", status);
+	}
+
 }

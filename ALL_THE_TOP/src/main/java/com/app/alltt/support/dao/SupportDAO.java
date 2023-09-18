@@ -10,4 +10,16 @@ public interface SupportDAO {
 
 	List<SupportDTO> selectInquiryList();
 
+	SupportDTO selectOneInquiry(long supportId);
+
+	void updateAnswer(SupportDTO supportDTO);
+
+	int selectDone();
+
+	int selectNew();
+
+	int selectInProgress();
+
+	List<SupportDTO> selectInquiryListByStatus(String status);
+
 }

@@ -77,13 +77,18 @@
 								</picture>
 							</div>
 							<div class="profile_info">
+								<c:if test="${sessionScope.managerYn == 'Y'}">
+									<button class="manager_tag" id="myButton" disabled="true">manager</button>
+								</c:if>
 								<p class="profile_info_name">닉네임 입력</p>
-								<li><a href="/support/inquiryList" style="color: #f0a9a9;">문의 리스트 확인</a></li>
 							</div>
 						</div>
 						<hr>
 						<ul class="menu_my_btn_wrap">
 							<li><a class="btn_my" href="${contextPath}/member/mypage" style="color: #f0a9a9;">마이페이지</a></li>
+							<c:if test="${sessionScope.managerYn == 'Y'}">
+								<li><a href="/support/inquiryList/all" style="color: #f0a9a9;">고객문의관리</a></li>
+							</c:if>
 							<li><a href="/support/inquiry" style="color: #f0a9a9;">고객센터</a></li>
 							<li><a class="btn_logout" href="/member/logout" style="color: #f0a9a9;">로그아웃</a></li>
 						</ul>
