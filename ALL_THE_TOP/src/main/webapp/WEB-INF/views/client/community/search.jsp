@@ -7,9 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <title>검색</title>
-<link rel="stylesheet" href="${contextPath}/resources/css/search.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/css/footerCustom.css" type="text/css">
-<script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/search.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footerCustom.css" type="text/css">
+<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
 <script>
 $(function() {
 	$(".btn-back").click(function() {

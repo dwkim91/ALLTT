@@ -29,7 +29,7 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 		
 		wishContentLoad();
 	}
-	else {
+	else if(clickedClass == 'movieBtn') {
 		$("#contentType").val('movie');
 		movieBtn.removeClass('btn_new');
 		movieBtn.addClass('click_on');
