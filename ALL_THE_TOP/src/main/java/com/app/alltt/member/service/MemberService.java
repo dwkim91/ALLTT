@@ -30,10 +30,9 @@ public interface MemberService {
 	public void setMemberFilter(long newMemberId);
 	public List<FilteredDTO> getWishContentByFilterDTO(FilterDTO filterDTO);
 	public void removeWishContentByFilterDTOList(List<FilteredDTO> filteredDTOList);
-	public List<Integer> getWishMinimumSubscriptionByMemberId(long memberId);
 	public void changeThumbnailImg(MemberDTO memberDTO);
 	public MemberDTO imgDownload (MemberDTO memberDTO, String filePath);
 	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
-	public List<List<Integer>> getInfoByContentCnt(Map<String, Object> requestData);
+	public Map<Integer, Map<Integer, List<Long>>> getInfoByContentCnt(Map<String, Object> requestData);
 	
 }

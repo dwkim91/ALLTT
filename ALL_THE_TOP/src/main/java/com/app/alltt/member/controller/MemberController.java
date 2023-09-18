@@ -582,8 +582,6 @@ public class MemberController {
 		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(filterDTO.getMemberId()));
 		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
 		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(filterDTO.getMemberId()));
-		// 로그인한 맴버가 선택한 작품을 보기위한 최소한의 구독플랫폼
-		mv.addObject("wishPlatform", memberService.getWishMinimumSubscriptionByMemberId(filterDTO.getMemberId()));
 		
 		mv.setViewName("/alltt/wish");
 		
@@ -612,11 +610,10 @@ public class MemberController {
 	
 	@PostMapping("/wishSolution")
 	@ResponseBody
-	public List<List<Integer>> wishSolution(@RequestBody Map<String, Object> requestData, HttpSession session) {
+	public Map<Integer, Map<Integer, List<Long>>> wishSolution(@RequestBody Map<String, Object> requestData, HttpSession session) {
 		long memberId = (long)session.getAttribute("memberId");
 		
 		requestData.put("memberId", memberId);
-		
 		
 		return memberService.getInfoByContentCnt(requestData);
 	}
