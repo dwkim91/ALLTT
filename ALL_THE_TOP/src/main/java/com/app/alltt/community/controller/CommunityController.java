@@ -151,6 +151,7 @@ public class CommunityController {
 		model.addAttribute("content", content);
 		model.addAttribute("relatedPostList", relatedPostList);
 		model.addAttribute("replyList", communityService.getReplyList(postId));
+		model.addAttribute("checkContentMyWish", communityService.checkWishContent(memberId, post.getContentId()));
 		
 		return "/alltt/post";
 	}
@@ -323,13 +324,8 @@ public class CommunityController {
 	}
 	
 	@PostMapping("/addMyContent")
-	public @ResponseBody String addMyContent(@RequestParam long memberId, @RequestParam long contentId) {
-		FilteredDTO wishDTO = new FilteredDTO();
-		wishDTO.setMemberId(memberId);
-		wishDTO.setContentId(contentId);
+	public @ResponseBody boolean addMyContent(@RequestParam long memberId, @RequestParam long contentId) {
 		
-		if (communityService.insertWishContent(wishDTO)) return "added";
-		else return "false";
-		
+		return communityService.modifyWishContent(memberId, contentId);
 	}
 }

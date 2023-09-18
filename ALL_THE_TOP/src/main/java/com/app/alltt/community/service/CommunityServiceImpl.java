@@ -217,20 +217,30 @@ public class CommunityServiceImpl implements CommunityService {
 		} catch (Exception e) {e.printStackTrace();}
 		
 		return isRemoved;
-		
 	}
 	
+	@Override
+	public boolean checkWishContent(long memberId, long contentId) {
+		
+		FilteredDTO wishDTO = new FilteredDTO();
+		wishDTO.setMemberId(memberId);
+		wishDTO.setContentId(contentId);
+		
+		return communityDAO.selectWishContent(wishDTO) == 0 ? false : true;
+	}
+	
+	@Override
 	@Transactional
-	public boolean insertWishContent(FilteredDTO wishDTO) {
-		boolean isInserted = false;
+	public boolean modifyWishContent(long memberId, long contentId) {
 		
-		if (communityDAO.selectWishContent(wishDTO) == 0) {
-			communityDAO.insertWishContent(wishDTO);
-			isInserted = true;
-		}
+		FilteredDTO wishDTO = new FilteredDTO();
+		wishDTO.setMemberId(memberId);
+		wishDTO.setContentId(contentId);
 		
-		return isInserted;
-
+		if (communityDAO.selectWishContent(wishDTO) == 1) communityDAO.deleteWishContent(wishDTO);
+		else communityDAO.insertWishContent(wishDTO);
+		
+		return communityDAO.selectWishContent(wishDTO) == 0 ? false : true;
 	}
 
 }

@@ -7,13 +7,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class SupportDTO {
 	
+	private long supportId;
 	private long memberId;
 	private String questionType;
 	private String suggestion;
 	private String email;
 	private String supportStatus;
+	private String answer;
 	private Date enrollDt;
 	
+	public long getSupportId() {
+		return supportId;
+	}
+	public void setSupportId(long supportId) {
+		this.supportId = supportId;
+	}
 	public long getMemberId() {
 		return memberId;
 	}
@@ -44,6 +52,12 @@ public class SupportDTO {
 	public void setSupportStatus(String supportStatus) {
 		this.supportStatus = supportStatus;
 	}
+	public String getAnswer() {
+		return answer;
+	}
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
 	public Date getEnrollDt() {
 		return enrollDt;
 	}
@@ -53,8 +67,9 @@ public class SupportDTO {
 	
 	@Override
 	public String toString() {
-		return "SupportDTO [memberId=" + memberId + ", questionType=" + questionType + ", suggestion=" + suggestion
-				+ ", email=" + email + ", supportStatus=" + supportStatus + ", enrollDt=" + enrollDt + "]";
+		return "SupportDTO [supportId=" + supportId + ", memberId=" + memberId + ", questionType=" + questionType
+				+ ", suggestion=" + suggestion + ", email=" + email + ", supportStatus=" + supportStatus + ", answer="
+				+ answer + ", enrollDt=" + enrollDt + "]";
 	}
 	
 }

@@ -1,6 +1,5 @@
 function elapsedTime(date) {
     const formattedDate = date.replace("KST", "").trim();
-    console.log(formattedDate);
     const start = new Date(formattedDate);
     const end = new Date();
   

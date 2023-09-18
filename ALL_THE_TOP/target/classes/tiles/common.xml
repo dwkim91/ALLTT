@@ -13,6 +13,13 @@
 		<put-attribute name="body"	value="/WEB-INF/views/client/main/main.jsp"/> 					
 		<put-attribute name="title"	value="main"/> 											
 	</definition>
+
+	<!-- 메인2 -->
+	<definition name="/alltt/main2" extends="alltt">												
+		<put-attribute name="body"	value="/WEB-INF/views/client/main/main2.jsp"/> 					
+		<put-attribute name="title"	value="main2"/>
+		<put-attribute name="footer" value="" />							
+	</definition>
 	
 	<!-- Content 상세 -->
 	<definition name="/alltt/detail" extends="alltt">												
@@ -135,6 +142,14 @@
 		<put-attribute name="body"	value="/WEB-INF/views/admin/support/inquiryList.jsp"/>	
 		<put-attribute name="title" value="inquiryList"/>	
 	</definition>
+	
+	<!-- 문의 디테일 -->
+	<definition name="/alltt/inquiryDetail" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/admin/support/inquiryDetail.jsp"/>	
+		<put-attribute name="title" value="inquiryDetail"/>	
+	</definition>
+	
+	
 	
 	
 </tiles-definitions>

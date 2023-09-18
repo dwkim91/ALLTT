@@ -1,6 +1,16 @@
 
 .table-responsive .form-check-input {
 	position: unset;
-	margin-left: 0rem;
-	background-color: #212121;
+	text-align: center;
+	margin: 0 auto;
+	display: block;
+	background-color: #5b4b4b;
+}
+
+.table td, .table th {
+    color: #efefef;
+}
+
+.btn-primary {
+    color: #efefef;
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,18 +61,47 @@ public class SupportController {
 	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    supportDTO.setMemberId(memberId);
 	    supportDTO.setEnrollDt(new Date());
-	    System.out.println(supportDTO);
 	    supportService.addInquiry(supportDTO);
 	    return "문의 내용이 등록되었습니다.";
 	}
 	
-	@GetMapping("/inquiryList")
+	@GetMapping("/inquiryList/{status}")
 	@ResponseBody
-	public ModelAndView inquiryList(HttpServletRequest request, HttpSession session) {
+	public ModelAndView inquiryList(@PathVariable("status") String status, HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		mv.setViewName("/alltt/inquiryList");
-		mv.addObject("inquiryList", supportService.getInquiryList());
+		List<SupportDTO> inquiryList = null;
+		if(status.equals("all")) {
+			inquiryList = supportService.getInquiryList();
+		}
+		else {
+			inquiryList = supportService.getInquiryListByStatus(status);
+		}
+		mv.addObject("inquiryList", inquiryList);
+		mv.addObject("totalCnt", supportService.getInquiryList().size());
+		mv.addObject("newCnt", supportService.getNewCnt());
+		mv.addObject("inProgressCnt", supportService.getInProgressCnt());
+		mv.addObject("doneCnt", supportService.getDoneCnt());
 		return mv;
 	}
+	
+	@GetMapping("/inquiryDetail")
+	public ModelAndView inquiryDetail(@RequestParam("supportId") long supportId) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/alltt/inquiryDetail");
+		mv.addObject("supportDTO", supportService.getInquiryDetail(supportId));
+		return mv;
+	}
+	
+	// 문의 관리
+	@RequestMapping(value="/registerAnswer", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String registerAnswer(@RequestBody SupportDTO supportDTO, HttpSession session) {
+	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    System.out.println(supportDTO);
+	    supportService.registerAnswer(supportDTO);
+	    return "답변이 등록 되었습니다.";
+	}
+	
 }

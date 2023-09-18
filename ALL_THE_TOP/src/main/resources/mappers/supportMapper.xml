@@ -26,7 +26,71 @@
 				*
 		FROM
 			SUPPORT
+		ORDER BY
+        	ENROLL_DT DESC;
 	</select>
 	
+	<!-- 문의 전체 건수 -->
+	<select id="selectOneInquiry" parameterType="long" resultType="SupportDTO">
+		SELECT
+				*
+		FROM
+			SUPPORT
+		WHERE
+			SUPPORT_ID = #{supportId};
+	</select>
+	
+	<!-- 문의 답변 변경 -->
+	<update id="updateAnswer" parameterType="SupportDTO">
+		UPDATE 
+			SUPPORT
+		SET
+			SUPPORT_STATUS = #{supportStatus}, 
+			ANSWER         = #{answer}
+		WHERE
+			SUPPORT_ID = #{supportId};
+	</update>
+	
+	<!-- 신규 문의 수 -->
+	<select id="selectNew" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			SUPPORT
+		WHERE
+			SUPPORT_STATUS = 'new';
+	</select>
+	
+	<!-- 진행 중 문의 수 -->
+	<select id="selectInProgress" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			SUPPORT
+		WHERE
+			SUPPORT_STATUS = 'in progress';
+	</select>
+	
+	<!-- 완료된 문의 수 -->
+	<select id="selectDone" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			SUPPORT
+		WHERE
+			SUPPORT_STATUS = 'done';
+	</select>
+	
+	<!-- Status별문의 목록 가져오기 -->
+	<select id="selectInquiryListByStatus" parameterType="String" resultType="SupportDTO">
+		SELECT
+				*
+		FROM
+			SUPPORT
+		WHERE
+			SUPPORT_STATUS = #{status}
+		ORDER BY
+        	ENROLL_DT DESC;
+	</select>
 	
 </mapper>
