@@ -6,189 +6,44 @@
 <head>
 <script src="${contextPath}/resources/bootstrap/js/contentsWish.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/search.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/searchMain.js" type="module"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/main.css" type="text/css">
 </head>
 <body>
-	<main class="is-desktop css-p5l6tq eeennqe0">
-		<div id="searchBarContainer">
-		   	<input type="text" id="searchBar" placeholder="검색어를 입력하세요" />
+
+	<main class="mainPage">
+		<div class="preBlock">
 		</div>
-		<section class="contents_wrap">
-			<section class="contents_wrap wrap_margin" style="margin: 2rem;">
-				<div data-v-a0912140=""
-					class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
-				<div class="hidden-horizontal-scrollbar__items"></div>
-				<div data-v-a0912140=""
-					class="hidden-horizontal-scrollbar filter-bar__provider-row"></div>
-				<div class="hidden-horizontal-scrollbar__items"></div>
-				<section class="lists lists__noneLazy">
-				<div class="lists__columns lists__columns-vertical css-0 enth0yz0" id="container"></div></section>				
-				<div>
-					<div class="section-title" style="margin-bottom: 20px;">
-						<h5>넷플릭스 최신 컨텐츠</h5>
-					</div>
-					<section class="lists lists__noneLazy">
-						<div class="lists__columns lists__columns-vertical css-0 enth0yz0"
-							id="container">
-							<!-- 기본 42개 -->
-							<c:forEach var="netflixContent" items="${netflixContentList}">
-								<div class="item" data-id="${netflixContent.contentId}">
-									<c:choose>
-										<c:when test="${netflixContent.memberId == 0}">
-											<div class="item__thumb item__thumb-25x36">
-										</c:when>
-										<c:otherwise>
-											<div class="item__thumb item__thumb-25x36" id="wishContent">
-										</c:otherwise>
-									</c:choose>
-									<div class="item__tags"></div>
-									<div class="item__image lazy">
-										<a href="/detail?contentId=${netflixContent.contentId}">
-											<img class="loaded css-1doy9ip euf32k22" src="${netflixContent.imgUrl}" alt="${netflixContent.title}">
-										</a>
-									</div>
-								</div>
-								<div class="item__info ">
-									<a class="item__title"
-										href="/detail?contentId=${netflixContent.contentId}">${netflixContent.title}</a>
-								</div>
+		<div class="mainBlock">
+			<div class="mp1">
+				<p class="title1">ALL about OTT</p>
+			</div>
+			<div class="mp2">
+				<h1 class="title2">작품을 검색해보세요</h1>
+			</div>
+		</div>
+		<div class="preBlock">
+		</div>
+		<div class="searchContentBlock">
+			<div class="searchBlock">
+				<div class="searchSpace">
+					<div class="searchIcon"><svg width="20" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8.433" cy="8.433" r="7.433" stroke="#AEB4BF" stroke-width="2"></circle><path stroke="#AEB4BF" stroke-width="2.5" stroke-linecap="round" d="m13.226 14.667 5.565 5.565"></path></svg>
+						<div>
+							<div width="12" class="kkk"></div>
 						</div>
-						</c:forEach>
-					</section>
-				</div>
-				<div class="tempList">
-					<div class="section-title" style="margin-bottom: 20px;">
-						<h5>티빙 최신 컨텐츠</h5>
 					</div>
-					<section class="lists lists__noneLazy">
-						<div class="lists__columns lists__columns-vertical css-0 enth0yz0"
-							id="container">
-							<!-- 기본 42개 -->
-							<c:forEach var="tvingContent" items="${tvingContentList}">
-								<div class="item" data-id="${tvingContent.contentId}">
-									<c:choose>
-										<c:when test="${tvingContent.memberId == 0}">
-											<div class="item__thumb item__thumb-25x36">
-										</c:when>
-										<c:otherwise>
-											<div class="item__thumb item__thumb-25x36" id="wishContent">
-										</c:otherwise>
-									</c:choose>
-									<div class="item__tags"></div>
-									<div class="item__image lazy">
-										<a href="/detail?contentId=${tvingContent.contentId}">
-											<img class="loaded css-1doy9ip euf32k22" src="${tvingContent.imgUrl}" alt="${tvingContent.title}">
-										</a>
-									</div>
-								</div>
-								<div class="item__info ">
-									<a class="item__title"
-										href="/detail?contentId=${tvingContent.contentId}">${tvingContent.title}</a>
-								</div>
-						</div>
-						</c:forEach>
-					</section>
-				</div>
-				<div class="tempList">
-					<div class="section-title" style="margin-bottom: 20px;">
-						<h5>웨이브 최신 컨텐츠</h5>
+					<input type="text" placeholder="작품명으로 서비스중인 OTT를 검색해보세요." class="searchInput" value="">
+					<div class="searchCancel">
+						<svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M11 .275C5.096.275.297 5.063.297 10.978A10.699 10.699 0 0 0 11 21.682a10.699 10.699 0 0 0 10.703-10.704C21.703 5.063 16.904.275 11 .275ZM15.4 14.228a.817.817 0 0 1 0 1.149.803.803 0 0 1-.575.238.803.803 0 0 1-.574-.238L11 12.127l-3.25 3.25a.804.804 0 0 1-.574.238.803.803 0 0 1-.574-.238.817.817 0 0 1 0-1.149l3.25-3.25-3.25-3.25a.817.817 0 0 1 0-1.148.817.817 0 0 1 1.148-.01L11 9.82l3.25-3.25a.817.817 0 0 1 1.149 0 .817.817 0 0 1 0 1.147l-3.25 3.25 3.25 3.261Z" fill="#AEB4BF"></path></svg>
 					</div>
-					<section class="lists lists__noneLazy">
-						<div class="lists__columns lists__columns-vertical css-0 enth0yz0"
-							id="container">
-							<!-- 기본 42개 -->
-							<c:forEach var="wavveContent" items="${wavveContentList}">
-								<div class="item" data-id="${wavveContent.contentId}">
-									<c:choose>
-										<c:when test="${wavveContent.memberId == 0}">
-											<div class="item__thumb item__thumb-25x36">
-										</c:when>
-										<c:otherwise>
-											<div class="item__thumb item__thumb-25x36" id="wishContent">
-										</c:otherwise>
-									</c:choose>
-									<div class="item__tags"></div>
-									<div class="item__image lazy">
-										<a href="/detail?contentId=${wavveContent.contentId}">
-											<img class="loaded css-1doy9ip euf32k22" src="${wavveContent.imgUrl}" alt="${wavveContent.title}">
-										</a>
-									</div>
-								</div>
-								<div class="item__info ">
-									<a class="item__title"
-										href="/detail?contentId=${wavveContent.contentId}">${wavveContent.title}</a>
-								</div>
-						</div>
-						</c:forEach>
-					</section>
 				</div>
-				<div class="tempList">
-					<div class="section-title" style="margin-bottom: 20px;">
-						<h5>액션 최신 컨텐츠</h5>
-					</div>
-					<section class="lists lists__noneLazy">
-						<div class="lists__columns lists__columns-vertical css-0 enth0yz0"
-							id="container">
-							<!-- 기본 42개 -->
-							<c:forEach var="actionContent" items="${actionContentList}">
-								<div class="item" data-id="${wavveContent.contentId}">
-									<c:choose>
-										<c:when test="${actionContent.memberId == 0}">
-											<div class="item__thumb item__thumb-25x36">
-										</c:when>
-										<c:otherwise>
-											<div class="item__thumb item__thumb-25x36" id="wishContent">
-										</c:otherwise>
-									</c:choose>
-									<div class="item__tags"></div>
-									<div class="item__image lazy">
-										<a href="/detail?contentId=${actionContent.contentId}">
-											<img class="loaded css-1doy9ip euf32k22" src="${actionContent.imgUrl}" alt="${actionContent.title}">
-										</a>
-									</div>
-								</div>
-								<div class="item__info ">
-									<a class="item__title"
-										href="/detail?contentId=${actionContent.contentId}">${actionContent.title}</a>
-								</div>
-						</div>
-						</c:forEach>
-					</section>
-				</div>
-				<div class="tempList">
-					<div class="section-title" style="margin-bottom: 20px;">
-						<h5>드라마 최신 컨텐츠</h5>
-					</div>
-					<section class="lists lists__noneLazy">
-						<div class="lists__columns lists__columns-vertical css-0 enth0yz0"
-							id="container">
-							<!-- 기본 42개 -->
-							<c:forEach var="dramaContent" items="${dramaContentList}">
-								<div class="item" data-id="${dramaContent.contentId}">
-									<c:choose>
-										<c:when test="${dramaContent.memberId == 0}">
-											<div class="item__thumb item__thumb-25x36">
-										</c:when>
-										<c:otherwise>
-											<div class="item__thumb item__thumb-25x36" id="wishContent">
-										</c:otherwise>
-									</c:choose>
-									<div class="item__tags"></div>
-									<div class="item__image lazy">
-										<a href="/detail?contentId=${dramaContent.contentId}">
-											<img class="loaded css-1doy9ip euf32k22" src="${dramaContent.imgUrl}" alt="${dramaContent.title}">
-										</a>
-									</div>
-								</div>
-								<div class="item__info ">
-									<a class="item__title"
-										href="/detail?contentId=${dramaContent.contentId}">${dramaContent.title}</a>
-								</div>
-						</div>
-						</c:forEach>
-					</section>
-				</div>
-			</section>
-		</section>
+			</div>
+			<div class="preBlock">
+			</div>
+			<ul class="searchResult">
+			</ul>
+		</div>
 	</main>
+	
 </body>
 </html>
