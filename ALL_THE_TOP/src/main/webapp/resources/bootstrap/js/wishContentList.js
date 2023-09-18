@@ -24,9 +24,9 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 		seriesBtn.addClass('click_on');
 		movieBtn.removeClass('click_on');
 		movieBtn.addClass('btn_new');
+		$(".chartType").text('시리즈');
 		
 		$("#wishContainer").empty();
-		
 		wishContentLoad();
 	}
 	else if(clickedClass == 'movieBtn') {
@@ -35,9 +35,9 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 		movieBtn.addClass('click_on');
 		seriesBtn.removeClass('click_on');
 		seriesBtn.addClass('btn_new');
+		$('.chartType').text('영화');
 		
 		$("#wishContainer").empty();
-		
 		wishContentLoad();
 	}
 	
