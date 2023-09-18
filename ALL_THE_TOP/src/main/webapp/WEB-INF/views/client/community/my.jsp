@@ -6,8 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>myPage</title>
-<link rel="stylesheet" href="${contextPath}/resources/css/my.css" type="text/css">
-<script src="${contextPath}/resources/jquery/jquery-3.6.1.min.js"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/my.css" type="text/css">
+<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
 <script>
 $(function() {
 	

@@ -31,11 +31,11 @@ public class MainController {
 	@Autowired
 	private CommunityService communityService;
 	
-	@GetMapping("/main")
-	public ModelAndView main(HttpServletRequest request) {
+	@GetMapping("/main2")
+	public ModelAndView main2(HttpServletRequest request) {
 		
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/alltt/main");
+		mv.setViewName("/alltt/main2");
 
 		// 메인 페이지 로드시 필요한 기본 필터링값
 		FilterDTO filterDTO = new FilterDTO();
@@ -66,12 +66,21 @@ public class MainController {
 		return mv;
 	}
 	
-	@GetMapping("/main2")
-	public ModelAndView main2() {
+	@GetMapping("/main")
+	public ModelAndView main() {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/alltt/main2");
+		mv.setViewName("/alltt/main");
 		
 		return mv;
+	}
+	
+	@PostMapping("/searchContent")
+	public @ResponseBody List<FilteredDTO> searchContent(@RequestParam String contentTitle){
+		
+		FilterDTO searchDTO = new FilterDTO();
+		searchDTO.setSearchKey(contentTitle);
+		
+		return mainService.getMoreContentByKeyword(searchDTO);
 	}
 	
 	@PostMapping("/contentLoad")
@@ -87,17 +96,15 @@ public class MainController {
 	public ModelAndView detilContent(@RequestParam("contentId") long contentId, HttpSession session) {
 		
 		ModelAndView mv = new ModelAndView();
-
-		if(session.getAttribute("memberId") == null) {
-			mv.setViewName("/alltt/login");
-			return mv;
-		}
 		
 		mv.setViewName("/alltt/detail");
 		
 		// 컨텐츠의 모든정보 (1개씩)
 		FilteredDTO filteredDTO = mainService.getContentDetail(contentId);
-		filteredDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		if (session.getAttribute("memberId") != null) {
+			filteredDTO.setMemberId((long)session.getAttribute("memberId"));
+		}
 		
 		if (!mainService.getWishByMemberId(filteredDTO)) filteredDTO.setMemberId(0);
 		System.out.println(filteredDTO);

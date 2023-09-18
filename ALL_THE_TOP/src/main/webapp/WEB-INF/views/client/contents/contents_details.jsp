@@ -14,6 +14,9 @@
 	display: none;
 }
 </style>
+<script>
+	var memberSession = "${sessionScope.memberId}";
+</script>
 <script src="${contextPath}/resources/bootstrap/js/detailWish.js" type="module"></script>
 
 </head>
