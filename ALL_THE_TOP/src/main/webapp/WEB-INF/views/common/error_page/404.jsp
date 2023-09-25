@@ -6,12 +6,16 @@
 <head>
 <meta charset="UTF-8">
 <title>404</title>
+	 <style>
+        body {
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+        }
+    </style>
 </head>
 <body>
-	<div align="center">
-		<h2>Page Not Found</h2>
-		<img src="${contextPath }/resources/bootstrap/img/404.PNG" alt="404에러 이미지">
-		<h4>페이지를 찾을 수 없습니다.</h4>
-	</div>
+
+	<img src="/resources/bootstrap/img/404.jpg">
+	
 </body>
 </html>

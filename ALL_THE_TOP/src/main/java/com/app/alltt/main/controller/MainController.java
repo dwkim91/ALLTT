@@ -104,7 +104,6 @@ public class MainController {
 		}
 		
 		if (!mainService.getWishByMemberId(filteredDTO)) filteredDTO.setMemberId(0);
-		System.out.println(filteredDTO);
 		mv.addObject("filteredDTO", filteredDTO);
 		
 		// 컨텐츠의 장르 (모두)
@@ -197,6 +196,16 @@ public class MainController {
 		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
 		return mainService.getMoreContentByKeyword(filterDTO);
+	}
+	
+	@GetMapping("/error404")
+	public String error404() {
+		return "/alltt/404";
+	}
+	
+	@GetMapping("/error500")
+	public String error500() {
+		return "/alltt/500";
 	}
 	
 }
