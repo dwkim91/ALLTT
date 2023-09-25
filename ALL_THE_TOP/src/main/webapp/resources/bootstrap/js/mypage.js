@@ -1,6 +1,7 @@
 //DOM이 완전히 로드된 후에 코드가 실행
 document.addEventListener('DOMContentLoaded', function() {
   filterLoad();
+  getMemberImg();
 });
 
 function filterLoad(){
@@ -223,7 +224,7 @@ $("#fileInput").on("change", function() {
 				}
 				else {
 					// 업로드 완료 후 이미지 업데이트
-					changeThumbnailImg(response);
+					getMemberImg();
 				}
             },
             error: function() {
@@ -234,17 +235,36 @@ $("#fileInput").on("change", function() {
     }
 });
 
+function getMemberImg() {
+	// AJAX 요청을 통해 member 정보를 가져오는 코드
+	$.ajax({
+		url : '/member/memberInfo',
+		type : 'POST',
+		success : function(data) {
+			var member = data; // 받아온 data 정보를 member 변수에 할당
+			changeThumbnailImg(member); // member의 값을 설정하는 함수 호출
+		},
+		error : function(error) {
+			console.log('Failed to fetch member information.');
+		}
+	});
+}
+
 // 이미지 3개요소 변경 메서드
-function changeThumbnailImg(newFileName) {
+function changeThumbnailImg(member) {
+	
+	var imgType = member.imgExtension.toLowerCase(); // 이미지 확장자를 소문자로 변환
+	var imgSrc = "data:image/" + imgType + ";base64," + member.thumbnailImg;
 	
 	var thumbnailImg = document.querySelector(".thumbnailImg");
-	thumbnailImg.src = '/resources/bootstrap/img/thumbnailImg/' + newFileName;
+	thumbnailImg.setAttribute('src', imgSrc);
+	
 	// 우측상단 이미지 요소 선택
 	var firstImgElement = document.querySelector('.menu_my .loaded.css-1doy9ip.euf32k22');
 	// src 값 변경
-	firstImgElement.setAttribute('src', '/resources/bootstrap/img/thumbnailImg/' + newFileName);
+	firstImgElement.setAttribute('src', imgSrc);
 	// 이미지 요소 선택
 	var secondImgElement = document.querySelector('.menu_my_content.wrap_margin .loaded.css-1doy9ip.euf32k22');
 	// src 값 변경
-	secondImgElement.setAttribute('src', '/resources/bootstrap/img/thumbnailImg/' + newFileName);
+	secondImgElement.setAttribute('src', imgSrc);
 }
