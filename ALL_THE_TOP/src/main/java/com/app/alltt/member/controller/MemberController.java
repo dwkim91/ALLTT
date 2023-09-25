@@ -3,6 +3,7 @@ package com.app.alltt.member.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -566,11 +567,14 @@ public class MemberController {
 		// 로그인한 맴버의 찜 리스트
 		mv.addObject("wishContentList", memberService.getWishContentByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
-		mv.addObject("netflixWishCnt", memberService.getNetflixWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(1);
+		mv.addObject("netflixWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 티빙 찜 작품 수
-		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(2);
+		mv.addObject("tvingWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
-		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(3);
+		mv.addObject("wavveWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		
 		mv.setViewName("/alltt/wish");
 		
@@ -604,6 +608,22 @@ public class MemberController {
 		
 		requestData.put("memberId", memberId);
 		
-		return memberService.getInfoByContentCnt(requestData);
+		return memberService.getContentPlatformMapByMemberId(requestData);
+	}
+	
+	@PostMapping("/getPlatformCntLoad")
+	@ResponseBody
+	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		List<Integer> platformCntList = new ArrayList<>();
+		filterDTO.setPlatformId(1);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		filterDTO.setPlatformId(2);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		filterDTO.setPlatformId(3);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		
+		return platformCntList;
 	}
 }

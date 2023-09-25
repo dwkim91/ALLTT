@@ -6,36 +6,7 @@
 <script src="${contextPath}/resources/bootstrap/js/wishContentList.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/wishSolution.js" type="module"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-.hidden {
-	display: none;
-}
-.platformIcon {
-	border-radius: 50%;
-	width: 3rem;
-	border: 1px solid #ccc;
-    background-color: #f0f0f0;
-    padding: 2px;
-    cursor: pointer;
-    -webkit-user-drag: none;
-}
-td {
-	height: 2rem;
-	padding: 0.5rem;
-	width: 20%;
-	text-align:center;
-}
-table {
-    flex: 1;
-    width: calc(33.33% - 10px); /* 3개의 테이블이 나란히 표시될 크기 */
-	background-color: mintcream;
-	border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0.5rem;
-    color: black;
-}
-</style>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/custom2.css" type="text/css">
 </head>
 
 <main class="is-desktop css-p5l6tq eeennqe0">
@@ -56,19 +27,19 @@ table {
 				<div style="display: flex; flex-wrap: wrap;" class="tableContainer">
 					<c:choose>
 						<c:when test="${netflixWishCnt != 0}">
-							<table>
+							<table class="platformTable" data-id="1">
 								<tr>
-									<td colspan="2">넷플릭스 ( ${netflixWishCnt} )</td>
+									<td colspan="2">넷플릭스 ( <span id="netflixWishCnt">${netflixWishCnt}</span> )</td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="1">
 									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon" id="netflixByNetflixBtn"></td>
 									<td style="text-align:left;" id="netflixByNetflixCnt"></td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="2">
 									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon" id="netflixByTvingBtn"></td>
 									<td style="text-align:left;" id="netflixByTvingCnt"></td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="3">
 									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon" id="netflixByWavveBtn"></td>
 									<td style="text-align:left;" id="netflixByWavveCnt"></td>
 								</tr>
@@ -79,19 +50,19 @@ table {
 					</c:choose>
 					<c:choose>
 						<c:when test="${tvingWishCnt != 0}">
-							<table>
+							<table class="platformTable" data-id="2">
 								<tr>
-									<td colspan="3">티빙 ( ${tvingWishCnt} )</td>
+									<td colspan="3">티빙 ( <span id="tvingWishCnt">${tvingWishCnt}</span> )</td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="2">
 									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon" id="tvingByTvingBtn"></td>
 									<td style="text-align:left;" id="tvingByTvingCnt"></td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="1">
 									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon" id="tvingByNetflixBtn"></td>
 									<td style="text-align:left;" id="tvingByNetflixCnt"></td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="3">
 									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon" id="tvingByWavveBtn"></td>
 									<td style="text-align:left;" id="tvingByWavveCnt"></td>
 								</tr>
@@ -102,19 +73,19 @@ table {
 					</c:choose>
 					<c:choose>
 						<c:when test="${wavveWishCnt != 0}">
-							<table>
+							<table class="platformTable" data-id="1">
 								<tr>
-									<td colspan="3">웨이브 ( ${wavveWishCnt} )</td>
+									<td colspan="3">웨이브 ( <span id="wavveWishCnt">${wavveWishCnt}</span> )</td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="3">
 									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon" id="wavveByWavveBtn"></td>
 									<td style="text-align:left;" id="wavveByWavveCnt"></td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="1">
 									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon" id="wavveByNetflixBtn"></td>
 									<td style="text-align:left;" id="wavveByNetflixCnt"></td>
 								</tr>
-								<tr>
+								<tr class="platformTr" data-id="2">
 									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon" id="wavveByTvingBtn"></td>
 									<td style="text-align:left;" id="wavveByTvingCnt"></td>
 								</tr>

@@ -33,6 +33,7 @@ public interface MemberService {
 	public void changeThumbnailImg(MemberDTO memberDTO);
 	public MemberDTO imgDownload (MemberDTO memberDTO, String filePath);
 	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
-	public Map<Integer, Map<Integer, List<Long>>> getInfoByContentCnt(Map<String, Object> requestData);
+	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData);
+	public int getPlatformCntByFilterDTO(FilterDTO filterDTO);
 	
 }
