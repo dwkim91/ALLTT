@@ -46,7 +46,7 @@
 											class="user-profile-wrap">
 											<div data-v-c30698f4="" class="circle-profile-wrap">
 												<div data-v-c30698f4="" class="default-circle">
-													<img class="thumbnailImg" src="/resources/bootstrap/img/thumbnailImg/${member.thumbnailImg}" onclick="openFileInput()" style="cursor: pointer;">
+													<img class="thumbnailImg" src="" onclick="openFileInput()" style="cursor: pointer;">
 													<input type="file" id="fileInput" style="display: none;">
 												</div>
 											</div>

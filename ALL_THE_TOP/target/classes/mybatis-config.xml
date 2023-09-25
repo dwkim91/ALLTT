@@ -21,6 +21,6 @@
 		<typeAlias type="com.app.alltt.community.dto.RecmndDTO"			alias="RecmndDTO"/>
 		<typeAlias type="com.app.alltt.support.dto.SupportDTO"			alias="SupportDTO"/>
 		
-	</typeAliases>
+	</typeAliases>		
 
 </configuration>

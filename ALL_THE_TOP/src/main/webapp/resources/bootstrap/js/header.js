@@ -24,12 +24,17 @@ function setMemberInfo(member) {
 	var nicknameElement = document.querySelector('.profile_info_name');
 	// text 값 입력
 	nicknameElement.innerText = member.nickName;
+	
+	var imgType = member.imgExtension.toLowerCase(); // 이미지 확장자를 소문자로 변환
+	var imgSrc = "data:image/" + imgType + ";base64," + member.thumbnailImg;
+	
 	// 이미지 요소 선택
 	var firstImgElement = document.querySelector('.menu_my .loaded.css-1doy9ip.euf32k22');
 	// src 값 변경
-	firstImgElement.setAttribute('src', '/resources/bootstrap/img/thumbnailImg/' + member.thumbnailImg);
+	firstImgElement.setAttribute('src', imgSrc);
+	
 	// 이미지 요소 선택
 	var secondImgElement = document.querySelector('.menu_my_content.wrap_margin .loaded.css-1doy9ip.euf32k22');
 	// src 값 변경
-	secondImgElement.setAttribute('src', '/resources/bootstrap/img/thumbnailImg/' + member.thumbnailImg);
+	secondImgElement.setAttribute('src', imgSrc);
 }

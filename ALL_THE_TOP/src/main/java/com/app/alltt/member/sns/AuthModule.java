@@ -1,5 +1,9 @@
 package com.app.alltt.member.sns;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
@@ -17,7 +21,6 @@ import com.app.alltt.member.dto.MemberDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
@@ -193,20 +196,54 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		if (this.sns.isNaver()) {
 			// 네이버 액세스 토큰 요청방식으로 가져온 사용자 정보
 			member.setUserId(rootNode.get("response").get("id").asText());
-			member.setThumbnailImg(rootNode.get("response").get("profile_image").asText());
+			//member.setThumbnailImg(rootNode.get("response").get("profile_image").asText());
+			String imgUrl = rootNode.get("response").get("profile_image").asText();
+			member.setImgData(imgUrlToByte(imgUrl));
+			member.setImgExtension(extractFileExtensionFromUrl(imgUrl));
 			member.setSocialNm(this.sns.getService());
 			
 		}
 		else if (this.sns.isKakao()) {
 			// 카카오 액세스 토큰 요청방식으로 가져온 사용자 정보
 			member.setUserId(rootNode.get("id").asText());
-			member.setThumbnailImg(rootNode.get("kakao_account").get("profile").get("thumbnail_image_url").asText());
+			//member.setThumbnailImg(rootNode.get("kakao_account").get("profile").get("thumbnail_image_url").asText());
+			String imgUrl = rootNode.get("kakao_account").get("profile").get("thumbnail_image_url").asText();
+			member.setImgData(imgUrlToByte(imgUrl));
+			member.setImgExtension(extractFileExtensionFromUrl(imgUrl));
 			member.setSocialNm(this.sns.getService());
 
 		}
 		return member;
 		
 	}
-	
+	// 프로필 이미지 URL에서 byte[] 변환
+	private byte[] imgUrlToByte (String imgUrl) throws Exception {
+		// URL 연결 설정
+	    URL url = new URL(imgUrl);
+	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+	    // 이미지 다운로드
+	    InputStream inputStream = connection.getInputStream();
+
+	    // 이미지 데이터를 byte[]로 반환
+	    return inputStream.readAllBytes();
+	}
+	// 이미지 URL에서 파일 확장자 추출
+	public String extractFileExtensionFromUrl(String url) {
+	    // URL 문자열에서 파일 이름 부분 추출
+	    String[] urlParts = url.split("/");
+	    String fileName = urlParts[urlParts.length - 1];
+	    
+	    // 파일 이름에서 확장자 추출
+	    String[] fileNameParts = fileName.split("\\.");
+	    if (fileNameParts.length > 1) {
+	        // 확장자가 존재하는 경우
+	        String fileExtension = fileNameParts[fileNameParts.length - 1];
+	        return fileExtension.toLowerCase(); // 확장자를 소문자로 반환
+	    } else {
+	        // 확장자가 없는 경우
+	        return null;
+	    }
+	}
 	
 }

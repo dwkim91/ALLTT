@@ -1,15 +1,12 @@
 package com.app.alltt.member.controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import com.app.alltt.community.service.CommunityService;
 import com.app.alltt.main.dto.FilterDTO;
@@ -77,6 +75,10 @@ public class MemberController {
 	@GetMapping("/{service}/{source}")
 	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
+		
+		if (StringUtils.equals(service, "naver")) {
+			
+		}
 		ModelAndView mv = new ModelAndView();
 		
 		SnsValue sns = null;
@@ -85,6 +87,9 @@ public class MemberController {
 		}
 		else  if (StringUtils.equals(service, "kakao")) {
 			sns = kakaoSns;
+		}
+		else {
+			return mv;
 		}
 		
 		// application을 구분하는 state 값을 초기화
@@ -158,7 +163,9 @@ public class MemberController {
 				// 닉네임 자동 생성
 				loginMember.setNickName(memberService.genNickName());		
 				// 프로필 이미지 저장 후 새 회원 추가
-				memberService.addNewMember(memberService.imgDownload(loginMember, getThumbnailImagePath(session)));
+				//memberService.addNewMember(memberService.imgDownload(loginMember, getThumbnailImagePath(session)));
+				// 회원 추가
+				memberService.addNewMember(loginMember);
 				// 로그인을 위해서 다시 가져와서 memberId 확인
 				MemberDTO newMember = memberService.getMemberByUserId(loginMember.getUserId());
 				long newMemberId = newMember.getMemberId();
@@ -254,6 +261,9 @@ public class MemberController {
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
 		memberDTO.setUserId(""); // 개발자 모드나 외부로 노출되지 않도록 UserId 공백처리
+		// 이미지 데이터를 Base64로 인코딩하여 문자열로 반환
+		String base64Image = Base64.getEncoder().encodeToString(memberDTO.getImgData()); 
+        memberDTO.setThumbnailImg(base64Image);
 		return memberDTO;
 	} 
 	
@@ -261,7 +271,14 @@ public class MemberController {
 	@ResponseBody
 	public ModelAndView mypage(HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		
 		mv.setViewName("/alltt/mypage");
 		// 로그인한 멤버DTO
 		mv.addObject("member", memberService.getMemberByMemberId(memberId));
@@ -449,14 +466,15 @@ public class MemberController {
 	    	String fileExtension = FilenameUtils.getExtension(originalFilename);
 	    	// 허용된 이미지 확장자
 	    	List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
-
+	    	
 	    	if (allowedExtensions.contains(fileExtension.toLowerCase())) {
 	    		
 	    		long maxFileSizeInBytes = 5 * 1024 * 1024; // 5MB 이하 허용
 	    		long fileSize = uploadFile.getSize();
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
-
+// 프로젝트 내부저장방식 
+	    			/*
 	    			// 현재 프로필 이미지 파일 경로 가져오기
 	    			MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
 	    			// 기존 프로필이미지 삭제
@@ -469,14 +487,17 @@ public class MemberController {
 	    			// 프로필이미지 저장
 	    			uploadFile.transferTo(new File(getThumbnailImagePath(session) + newFileName)); 
 	    			
-	    			// 이미지 업로드 및 저장 후 딜레이
-	    			//Thread.sleep(1000); // 1초 딜레이 // 경로 변경 후 딜레이없이가능???
-	    			
-	    			System.out.println(newFileName);
 	    			memberDTO.setThumbnailImg(newFileName);
 	    			memberService.changeThumbnailImg(memberDTO);
+	    			*/
+// DB 저장방식	    			
 	    			
-	    			result = newFileName;
+	    			MemberDTO memberDTO = new MemberDTO();
+	    			memberDTO.setMemberId(memberId);
+	    			memberDTO.setImgExtension(fileExtension);
+	    			
+	    			// 기존 프로필이미지 업데이트
+	    			memberService.saveProfileImg(uploadFile, memberDTO, true);
 	    			
 	    		}
 	    		else {

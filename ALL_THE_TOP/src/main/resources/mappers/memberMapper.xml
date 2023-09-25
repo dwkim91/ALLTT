@@ -14,11 +14,11 @@
 	
 	<insert id="insertMember" parameterType="MemberDTO">
 		INSERT INTO
-				MEMBER (USER_ID, NICK_NAME, SOCIAL_NM, THUMBNAIL_IMG)
+				MEMBER (USER_ID, NICK_NAME, SOCIAL_NM, IMG_DATA, IMG_EXTENSION)
 		VALUES (
-				#{userId}, #{nickName}, #{socialNm}, #{thumbnailImg}
+				#{userId}, #{nickName}, #{socialNm}, #{imgData}, #{imgExtension}
 		)
-	</insert>
+	</insert>	
 	
 	<delete id="deleteMember" parameterType="long">
 		DELETE FROM
@@ -78,6 +78,16 @@
 				MEMBER
 		SET
 				THUMBNAIL_IMG = #{thumbnailImg}
+		WHERE
+				MEMBER_ID = #{memberId}
+	</update>
+	
+	<update id="updateProfileImg" parameterType="MemberDTO">
+		UPDATE
+				MEMBER
+		SET
+				IMG_DATA = #{imgData},
+				IMG_EXTENSION = #{imgExtension}
 		WHERE
 				MEMBER_ID = #{memberId}
 	</update>
