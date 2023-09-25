@@ -34,7 +34,12 @@ public class SupportController {
 	@ResponseBody
 	public ModelAndView mypage(HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/support");
 		return mv;
 	}
@@ -69,6 +74,12 @@ public class SupportController {
 	@ResponseBody
 	public ModelAndView inquiryList(@PathVariable("status") String status, HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		mv.setViewName("/alltt/inquiryList");
 		List<SupportDTO> inquiryList = null;

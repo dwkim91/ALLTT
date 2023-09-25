@@ -147,4 +147,9 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.selectOne("memberMapper.selectOnePlatformCntByFilterDTO", filterDTO);
 	}
 
+	@Override
+	public void updateProfileImg(MemberDTO memberDTO) {
+		sqlSession.selectOne("memberMapper.updateProfileImg", memberDTO);
+	}
+
 }
