@@ -5,7 +5,6 @@
 <html>
 <head>
 <script src="${contextPath}/resources/bootstrap/js/contentsWish.js" type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/search.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/searchMain.js" type="module"></script>
 <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/main.css" type="text/css">
 </head>
@@ -39,6 +38,24 @@
 				</div>
 			</div>
 			<div class="preBlock">
+			</div>
+			<div class="introBlock" style="display: block;">
+				<div class="imgBlock">
+					<div class="logBox">
+						<img class="ottImage" alt="넷플릭스 로고" src="${contextPath}/resources/bootstrap/img/icon_netflix.png">
+					</div>
+					<div class="logBox">
+						<img class="ottImage" alt="티빙 로고" src="${contextPath}/resources/bootstrap/img/icon_tving.png">
+					</div>
+					<div class="logBox">
+						<img class="ottImage" alt="웨이브 로고" src="${contextPath}/resources/bootstrap/img/icon_wavve.png">
+					</div>
+				</div>
+				<div class="preBlock">
+				</div>
+				<div class="introMsg">
+					보고 싶은 작품을 가장 싼 구독료로 챙겨보세요
+				</div>
 			</div>
 			<ul class="searchResult">
 			</ul>
