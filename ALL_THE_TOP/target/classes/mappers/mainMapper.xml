@@ -273,7 +273,11 @@
 			TITLE LIKE CONCAT('%', #{searchKey}, '%')
 		GROUP BY C.CONTENT_ID
 		ORDER BY
-			TITLE ASC
+		    CASE
+		        WHEN TITLE LIKE #{searchKey} THEN 1
+		        ELSE 2
+		    END,
+		    TITLE ASC
 		LIMIT 100
 	</select>
 	

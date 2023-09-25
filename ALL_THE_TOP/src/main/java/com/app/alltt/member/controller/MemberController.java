@@ -3,6 +3,7 @@ package com.app.alltt.member.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -148,6 +149,7 @@ public class MemberController {
 			if (dbMember != null) {
 				// 로그인 처리, session 등록
 				session.setAttribute("memberId", dbMember.getMemberId());
+				session.setAttribute("managerYn", dbMember.getManagerYn());
 				
 				jsScript += "alert('로그인 되었습니다.');";
 			}
@@ -250,7 +252,9 @@ public class MemberController {
 	@ResponseBody
 	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
-		return memberService.getMemberByMemberId(memberId);
+		MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
+		memberDTO.setUserId(""); // 개발자 모드나 외부로 노출되지 않도록 UserId 공백처리
+		return memberDTO;
 	} 
 	
 	@GetMapping("/mypage")
@@ -290,23 +294,9 @@ public class MemberController {
 		filterDTO.setIsWishInclude(true);
 		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		mv.addObject("seriesList", mainService.getMoreGenreList(filterDTO));
-		// test
-		System.out.println("-----------seriesList-----------");
-		List<FilterDTO> seriesList = mainService.getMoreGenreList(filterDTO); 
-		for (FilterDTO f : seriesList) {
-			System.out.println(f.getGenreNm());
-		}
-		// test
-		System.out.println("-----------movieList-----------");
 		// 영화 장르 리스트
 		filterDTO.setContentType("movie");
 		mv.addObject("movieList", mainService.getMoreGenreList(filterDTO));
-		List<FilterDTO> movieList = mainService.getMoreGenreList(filterDTO); 
-		for (FilterDTO f : movieList) {
-			System.out.println(f.getGenreNm());
-		}
-		// test
-				System.out.println("----------------------");
 		return mv;
 	}
 	
@@ -322,7 +312,12 @@ public class MemberController {
 	@ResponseBody
 	public String saveNickname(@RequestParam("nickname") String nickname, HttpSession session) {
 		String result = "";
-		if (nickname.length() > 5) {
+		// 한글, 영문, 숫자 , 일부 특수문자 포함 6~10자 확인용 정규식
+		String nicknameRegex = "^[a-zA-Z0-9가-힣]{6,10}$";
+		// 자동생성 조건 정규식
+		String autoNicknameRegex = "^([가-힣]{1,5}_[가-힣]{1,6}_[가-힣]{1,10}_[A-Z])[!@#$%^&*\\-+][0-9]{1,3}{11,30}$";
+		// 자동생성닉네임이거나 nicknameRegex조건에 해당하는경우 
+		if (nickname.matches(nicknameRegex) || nickname.matches(autoNicknameRegex)) {
 			boolean isDupl = memberService.nickNameDuplChecker(nickname);
 
 			if (!isDupl) {
@@ -338,7 +333,7 @@ public class MemberController {
 			}
 		}
 		else {
-			result = "6자 이상 입력해 주세요.";
+			result = "한글, 영문, 숫자로 구성되어 있고 6~10자 사이의 닉네임을 입력하세요.";
 		}
 				
 		return result;
@@ -350,7 +345,6 @@ public class MemberController {
 	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpSession session) {
 	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
-	    System.out.println(filterDTO);
 	    memberService.setSubscriptionByMemberId(filterDTO);
 	    return "구독 정보가 수정되었습니다.";
 	}
@@ -361,7 +355,6 @@ public class MemberController {
 	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
 	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
-	    System.out.println(filterDTO);
 	    memberService.changeContentFilterByMemberId(filterDTO);
 	    return "필터 정보가 수정되었습니다.";
 	}
@@ -373,10 +366,7 @@ public class MemberController {
 	    
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
-	    System.out.println(filterDTO); //  test용
-	    List<FilterDTO> filterList = mainService.getMoreGenreList(filterDTO);
-	    checkSessionTime(session); //  test용
-	    return filterList;
+	    return mainService.getMoreGenreList(filterDTO);
 	    
 	}
 	
@@ -577,11 +567,14 @@ public class MemberController {
 		// 로그인한 맴버의 찜 리스트
 		mv.addObject("wishContentList", memberService.getWishContentByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
-		mv.addObject("netflixWishCnt", memberService.getNetflixWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(1);
+		mv.addObject("netflixWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 티빙 찜 작품 수
-		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(2);
+		mv.addObject("tvingWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
-		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(3);
+		mv.addObject("wavveWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		
 		mv.setViewName("/alltt/wish");
 		
@@ -615,6 +608,22 @@ public class MemberController {
 		
 		requestData.put("memberId", memberId);
 		
-		return memberService.getInfoByContentCnt(requestData);
+		return memberService.getContentPlatformMapByMemberId(requestData);
+	}
+	
+	@PostMapping("/getPlatformCntLoad")
+	@ResponseBody
+	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		List<Integer> platformCntList = new ArrayList<>();
+		filterDTO.setPlatformId(1);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		filterDTO.setPlatformId(2);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		filterDTO.setPlatformId(3);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		
+		return platformCntList;
 	}
 }

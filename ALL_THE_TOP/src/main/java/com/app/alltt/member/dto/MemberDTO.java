@@ -13,6 +13,7 @@ public class MemberDTO {
 	private String thumbnailImg;
 	private String dPostYn;
 	private String dReplyYn;
+	private String managerYn;
 	
 	public long getMemberId() {
 		return memberId;
@@ -62,12 +63,18 @@ public class MemberDTO {
 	public void setdReplyYn(String dReplyYn) {
 		this.dReplyYn = dReplyYn;
 	}
+	public String getManagerYn() {
+		return managerYn;
+	}
+	public void setManagerYn(String managerYn) {
+		this.managerYn = managerYn;
+	}
 	
 	@Override
 	public String toString() {
 		return "MemberDTO [memberId=" + memberId + ", userId=" + userId + ", nickName=" + nickName + ", socialNm="
 				+ socialNm + ", points=" + points + ", thumbnailImg=" + thumbnailImg + ", dPostYn=" + dPostYn
-				+ ", dReplyYn=" + dReplyYn + "]";
+				+ ", dReplyYn=" + dReplyYn + ", managerYn=" + managerYn + "]";
 	}
 	
 }

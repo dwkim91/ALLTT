@@ -164,6 +164,8 @@ $("#itemCnt").on("click",function(){
 		
 		wishContentRemoveAjax(removeContentList);
 		
+		location.reload();
+		
 	}
 	
 });
