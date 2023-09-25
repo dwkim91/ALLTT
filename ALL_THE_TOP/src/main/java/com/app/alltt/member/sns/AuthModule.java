@@ -76,11 +76,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		
 	}
 	
-	// API 인증 url을 거쳐서 획득한 code 값을 다시 보내서 access token을 가져옴
-//	public OAuth2AccessToken getNaverAccessToken(String code) throws Exception {
-//		return oauth20Service.getAccessToken(code);
-//	}
-	
 	public String getAccessToken(String code) throws Exception {
 		
 		String accessToken = null;

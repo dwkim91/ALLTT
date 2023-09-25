@@ -20,6 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -118,9 +125,6 @@ public class MemberController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		
-		// session 검증용
-		getSessionStatus(session);
-		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
 	
@@ -147,13 +151,34 @@ public class MemberController {
 			MemberDTO loginMember = authModule.getMemberProfile(authModule.getAccessToken(code));
 			// 새로 받은 userId로 검색한 member
 			MemberDTO dbMember = memberService.getMemberByUserId(loginMember.getUserId());
-			 
+			
 			// DB에서 확인되는, 가입된 member라면
 			if (dbMember != null) {
 				// 로그인 처리, session 등록
 				session.setAttribute("memberId", dbMember.getMemberId());
 				session.setAttribute("managerYn", dbMember.getManagerYn());
 				
+		        // 사용자의 권한 정보를 설정
+		        List<GrantedAuthority> authorities = new ArrayList<>();
+		        authorities.add(new SimpleGrantedAuthority(dbMember.getManagerYn() == "Y" ? "ADMIN" : "USER"));
+
+		        // UserDetails를 생성하여 반환
+		        UserDetails userDetails = new User(
+		                dbMember.getMemberId() + "",
+		                dbMember.getNickName(),
+		                authorities
+	            );
+		        
+		        // UserDetails 객체를 포장한 Authentication 객체 생성
+		        Authentication authentication = new UsernamePasswordAuthenticationToken(
+		            userDetails, // UserDetails
+		            "", // 비밀번호 (또는 인증 토큰)
+		            userDetails.getAuthorities() // 권한 정보
+		        );
+		        
+		        // SecurityContextHolder에 Authentication 객체 저장
+		        SecurityContextHolder.getContext().setAuthentication(authentication);
+		        
 				jsScript += "alert('로그인 되었습니다.');";
 			}
 			// DB에서 확인되지 않는 member라면
@@ -184,9 +209,6 @@ public class MemberController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 
-		// session 검증용
-		getSessionStatus(session);
-		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
 	
