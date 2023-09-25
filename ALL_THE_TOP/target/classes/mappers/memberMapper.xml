@@ -238,15 +238,22 @@
 			JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
 		    JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
 		WHERE
-				MEMBER_ID = #{memberId}			AND
-		        CONTENT_TYPE = #{contentType}
+				MEMBER_ID = #{memberId}			
+				
+				<choose>
+					<when test="contentType != 'all'">
+					AND CONTENT_TYPE = #{contentType}
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
 		group by
 				WL.CONTENT_ID
 	</select>
 	
 	<select id="selectListWishContentByMemberId" parameterType="long" resultType="FilteredDTO">
 		SELECT
-				C.TITLE,
+				C.CONTENT_ID,
 		        WL.MEMBER_ID,
 		        CL.PLATFORM_ID
 		FROM
@@ -254,7 +261,7 @@
 			JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
 		    JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
 		GROUP BY
-				C.TITLE,
+				C.CONTENT_ID,
 		        MEMBER_ID,
 		        CL.PLATFORM_ID
 		HAVING

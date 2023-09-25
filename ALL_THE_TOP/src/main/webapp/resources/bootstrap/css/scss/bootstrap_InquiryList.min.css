@@ -7781,7 +7781,7 @@ textarea.form-control-lg {
 }
 
 .bg-secondary {
-    background-color: #191C24 !important
+    background-color: #212121 !important /*#191C24*/
 }
 
 .bg-success {

@@ -24,4 +24,34 @@ public class SupportServiceImpl implements SupportService {
 		return supportDAO.selectInquiryList();
 	}
 
+	@Override
+	public SupportDTO getInquiryDetail(long supportId) {
+		return supportDAO.selectOneInquiry(supportId);
+	}
+
+	@Override
+	public void registerAnswer(SupportDTO supportDTO) {
+		supportDAO.updateAnswer(supportDTO);
+	}
+
+	@Override
+	public int getDoneCnt() {
+		return supportDAO.selectDone();
+	}
+
+	@Override
+	public int getNewCnt() {
+		return supportDAO.selectNew();
+	}
+
+	@Override
+	public int getInProgressCnt() {
+		return supportDAO.selectInProgress();
+	}
+
+	@Override
+	public List<SupportDTO> getInquiryListByStatus(String status) {
+		return supportDAO.selectInquiryListByStatus(status);
+	}
+
 }
