@@ -216,6 +216,13 @@
 			<artifactId>selenium-java</artifactId>
 			<version>4.9.1</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-core</artifactId>
+		    <version>5.0.8.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
