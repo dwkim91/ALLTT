@@ -360,7 +360,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Map<Integer, Map<Integer, List<Long>>> getInfoByContentCnt(Map<String, Object> requestData) {
+	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData) {
 		
 		long memberId = (long)requestData.get("memberId");
 		String buttonVal = requestData.get("buttonVal") + "";
@@ -378,93 +378,99 @@ public class MemberServiceImpl implements MemberService {
 		}
 		
 		// 해당 회원의 찜컨텐츠 리스트
-		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberId(memberId);
+		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberInfo(requestData);
 		
-		for (FilteredDTO wishContent : wishContentList) {
-		    int platformId = wishContent.getPlatformId();
-		    
-		    if (platformId >= 1 && platformId <= platformCnt) {
-		        platformMaps.get(platformId).get(platformId).add(wishContent.getContentId());
-		    }
-		}
-		
-		// test를 위해 임시로 1,2,3지정함 추후 기능개발
-		List<Integer> platformPriority = new ArrayList<Integer>();
-		
-		if (buttonVal.equals("infoBtn")) {
+		if (wishContentList.size() > 0) {
 			
-			// 구독 정보를 기준으로 우선순위
-			List<Integer> subscriptionList = memberDAO.selectListSubscription(memberId);
-			for (int i = 1; i <= platformCnt; i++) {
-				if (!subscriptionList.contains(i)) {
-					subscriptionList.add(i);
-				}
-			}
-			
-			platformPriority = subscriptionList;
-			
-		}
-		else if (buttonVal.equals("platformBtn")) {
-			Map<Integer, List<Long>> listWithSize = new HashMap<>();
-			
-			for (int i = 1; i <= platformCnt; i++) {
-				listWithSize.put(i ,platformMaps.get(i).get(i));				
-			}
-			
-			// 컨텐츠가 많은 플랫폼을 기준으로 우선순위
-			List<Map.Entry<Integer, List<Long>>> sortedList = new ArrayList<>(listWithSize.entrySet());
-			Collections.sort(sortedList, (entryA, entryB) -> Integer.compare(entryB.getValue().size(), entryA.getValue().size()));
-			
-			for (Map.Entry<Integer, List<Long>> entry : sortedList) {
-			    int platformId = entry.getKey();
-			    platformPriority.add(platformId);
-			}
-		}
-		else if (buttonVal.equals("expenseBtn")) {
-			
-			// 임시로 웨이브부터
-			platformPriority.add(3);
-			platformPriority.add(2);
-			platformPriority.add(1);
-			
-		}
-		
-		for (int i = 0; i < platformCnt; i++) {
-			int platformId;
-			int nextPlatformId;
-			
-			if (i < 2) {
-				platformId = platformPriority.get(0);
-			}
-			else {
-				platformId = platformPriority.get(1);
-			}
-			
-		    if (i == 0) {
-		    	nextPlatformId = platformPriority.get(1);
-		    }
-		    else {
-		    	nextPlatformId = platformPriority.get(2);
-		    }
-
-			List<Long> contentList = platformMaps.get(platformId).get(platformId);
-			List<Long> nextContentList = platformMaps.get(nextPlatformId).get(nextPlatformId);
-			
-			List<Long> contentListCopy = new ArrayList<>(contentList);
-			
-			for (Long content : contentListCopy) {
-			    if (nextContentList.contains(content)) {
-			    	contentList.remove(content);
-			    	nextContentList.remove(content);
-			    	platformMaps.get(platformId).get(nextPlatformId).add(content);
+			for (FilteredDTO wishContent : wishContentList) {
+			    int platformId = wishContent.getPlatformId();
+			    
+			    if (platformId >= 1 && platformId <= platformCnt) {
+			        platformMaps.get(platformId).get(platformId).add(wishContent.getContentId());
 			    }
 			}
 			
+			List<Integer> platformPriority = new ArrayList<Integer>();
+			
+			if (buttonVal.equals("infoBtn")) {
+				
+				// 구독 정보를 기준으로 우선순위
+				List<Integer> subscriptionList = memberDAO.selectListSubscription(memberId);
+				for (int i = 1; i <= platformCnt; i++) {
+					if (!subscriptionList.contains(i)) {
+						subscriptionList.add(i);
+					}
+				}
+				
+				platformPriority = subscriptionList;
+				
+			}
+			else if (buttonVal.equals("platformBtn")) {
+				Map<Integer, List<Long>> listWithSize = new HashMap<>();
+				
+				for (int i = 1; i <= platformCnt; i++) {
+					listWithSize.put(i ,platformMaps.get(i).get(i));				
+				}
+				
+				// 컨텐츠가 많은 플랫폼을 기준으로 우선순위
+				List<Map.Entry<Integer, List<Long>>> sortedList = new ArrayList<>(listWithSize.entrySet());
+				Collections.sort(sortedList, (entryA, entryB) -> Integer.compare(entryB.getValue().size(), entryA.getValue().size()));
+				
+				for (Map.Entry<Integer, List<Long>> entry : sortedList) {
+				    int platformId = entry.getKey();
+				    platformPriority.add(platformId);
+				}
+			}
+			else if (buttonVal.equals("expenseBtn")) {
+				
+				// 임시로 웨이브부터
+				platformPriority.add(3);
+				platformPriority.add(2);
+				platformPriority.add(1);
+				
+			}
+			
+			for (int i = 0; i < platformCnt; i++) {
+				int platformId;
+				int nextPlatformId;
+				
+				if (i < 2) {
+					platformId = platformPriority.get(0);
+				}
+				else {
+					platformId = platformPriority.get(1);
+				}
+				
+			    if (i == 0) {
+			    	nextPlatformId = platformPriority.get(1);
+			    }
+			    else {
+			    	nextPlatformId = platformPriority.get(2);
+			    }
+
+				List<Long> contentList = platformMaps.get(platformId).get(platformId);
+				List<Long> nextContentList = platformMaps.get(nextPlatformId).get(nextPlatformId);
+				
+				List<Long> contentListCopy = new ArrayList<>(contentList);
+				
+				for (Long content : contentListCopy) {
+				    if (nextContentList.contains(content)) {
+				    	contentList.remove(content);
+				    	nextContentList.remove(content);
+				    	platformMaps.get(platformId).get(nextPlatformId).add(content);
+				    }
+				}
+				
+			}
+			
 		}
-		
-		System.out.println(platformMaps.toString());
 		
 		return platformMaps;
 	}
-	
+
+	@Override
+	public int getPlatformCntByFilterDTO(FilterDTO filterDTO) {
+		return memberDAO.selectOnePlatformCntByFilterDTO(filterDTO);
+	}
+
 }

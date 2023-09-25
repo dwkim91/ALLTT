@@ -40,6 +40,8 @@
 			<div class="preBlock">
 			</div>
 			<div class="introBlock" style="display: block;">
+				<div class="preBlock">
+				</div>
 				<div class="imgBlock">
 					<div class="logBox">
 						<img class="ottImage" alt="넷플릭스 로고" src="${contextPath}/resources/bootstrap/img/icon_netflix.png">
@@ -54,7 +56,9 @@
 				<div class="preBlock">
 				</div>
 				<div class="introMsg">
-					보고 싶은 작품을 가장 싼 구독료로 챙겨보세요
+					넷플릭스, 티빙, 웨이브 등…<br>
+					매달 나가는 구독료 부담스럽다면?<br>
+					ALLTT의 <strong class="key">최적 구독료 제안 서비스</strong>를 확인해보세요!
 				</div>
 			</div>
 			<ul class="searchResult">

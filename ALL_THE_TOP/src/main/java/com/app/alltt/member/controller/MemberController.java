@@ -3,6 +3,7 @@ package com.app.alltt.member.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -19,6 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -114,9 +122,6 @@ public class MemberController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		
-		// session 검증용
-		getSessionStatus(session);
-		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
 	
@@ -143,13 +148,34 @@ public class MemberController {
 			MemberDTO loginMember = authModule.getMemberProfile(authModule.getAccessToken(code));
 			// 새로 받은 userId로 검색한 member
 			MemberDTO dbMember = memberService.getMemberByUserId(loginMember.getUserId());
-			 
+			
 			// DB에서 확인되는, 가입된 member라면
 			if (dbMember != null) {
 				// 로그인 처리, session 등록
 				session.setAttribute("memberId", dbMember.getMemberId());
 				session.setAttribute("managerYn", dbMember.getManagerYn());
 				
+		        // 사용자의 권한 정보를 설정
+		        List<GrantedAuthority> authorities = new ArrayList<>();
+		        authorities.add(new SimpleGrantedAuthority(dbMember.getManagerYn() == "Y" ? "ADMIN" : "USER"));
+
+		        // UserDetails를 생성하여 반환
+		        UserDetails userDetails = new User(
+		                dbMember.getMemberId() + "",
+		                dbMember.getNickName(),
+		                authorities
+	            );
+		        
+		        // UserDetails 객체를 포장한 Authentication 객체 생성
+		        Authentication authentication = new UsernamePasswordAuthenticationToken(
+		            userDetails, // UserDetails
+		            "", // 비밀번호 (또는 인증 토큰)
+		            userDetails.getAuthorities() // 권한 정보
+		        );
+		        
+		        // SecurityContextHolder에 Authentication 객체 저장
+		        SecurityContextHolder.getContext().setAuthentication(authentication);
+		        
 				jsScript += "alert('로그인 되었습니다.');";
 			}
 			// DB에서 확인되지 않는 member라면
@@ -180,9 +206,6 @@ public class MemberController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 
-		// session 검증용
-		getSessionStatus(session);
-		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
 	
@@ -566,11 +589,14 @@ public class MemberController {
 		// 로그인한 맴버의 찜 리스트
 		mv.addObject("wishContentList", memberService.getWishContentByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
-		mv.addObject("netflixWishCnt", memberService.getNetflixWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(1);
+		mv.addObject("netflixWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 티빙 찜 작품 수
-		mv.addObject("tvingWishCnt", memberService.getTvingWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(2);
+		mv.addObject("tvingWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
-		mv.addObject("wavveWishCnt", memberService.getWavveWishCntByMemberId(filterDTO.getMemberId()));
+		filterDTO.setPlatformId(3);
+		mv.addObject("wavveWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
 		
 		mv.setViewName("/alltt/wish");
 		
@@ -604,6 +630,22 @@ public class MemberController {
 		
 		requestData.put("memberId", memberId);
 		
-		return memberService.getInfoByContentCnt(requestData);
+		return memberService.getContentPlatformMapByMemberId(requestData);
+	}
+	
+	@PostMapping("/getPlatformCntLoad")
+	@ResponseBody
+	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
+		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+		
+		List<Integer> platformCntList = new ArrayList<>();
+		filterDTO.setPlatformId(1);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		filterDTO.setPlatformId(2);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		filterDTO.setPlatformId(3);
+		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
+		
+		return platformCntList;
 	}
 }
