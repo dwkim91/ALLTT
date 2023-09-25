@@ -8,21 +8,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-	<!-- Normal Breadcrumb Begin -->
-	<section class="normal-breadcrumb set-bg"
-		data-setbg="img/normal-breadcrumb.jpg">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
 					<div class="normal__breadcrumb__text">
 						<h2>Login</h2>
-						<p>Welcome to the official Anime blog.</p>
+						<p>콘텐츠 관리, 맞춤 솔루션 제공까지</p>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>
 	<!-- Normal Breadcrumb End -->
 
 	<!-- Login Section Begin -->

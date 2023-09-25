@@ -86,6 +86,9 @@ public class MemberController {
 		else  if (StringUtils.equals(service, "kakao")) {
 			sns = kakaoSns;
 		}
+		else {
+			return mv;
+		}
 		
 		// application을 구분하는 state 값을 초기화
 		session.removeAttribute("state");

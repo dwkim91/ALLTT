@@ -190,6 +190,41 @@ img {
     display: none;
 }
 
+.introBlock {
+    border-radius: 10px;
+    background: #212121;
+    padding: 8px;
+    display: flex;
+}
+
+.imgBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logBox {
+    display: flex;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(249, 249, 249, 0.1);
+    margin: 0 8px;
+}
+
+.introMsg {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.ottImage {
+    width: 40px;
+    height: 40px;
+}
+
 .searchResult {
     list-style: none;
     margin: 0px;
@@ -206,8 +241,9 @@ img {
 
 .searchContentImage {
 	flex-basis: 60px;
-    width: 60px;
-    height: 60px;
+    width: 100%; /* 이미지를 부모 요소의 너비에 맞게 설정 */
+    max-width: 60px; /* 최대 너비를 60px로 제한 */
+    height: auto; /* 높이를 자동으로 조정하여 가로세로 비율 유지 */
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid var(--gray-200);
@@ -222,7 +258,7 @@ img {
 
 .searchContentTitleDetail {
     display: block;
-    font-size: 22px;
+    font-size: 26px;
     line-height: 30px;
     margin: 0px;
     font-weight: bold;

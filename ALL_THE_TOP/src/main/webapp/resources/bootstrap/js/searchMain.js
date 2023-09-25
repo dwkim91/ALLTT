@@ -1,9 +1,14 @@
+$('#searchButton').click(function() {
+	$(".searchInput").focus();
+});
+
 $(".searchInput").keyup(function() {
 	var searchContent = $(this).val();
 	
 	if (searchContent.length == 0) {
 		$(".searchCancel").css("display", "none");
 		$(".searchResult").css("display", "none").empty();
+		$(".introBlock").css("display", "block");
 	}
 	else {
 		$.ajax({
@@ -12,6 +17,7 @@ $(".searchInput").keyup(function() {
 			data : {"contentTitle" : searchContent},
 			asyne : true,
 			success : function(result) {
+				$(".introBlock").css("display", "none");
 				
 				$(".searchCancel").css("display", "flex");
 				
@@ -19,6 +25,7 @@ $(".searchInput").keyup(function() {
 				searchResultElement.empty();
 				
 				if (result.length > 0) {
+					
 					for (var i = 0; i < result.length; i++) {
 						var listItem = $("<li></li>");
 						var preBlock = $("<div class='preBlock'></div>");
@@ -68,6 +75,7 @@ $(".searchCancel").click(function() {
 	$(".searchInput").val("");
 	$(".searchCancel").css("display", "none");
 	$(".searchResult").css("display", "none").empty();
+	$(".introBlock").css("display", "block");
 });
 
 $(document).on("click", ".searchList", function() {
