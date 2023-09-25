@@ -1,5 +1,6 @@
 package com.app.alltt.member.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -132,13 +133,23 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public List<FilteredDTO> selectListWishContentByMemberId(long memberId) {
-		return sqlSession.selectList("memberMapper.selectListWishContentByMemberId", memberId);
+	public List<FilteredDTO> selectListWishContentByMemberInfo(Map<String, Object> memberInfo) {
+		return sqlSession.selectList("memberMapper.selectListWishContentByMemberInfo", memberInfo);
 	}
 
 	@Override
 	public void updateThumbnailImg(MemberDTO memberDTO) {
 		sqlSession.update("memberMapper.updateThumbnailImg", memberDTO);		
 	}
-	
+
+	@Override
+	public int selectOnePlatformCntByFilterDTO(FilterDTO filterDTO) {
+		return sqlSession.selectOne("memberMapper.selectOnePlatformCntByFilterDTO", filterDTO);
+	}
+
+	@Override
+	public void updateProfileImg(MemberDTO memberDTO) {
+		sqlSession.selectOne("memberMapper.updateProfileImg", memberDTO);
+	}
+
 }

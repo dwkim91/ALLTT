@@ -6,19 +6,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import javax.sql.rowset.serial.SerialBlob;
+
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -287,59 +295,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Integer> getWishMinimumSubscriptionByMemberId(long memberId) {
-		
-		List<Integer> platformPriority = new ArrayList<Integer>();
-		
-		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberId(memberId);
-		
-		List<String> netflixContent = new ArrayList<String>();
-		List<String> tvingContent = new ArrayList<String>();
-		List<String> wavveContent = new ArrayList<String>();
-		
-		// 플랫폼별 찜컨텐츠 분류
-		for (int i = 0; i < wishContentList.size(); i++) {
-			if (wishContentList.get(i).getPlatformId() == 1) netflixContent.add(wishContentList.get(i).getTitle());
-			else if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
-			else if (wishContentList.get(i).getPlatformId() == 3) wavveContent.add(wishContentList.get(i).getTitle());
-		}
-		
-		List<List<String>> platformContent = new ArrayList<List<String>>();
-		platformContent.add(netflixContent);
-		platformContent.add(tvingContent);
-		platformContent.add(wavveContent);
-		
-		List<String> platformSet = new ArrayList<String>();
-		platformSet.add("n" + netflixContent.size());
-		platformSet.add("t" + tvingContent.size());
-		platformSet.add("w" + wavveContent.size());
-		
-		// 우선순위 sort
-		Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
-		
-		// 플랫폼 식별자 분류
-		for (int i = 0; i < platformSet.size(); i++) {
-			if (platformSet.get(i).indexOf("n") == 0) platformSet.set(i, "0");
-			if (platformSet.get(i).indexOf("t") == 0) platformSet.set(i, "1");
-			if (platformSet.get(i).indexOf("w") == 0) platformSet.set(i, "2");
-		}
-		
-		// 우선순위를 기준으로 컨텐츠 중복제거
-		platformContent.get(Integer.parseInt(platformSet.get(1))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
-		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
-		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(1))));
-		
-		// 중복제거된 컨텐츠 size 저장
-		platformPriority.add(platformContent.get(0).size());
-		platformPriority.add(platformContent.get(1).size());
-		platformPriority.add(platformContent.get(2).size());
-		
-		System.out.println(platformPriority.toString());
-		
-		return platformPriority;
-	}
-
-	@Override
 	public void changeThumbnailImg(MemberDTO memberDTO) {
 		
 		memberDAO.updateThumbnailImg(memberDTO);
@@ -411,73 +366,141 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<List<Integer>> getInfoByContentCnt(Map<String, Object> requestData) {
+	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData) {
 		
 		long memberId = (long)requestData.get("memberId");
+		String buttonVal = requestData.get("buttonVal") + "";
+		int platformCnt = 3;
 		
-		// 결과값 저장 변수
-		List<Integer> platformPriority = new ArrayList<Integer>();
+		// 플랫폼별 Map 생성
+		Map<Integer, Map<Integer, List<Long>>> platformMaps = new HashMap<>();
+
+		for (int i = 1; i <= platformCnt; i++) {
+		    Map<Integer, List<Long>> platformMap = new HashMap<>();
+		    for (int j = 1; j <= platformCnt; j++) {
+		    	platformMap.put(j, new ArrayList<>());
+		    }
+		    platformMaps.put(i, platformMap);
+		}
 		
 		// 해당 회원의 찜컨텐츠 리스트
-		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberId(memberId);
+		List<FilteredDTO> wishContentList = memberDAO.selectListWishContentByMemberInfo(requestData);
 		
-		// 플랫폼별 컨텐츠 리스트
-		List<String> netflixContent = new ArrayList<String>();
-		List<String> tvingContent = new ArrayList<String>();
-		List<String> wavveContent = new ArrayList<String>();
-		
-		// 플랫폼별 분류
-		for (int i = 0; i < wishContentList.size(); i++) {
-			if (wishContentList.get(i).getPlatformId() == 1) netflixContent.add(wishContentList.get(i).getTitle());
-			else if (wishContentList.get(i).getPlatformId() == 2) tvingContent.add(wishContentList.get(i).getTitle());
-			else if (wishContentList.get(i).getPlatformId() == 3) wavveContent.add(wishContentList.get(i).getTitle());
-		}
-		
-		List<List<String>> platformContent = new ArrayList<List<String>>();
-		platformContent.add(netflixContent);
-		platformContent.add(tvingContent);
-		platformContent.add(wavveContent);
-		
-		// 식별자 추가
-		List<String> platformSet = new ArrayList<String>();
-		platformSet.add("n" + netflixContent.size());
-		platformSet.add("t" + tvingContent.size());
-		platformSet.add("w" + wavveContent.size());
-		
-		if (requestData.get("buttonVal").equals("infoBtn")) { // 구독정보
-			// 구독정보리스트
-			List<Integer> subscription = memberDAO.selectListSubscription(memberId);
-		}
-		else if (requestData.get("buttonVal").equals("platformBtn")) { // 플랫폼
-			// 컨텐츠 많은 순 sort
-			Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
+		if (wishContentList.size() > 0) {
+			
+			for (FilteredDTO wishContent : wishContentList) {
+			    int platformId = wishContent.getPlatformId();
+			    
+			    if (platformId >= 1 && platformId <= platformCnt) {
+			        platformMaps.get(platformId).get(platformId).add(wishContent.getContentId());
+			    }
+			}
+			
+			List<Integer> platformPriority = new ArrayList<Integer>();
+			
+			if (buttonVal.equals("infoBtn")) {
+				
+				// 구독 정보를 기준으로 우선순위
+				List<Integer> subscriptionList = memberDAO.selectListSubscription(memberId);
+				for (int i = 1; i <= platformCnt; i++) {
+					if (!subscriptionList.contains(i)) {
+						subscriptionList.add(i);
+					}
+				}
+				
+				platformPriority = subscriptionList;
+				
+			}
+			else if (buttonVal.equals("platformBtn")) {
+				Map<Integer, List<Long>> listWithSize = new HashMap<>();
+				
+				for (int i = 1; i <= platformCnt; i++) {
+					listWithSize.put(i ,platformMaps.get(i).get(i));				
+				}
+				
+				// 컨텐츠가 많은 플랫폼을 기준으로 우선순위
+				List<Map.Entry<Integer, List<Long>>> sortedList = new ArrayList<>(listWithSize.entrySet());
+				Collections.sort(sortedList, (entryA, entryB) -> Integer.compare(entryB.getValue().size(), entryA.getValue().size()));
+				
+				for (Map.Entry<Integer, List<Long>> entry : sortedList) {
+				    int platformId = entry.getKey();
+				    platformPriority.add(platformId);
+				}
+			}
+			else if (buttonVal.equals("expenseBtn")) {
+				
+				// 임시로 웨이브부터
+				platformPriority.add(3);
+				platformPriority.add(2);
+				platformPriority.add(1);
+				
+			}
+			
+			for (int i = 0; i < platformCnt; i++) {
+				int platformId;
+				int nextPlatformId;
+				
+				if (i < 2) {
+					platformId = platformPriority.get(0);
+				}
+				else {
+					platformId = platformPriority.get(1);
+				}
+				
+			    if (i == 0) {
+			    	nextPlatformId = platformPriority.get(1);
+			    }
+			    else {
+			    	nextPlatformId = platformPriority.get(2);
+			    }
+
+				List<Long> contentList = platformMaps.get(platformId).get(platformId);
+				List<Long> nextContentList = platformMaps.get(nextPlatformId).get(nextPlatformId);
+				
+				List<Long> contentListCopy = new ArrayList<>(contentList);
+				
+				for (Long content : contentListCopy) {
+				    if (nextContentList.contains(content)) {
+				    	contentList.remove(content);
+				    	nextContentList.remove(content);
+				    	platformMaps.get(platformId).get(nextPlatformId).add(content);
+				    }
+				}
+				
+			}
 			
 		}
-		else if (requestData.get("buttonVal").equals("expenseBtn")) { // 구독비
-			// 컨텐츠 많은 순 sort
-			Collections.sort(platformSet, Comparator.comparing(value -> value.replaceAll("[^0-9]", ""), Comparator.reverseOrder()));
-		}
 		
-		// 플랫폼 식별자 분류
-		for (int i = 0; i < platformSet.size(); i++) {
-			if (platformSet.get(i).indexOf("n") == 0) platformSet.set(i, "0");
-			if (platformSet.get(i).indexOf("t") == 0) platformSet.set(i, "1");
-			if (platformSet.get(i).indexOf("w") == 0) platformSet.set(i, "2");
-		}
-		
-		// 우선순위를 기준으로 컨텐츠 중복제거
-		platformContent.get(Integer.parseInt(platformSet.get(1))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
-		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(0))));
-		platformContent.get(Integer.parseInt(platformSet.get(2))).removeAll(platformContent.get(Integer.parseInt(platformSet.get(1))));
-		
-		// 중복제거된 컨텐츠 size 저장
-		platformPriority.add(platformContent.get(0).size());
-		platformPriority.add(platformContent.get(1).size());
-		platformPriority.add(platformContent.get(2).size());
-		
-		System.out.println(platformContent.toString());
-		
-		return null;
+		return platformMaps;
 	}
-	
+
+	@Override
+	public int getPlatformCntByFilterDTO(FilterDTO filterDTO) {
+		return memberDAO.selectOnePlatformCntByFilterDTO(filterDTO);
+	}
+
+	@Override
+	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO, boolean isUpdate) {
+		
+		// MultipartFile에서 바이너리 데이터 얻기
+        byte[] imageData = null;
+		try {
+			imageData = uploadFile.getBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        memberDTO.setImgData(imageData);
+        
+		if (!isUpdate) {
+			//memberDAO.insertImg(memberDTO);
+		}
+		else {
+			// Blob을 데이터베이스에 저장
+			memberDAO.updateProfileImg(memberDTO);
+	        
+		}
+		
+	}
+
 }

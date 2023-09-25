@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
@@ -7,31 +6,7 @@
 <script src="${contextPath}/resources/bootstrap/js/wishContentList.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/wishSolution.js" type="module"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-.hidden {
-	display: none;
-}
-.platformIcon {
-	border-radius: 50%;
-	width: 4rem;
-}
-td {
-	height: 5rem;
-	padding: 1rem;
-	width: 30%;
-	text-align:center;
-}
-table {
-    flex: 1;
-    width: calc(33.33% - 10px); /* 3개의 테이블이 나란히 표시될 크기 */
-	background-color: mintcream;
-	border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 0.5rem;
-    color: black;
-}
-</style>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/custom2.css" type="text/css">
 </head>
 
 <main class="is-desktop css-p5l6tq eeennqe0">
@@ -43,41 +18,29 @@ table {
 						<button type="button" id="infoBtn" class="page_select_layout btn_popular click_on">구독정보</button>
 						<button type="button" id="platformBtn" class="page_select_layout btn_popular btn_new ">플랫폼</button>
 						<button type="button" id="expenseBtn" class="page_select_layout btn_popular btn_new ">구독비</button>
-						<input type="hidden" value="series" id="inquiryType">
 					</div>
 					<div class="page_select_right">
 						<button class="chartType">시리즈</button>
 					</div>
 				</div>
 				<div style="color: navajowhite;" id="message">※ 회원님의 구독정보를 바탕으로 컨텐츠를 통합합니다.</div>
-				<div style="display: flex; flex-wrap: wrap;">
+				<div style="display: flex; flex-wrap: wrap;" class="tableContainer">
 					<c:choose>
 						<c:when test="${netflixWishCnt != 0}">
-							<table>
+							<table class="platformTable" data-id="1">
 								<tr>
-									<td colspan="3">넷플릭스</td>
+									<td colspan="2">넷플릭스 ( <span id="netflixWishCnt">${netflixWishCnt}</span> )</td>
 								</tr>
-								<tr>
-									<td>통합 전 : </td>
-									<td style="text-align:left;" id="netflixCnt">${netflixWishCnt}</td>
-									<td>
-										<!-- 도넛 차트 1 -->
-										<canvas id="netflixChart" width="150px" height="150px"></canvas>
-									</td>
-								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon"></td>
-									<td >넷플릭스</td>
+								<tr class="platformTr" data-id="1">
+									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon" id="netflixByNetflixBtn"></td>
 									<td style="text-align:left;" id="netflixByNetflixCnt"></td>
 								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon"></td>
-									<td>티빙</td>
+								<tr class="platformTr" data-id="2">
+									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon" id="netflixByTvingBtn"></td>
 									<td style="text-align:left;" id="netflixByTvingCnt"></td>
 								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon"></td>
-									<td>웨이브</td>
+								<tr class="platformTr" data-id="3">
+									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon" id="netflixByWavveBtn"></td>
 									<td style="text-align:left;" id="netflixByWavveCnt"></td>
 								</tr>
 							</table>
@@ -87,31 +50,20 @@ table {
 					</c:choose>
 					<c:choose>
 						<c:when test="${tvingWishCnt != 0}">
-							<table>
+							<table class="platformTable" data-id="2">
 								<tr>
-									<td colspan="3">티빙</td>
+									<td colspan="3">티빙 ( <span id="tvingWishCnt">${tvingWishCnt}</span> )</td>
 								</tr>
-								<tr>
-									<td>통합 전 : </td>
-									<td style="text-align:left;" id="tvingCnt">${tvingWishCnt}</td>
-									<td>
-										<!-- 도넛 차트 2 -->
-										<canvas id="tvingChart" width="150px" height="150px"></canvas>
-									</td>
-								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon"></td>
-									<td>티빙</td>
+								<tr class="platformTr" data-id="2">
+									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon" id="tvingByTvingBtn"></td>
 									<td style="text-align:left;" id="tvingByTvingCnt"></td>
 								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon"></td>
-									<td>넷플릭스</td>
+								<tr class="platformTr" data-id="1">
+									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon" id="tvingByNetflixBtn"></td>
 									<td style="text-align:left;" id="tvingByNetflixCnt"></td>
 								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon"></td>
-									<td>웨이브</td>
+								<tr class="platformTr" data-id="3">
+									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon" id="tvingByWavveBtn"></td>
 									<td style="text-align:left;" id="tvingByWavveCnt"></td>
 								</tr>
 							</table>
@@ -121,31 +73,20 @@ table {
 					</c:choose>
 					<c:choose>
 						<c:when test="${wavveWishCnt != 0}">
-							<table>
+							<table class="platformTable" data-id="1">
 								<tr>
-									<td colspan="3">웨이브</td>
+									<td colspan="3">웨이브 ( <span id="wavveWishCnt">${wavveWishCnt}</span> )</td>
 								</tr>
-								<tr>
-									<td>통합 전 : </td>
-									<td style="text-align:left;">${wavveWishCnt}</td>
-									<td>
-										<!-- 도넛 차트 3 -->
-										<canvas id="wavveChart" width="150px" height="150px"></canvas>
-									</td>
-								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon"></td>
-									<td>웨이브</td>
+								<tr class="platformTr" data-id="3">
+									<td><img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon" id="wavveByWavveBtn"></td>
 									<td style="text-align:left;" id="wavveByWavveCnt"></td>
 								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon"></td>
-									<td>넷플릭스</td>
+								<tr class="platformTr" data-id="1">
+									<td><img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon" id="wavveByNetflixBtn"></td>
 									<td style="text-align:left;" id="wavveByNetflixCnt"></td>
 								</tr>
-								<tr>
-									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon"></td>
-									<td>티빙</td>
+								<tr class="platformTr" data-id="2">
+									<td><img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon" id="wavveByTvingBtn"></td>
 									<td style="text-align:left;" id="wavveByTvingCnt"></td>
 								</tr>
 							</table>
@@ -155,8 +96,6 @@ table {
 					</c:choose>
 				</div>
 				<div>
-					<c:forEach var="wishqwer" items="${wishPlatform}">
-					</c:forEach>
 					<div class="page_select btn_type layout__flex-left">
 						<div class="layout__flex-left">
 							<button type="button" id="seriesBtn"

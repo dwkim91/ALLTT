@@ -14,11 +14,11 @@
 	
 	<insert id="insertMember" parameterType="MemberDTO">
 		INSERT INTO
-				MEMBER (USER_ID, NICK_NAME, SOCIAL_NM, THUMBNAIL_IMG)
+				MEMBER (USER_ID, NICK_NAME, SOCIAL_NM, IMG_DATA, IMG_EXTENSION)
 		VALUES (
-				#{userId}, #{nickName}, #{socialNm}, #{thumbnailImg}
+				#{userId}, #{nickName}, #{socialNm}, #{imgData}, #{imgExtension}
 		)
-	</insert>
+	</insert>	
 	
 	<delete id="deleteMember" parameterType="long">
 		DELETE FROM
@@ -78,6 +78,16 @@
 				MEMBER
 		SET
 				THUMBNAIL_IMG = #{thumbnailImg}
+		WHERE
+				MEMBER_ID = #{memberId}
+	</update>
+	
+	<update id="updateProfileImg" parameterType="MemberDTO">
+		UPDATE
+				MEMBER
+		SET
+				IMG_DATA = #{imgData},
+				IMG_EXTENSION = #{imgExtension}
 		WHERE
 				MEMBER_ID = #{memberId}
 	</update>
@@ -238,26 +248,59 @@
 			JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
 		    JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
 		WHERE
-				MEMBER_ID = #{memberId}			AND
-		        CONTENT_TYPE = #{contentType}
+				MEMBER_ID = #{memberId}			
+				<choose>
+					<when test="contentType != 'all'">
+					AND CONTENT_TYPE = #{contentType}
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
 		group by
 				WL.CONTENT_ID
 	</select>
 	
-	<select id="selectListWishContentByMemberId" parameterType="long" resultType="FilteredDTO">
+	<select id="selectListWishContentByMemberInfo" parameterType="Map" resultType="FilteredDTO">
 		SELECT
-				C.TITLE,
+				C.CONTENT_ID,
 		        WL.MEMBER_ID,
-		        CL.PLATFORM_ID
+		        CL.PLATFORM_ID,
+		        C.CONTENT_TYPE
 		FROM
 				WISH_LIST WL
 			JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
 		    JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
 		GROUP BY
-				C.TITLE,
+				C.CONTENT_ID,
 		        MEMBER_ID,
 		        CL.PLATFORM_ID
 		HAVING
-				WL.MEMBER_ID = #{memberId};
+				WL.MEMBER_ID = #{memberId}
+				<choose>
+					<when test="contentType != 'all'">
+					AND C.CONTENT_TYPE = #{contentType}
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
+	</select>
+	
+	<select id="selectOnePlatformCntByFilterDTO" parameterType="FilterDTO" resultType="int">
+		SELECT
+				COUNT(*)
+		FROM
+				WISH_LIST WL
+			JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
+			JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
+		WHERE
+				WL.MEMBER_ID = #{memberId} AND
+				CL.PLATFORM_ID = #{platformId}
+				<choose>
+					<when test="contentType != 'all'">
+						AND C.CONTENT_TYPE = #{contentType}
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
 	</select>
 </mapper>
