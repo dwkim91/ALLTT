@@ -1,4 +1,7 @@
-export function wishSolution(filtered) {
+var platformMap;
+
+export function wishSolutionAjax(filtered) {
+	
 	$.ajax({
 		url: '/member/wishSolution',
 		type: 'POST',
@@ -7,23 +10,7 @@ export function wishSolution(filtered) {
 		
 		success: function(response) {
 			
-			
-			// map size 구하기
-			function getMapSize(map) {
-			    var size = 0;
-			    for (var key in map) {
-			        if (map.hasOwnProperty(key)) {
-			            size++;
-			        }
-			    }
-			    return size;
-			}
-			
-			for (var i = 1; i <= getMapSize(response); i++) {
-				var platform = response[i];
-				for (var j = 1; j <= getMapSize(platform); j++) {
-				}
-			}
+			platformMap = response;
 			
 			$('#netflixByNetflixCnt').text(response[1][1].length);
 			$('#netflixByTvingCnt').text(response[1][2].length);
@@ -37,4 +24,10 @@ export function wishSolution(filtered) {
 			
 		}
 	})
+}
+
+export function getPlatformMap(platformTableDataId, platformTrDataId) {
+	
+	return platformMap[platformTableDataId][platformTrDataId];
+		
 }

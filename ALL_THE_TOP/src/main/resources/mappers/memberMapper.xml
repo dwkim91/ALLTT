@@ -239,7 +239,6 @@
 		    JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
 		WHERE
 				MEMBER_ID = #{memberId}			
-				
 				<choose>
 					<when test="contentType != 'all'">
 					AND CONTENT_TYPE = #{contentType}
@@ -251,11 +250,12 @@
 				WL.CONTENT_ID
 	</select>
 	
-	<select id="selectListWishContentByMemberId" parameterType="long" resultType="FilteredDTO">
+	<select id="selectListWishContentByMemberInfo" parameterType="Map" resultType="FilteredDTO">
 		SELECT
 				C.CONTENT_ID,
 		        WL.MEMBER_ID,
-		        CL.PLATFORM_ID
+		        CL.PLATFORM_ID,
+		        C.CONTENT_TYPE
 		FROM
 				WISH_LIST WL
 			JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
@@ -265,6 +265,32 @@
 		        MEMBER_ID,
 		        CL.PLATFORM_ID
 		HAVING
-				WL.MEMBER_ID = #{memberId};
+				WL.MEMBER_ID = #{memberId}
+				<choose>
+					<when test="contentType != 'all'">
+					AND C.CONTENT_TYPE = #{contentType}
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
+	</select>
+	
+	<select id="selectOnePlatformCntByFilterDTO" parameterType="FilterDTO" resultType="int">
+		SELECT
+				COUNT(*)
+		FROM
+				WISH_LIST WL
+			JOIN CONTENT_LINK CL ON WL.CONTENT_ID = CL.CONTENT_ID
+			JOIN CONTENT C ON WL.CONTENT_ID = C.CONTENT_ID
+		WHERE
+				WL.MEMBER_ID = #{memberId} AND
+				CL.PLATFORM_ID = #{platformId}
+				<choose>
+					<when test="contentType != 'all'">
+						AND C.CONTENT_TYPE = #{contentType}
+					</when>
+					<otherwise>
+					</otherwise>
+				</choose>
 	</select>
 </mapper>
