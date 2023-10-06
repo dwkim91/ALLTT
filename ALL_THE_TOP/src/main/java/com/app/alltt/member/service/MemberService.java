@@ -3,6 +3,8 @@ package com.app.alltt.member.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dto.MemberDTO;
@@ -35,5 +37,6 @@ public interface MemberService {
 	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
 	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData);
 	public int getPlatformCntByFilterDTO(FilterDTO filterDTO);
+	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO, boolean isUpdate);
 	
 }

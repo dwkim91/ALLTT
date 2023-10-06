@@ -19,10 +19,11 @@ td {
 table {
     flex: 1;
     width: calc(33.33% - 10px);
-	background-color: mintcream;
+	background-color: #212121;
 	border-collapse: collapse;
     border-radius: 10px;
     overflow: hidden;
     margin: 0.5rem;
-    color: black;
+    color: #f0a9a9;
+    font-weight: bold;
 }
