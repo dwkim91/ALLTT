@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
 @Repository
@@ -52,6 +53,11 @@ public class SupportDAOImpl implements SupportDAO {
 	@Override
 	public List<SupportDTO> selectInquiryListByStatus(String status) {
 		return sqlSession.selectList("supportMapper.selectInquiryListByStatus", status);
+	}
+
+	@Override
+	public List<FilteredDTO> selectListImageRequiredToBeUploaded() {
+		return sqlSession.selectList("supportMapper.selectListImageRequiredToBeUploaded");
 	}
 
 }
