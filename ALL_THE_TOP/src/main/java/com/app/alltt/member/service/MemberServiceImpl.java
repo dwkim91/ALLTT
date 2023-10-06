@@ -135,6 +135,7 @@ public class MemberServiceImpl implements MemberService {
 		return ranNickName;
 	}
 	
+	// 닉네임 중복확인 
 	public boolean nickNameDuplChecker (String nickName) {
 		boolean isDupl = true;
 		List<MemberDTO> member = memberDAO.selectListNickName(nickName);
@@ -155,22 +156,17 @@ public class MemberServiceImpl implements MemberService {
 	public MemberDTO getMemberByUserId(String userId) {
 		return memberDAO.selectMemberByUsrId(userId);
 	}
-	
 	@Override
 	public void addNewMember(MemberDTO member) {
 		memberDAO.insertMember(member);
 	}
-	
 	@Override
 	public void removeMember(long memberId) {
-		
 		memberDAO.deleteMember(memberId);
 	}
 	@Override
 	public MemberDTO getMemberByMemberId(long memberId) {
-		
 		return memberDAO.selectOneMemberByMemberId(memberId);
-		
 	}
 	@Override
 	public void addWishContentByMemberId(FilteredDTO filteredDTO) {
@@ -293,14 +289,14 @@ public class MemberServiceImpl implements MemberService {
 		}
 		
 	}
-
+	
+	// 썸네일 이미지 변경
 	@Override
 	public void changeThumbnailImg(MemberDTO memberDTO) {
-		
 		memberDAO.updateThumbnailImg(memberDTO);
-		
 	}
 	
+	// 이미지 파일 다운로드 
 	public MemberDTO imgDownload (MemberDTO member, String filePath) {
 		MemberDTO memberDTO = member;
 		String imgUrl = memberDTO.getThumbnailImg();
@@ -340,7 +336,6 @@ public class MemberServiceImpl implements MemberService {
 	            
 	            memberDTO.setThumbnailImg(newFileName);
 	            
-	            System.out.println("이미지 다운로드 완료: " + outputFilePath);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
@@ -353,7 +348,8 @@ public class MemberServiceImpl implements MemberService {
     	}
 		return memberDTO;
 	}
-
+	
+	// 이미지 삭제
 	@Override
 	public void deleteThumbnailImg(String currentThumbnailImg, String filePath) {
 		if (currentThumbnailImg != null && !currentThumbnailImg.isEmpty()) {
@@ -478,9 +474,10 @@ public class MemberServiceImpl implements MemberService {
 	public int getPlatformCntByFilterDTO(FilterDTO filterDTO) {
 		return memberDAO.selectOnePlatformCntByFilterDTO(filterDTO);
 	}
-
+	
+	// 프로필이미지 DB 저장
 	@Override
-	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO, boolean isUpdate) {
+	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO) {
 		
 		// MultipartFile에서 바이너리 데이터 얻기
         byte[] imageData = null;
@@ -492,15 +489,14 @@ public class MemberServiceImpl implements MemberService {
         
         memberDTO.setImgData(imageData);
         
-		if (!isUpdate) {
-			//memberDAO.insertImg(memberDTO);
-		}
-		else {
-			// Blob을 데이터베이스에 저장
-			memberDAO.updateProfileImg(memberDTO);
-	        
-		}
+		// Blob을 데이터베이스에 저장
+		memberDAO.updateProfileImg(memberDTO);
 		
+	}
+
+	@Override
+	public MemberDTO getMemberSimpleInfoByMemberId(long memberId) {
+		return memberDAO.selectOneMemberSimpleInfoByMemberId(memberId);
 	}
 
 }

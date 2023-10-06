@@ -36,4 +36,5 @@ public interface MemberDAO {
 	public void updateThumbnailImg(MemberDTO memberDTO);
 	public int selectOnePlatformCntByFilterDTO(FilterDTO filterDTO);
 	public void updateProfileImg(MemberDTO memberDTO);
+	public MemberDTO selectOneMemberSimpleInfoByMemberId(long memberId);
 }

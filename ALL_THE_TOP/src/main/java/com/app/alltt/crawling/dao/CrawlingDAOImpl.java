@@ -124,6 +124,21 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 		return sqlSession.selectList("crawlingMapper.selectListGenreLinkByGenreId", genreLinkDTO);
 	}
 
+	@Override
+	public List<CrawlingDTO> selectListNonServiceContent() {
+		return sqlSession.selectList("crawlingMapper.selectListNonServiceContent");
+	}
+
+	@Override
+	public void deleteContent(long contentId) {
+		sqlSession.delete("crawlingMapper.deleteContent", contentId);
+	}
+
+	@Override
+	public void deletePost(long contentId) {
+		sqlSession.delete("crawlingMapper.deletePost", contentId);
+	}
+
 	
 	
 }
