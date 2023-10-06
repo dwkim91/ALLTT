@@ -1,7 +1,5 @@
 package com.app.alltt.member.dto;
 
-import java.sql.Blob;
-
 import org.springframework.stereotype.Component;
 
 @Component

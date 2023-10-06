@@ -115,7 +115,7 @@ function selectChange(selector, value){
 
 // 시리즈 / 영화 필터 설정 
 function setSearchFilter(contentType){
-	console.log(contentType);
+
 	var netflixCheckbox = document.querySelector('#'+contentType+'-filter #netflixCheckbox');
 	var tvingCheckbox = document.querySelector('#'+contentType+'-filter #tvingCheckbox');
 	var wavveCheckbox = document.querySelector('#'+contentType+'-filter #wavveCheckbox');
@@ -147,19 +147,14 @@ function setSearchFilter(contentType){
 
 // selected된 값 가져오기
 function getSelectVal(selector){
-	console.log(selector);
 	var selectedItem = document.querySelector(selector + ' .list li.selected');
-	// 변경시 애러 발생 !!
-	// 선택된 값 확인!
-	console.log(selectedItem.getAttribute('data-value'));
-	//return 1;// test 
 	return selectedItem.getAttribute('data-value');
 }
 
 //체크박스 변경 시 장르 리스트 동적 변경
 $('[name="series"], [name="movie"]').change(function() {
 	var checkboxName = $(event.target).attr('name');
-	// 체크박스 변경 시 실행될 함수 호출
+	// 체크박스 변경 시 실행될 updateMemberFilter함수 호출
 	updateMemberFilter(checkboxName);
 	
 });
@@ -229,7 +224,7 @@ $("#fileInput").on("change", function() {
             },
             error: function() {
                 // 업로드 실패 시 처리
-                console.error("파일 업로드 실패");
+                console.error("Failed to upload file");
             }
         });
     }
@@ -250,11 +245,11 @@ function getMemberImg() {
 	});
 }
 
-// 이미지 3개요소 변경 메서드
+// 프로필 이미지 3개요소 변경 메서드
 function changeThumbnailImg(member) {
 	
 	var imgType = member.imgExtension.toLowerCase(); // 이미지 확장자를 소문자로 변환
-	var imgSrc = "data:image/" + imgType + ";base64," + member.thumbnailImg;
+	var imgSrc = "data:image/" + imgType + ";base64," + member.imgData; // 이미지 데이터(byte[] or String)를 Base64 인코딩된 이미지 소스로 변환
 	
 	var thumbnailImg = document.querySelector(".thumbnailImg");
 	thumbnailImg.setAttribute('src', imgSrc);
