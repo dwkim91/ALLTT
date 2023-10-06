@@ -17,13 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -46,6 +39,7 @@ import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.member.service.MemberService;
 import com.app.alltt.member.sns.AuthModule;
 import com.app.alltt.member.sns.SnsValue;
+import com.app.alltt.security.ALLTTUserDetailsService;
 
 @Controller
 @RequestMapping("/member")
@@ -66,6 +60,9 @@ public class MemberController {
 	
 	@Autowired
 	private MainService mainService;
+	
+	@Autowired
+	private ALLTTUserDetailsService allttUserDetailsService;
 	
 	// instance 명을 servlet-context.xml에 설정된 이름으로 진행함으로써
 	// servlet-context.xml에 설정한 변수값들을 SnsValue에 바로 전달하면서 instance 생성
@@ -117,6 +114,10 @@ public class MemberController {
 	
 	@GetMapping("/logout")
 	public ResponseEntity<Object> logOut(HttpServletRequest request, HttpSession session) {
+		
+		// security clear
+		allttUserDetailsService.byeUser();
+		
 		// 로그인을 하며 session에 등록된 모든 값들을 날려버림
 		session.invalidate();
 		String jsScript = "<script>";
@@ -139,6 +140,11 @@ public class MemberController {
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
+		// ** 처리방향 논의 필요
+		// 다른 계정으로 로그인한 유저가 url로 로그인 접속을 하는 경우?
+		// 일단 로그인 정보를 날려놓
+		allttUserDetailsService.byeUser();
+		
 		// 사용자에게 보여주는 메세지
 		String jsScript = "<script>";
 		
@@ -160,27 +166,9 @@ public class MemberController {
 				session.setAttribute("memberId", dbMember.getMemberId());
 				session.setAttribute("managerYn", dbMember.getManagerYn());
 				
-		        // 사용자의 권한 정보를 설정
-		        List<GrantedAuthority> authorities = new ArrayList<>();
-		        authorities.add(new SimpleGrantedAuthority(dbMember.getManagerYn() == "Y" ? "ADMIN" : "USER"));
-
-		        // UserDetails를 생성하여 반환
-		        UserDetails userDetails = new User(
-		                dbMember.getMemberId() + "",
-		                dbMember.getNickName(),
-		                authorities
-	            );
-		        
-		        // UserDetails 객체를 포장한 Authentication 객체 생성
-		        Authentication authentication = new UsernamePasswordAuthenticationToken(
-		            userDetails, // UserDetails
-		            "", // 비밀번호 (또는 인증 토큰)
-		            userDetails.getAuthorities() // 권한 정보
-		        );
-		        
-		        // SecurityContextHolder에 Authentication 객체 저장
-		        SecurityContextHolder.getContext().setAuthentication(authentication);
-		        
+				// 인증정보 등록
+				allttUserDetailsService.loadUserByUsername(dbMember.getUserId());
+				
 				jsScript += "alert('로그인 되었습니다.');";
 			}
 			// DB에서 확인되지 않는 member라면
