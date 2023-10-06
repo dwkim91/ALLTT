@@ -63,10 +63,27 @@ $('.page_select_right').on('click', '.chartType', function(event) {
 	wishContentLoad();
 	wishSolution();
 	wishPlatformCnt();
+	platformIconReset();
 	
 });
 
 var platformIcon;
+
+function platformIconReset() {
+	
+	$('.platformIcon').each(function() {
+		  var backgroundColor = $(this).css('background-color');
+
+		  if (backgroundColor === 'rgb(255, 0, 0)' || backgroundColor === 'red') {
+		    $(this).css('background-color', 'rgb(240, 240, 240)');
+		    platformIcon = null;
+		    
+		    $('.item__tags').each(function() {
+		    	$(this).attr('id', '');
+		    })
+		  }
+	});
+};
 
 $('.tableContainer').on('click','.platformIcon', function(event) {
 	
@@ -161,6 +178,7 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 	
 	wishSolution();
 	wishPlatformCnt();
+	platformIconReset();
 	
 });
 

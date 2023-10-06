@@ -84,7 +84,7 @@
 										</div>
 									</div>
 									<div class="item__image lazy">
-										<img class="loaded css-1doy9ip euf32k22" src="${content.imgUrl}" alt="${content.title}">
+										<img class="loaded css-1doy9ip euf32k22" src="${content.imgUrl}" alt="${content.title} ">
 									</div>
 								</div>
 								<div class="item__info ">
