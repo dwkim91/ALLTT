@@ -1,11 +1,15 @@
 package com.app.alltt.support.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.support.dto.SupportDTO;
 import com.app.alltt.support.service.SupportService;
@@ -34,7 +38,12 @@ public class SupportController {
 	@ResponseBody
 	public ModelAndView mypage(HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		mv.setViewName("/alltt/support");
 		return mv;
 	}
@@ -69,6 +78,12 @@ public class SupportController {
 	@ResponseBody
 	public ModelAndView inquiryList(@PathVariable("status") String status, HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		mv.setViewName("/alltt/inquiryList");
 		List<SupportDTO> inquiryList = null;
@@ -83,6 +98,9 @@ public class SupportController {
 		mv.addObject("newCnt", supportService.getNewCnt());
 		mv.addObject("inProgressCnt", supportService.getInProgressCnt());
 		mv.addObject("doneCnt", supportService.getDoneCnt());
+		mv.addObject("damagedImageList",supportService.getImageRequiredToBeUploaded());
+		mv.addObject("damagedImageCnt",supportService.getImageRequiredToBeUploaded().size());
+		mv.addObject("status",status);
 		return mv;
 	}
 	
@@ -102,6 +120,73 @@ public class SupportController {
 	    System.out.println(supportDTO);
 	    supportService.registerAnswer(supportDTO);
 	    return "답변이 등록 되었습니다.";
+	}
+	
+	/// 프로필사진 변경
+	@RequestMapping(value="/changeImg", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile) throws Exception, IOException {
+
+	    String result = "";
+	    
+	    // 파일 업로드 처리
+	    if (!uploadFile.isEmpty()) {
+	    	
+	    	// 파일 확장자 추출 
+	    	String fileExtension = FilenameUtils.getExtension(uploadFile.getOriginalFilename());
+	    	// 허용된 이미지 확장자
+	    	List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "webp");
+	    	
+	    	if (allowedExtensions.contains(fileExtension.toLowerCase())) {
+	    		
+	    		long maxFileSizeInBytes = 5 * 1024 * 1024; // 5MB 이하 허용
+	    		long fileSize = uploadFile.getSize();
+	    		// 파일 크기 제한 
+	    		if (fileSize < maxFileSizeInBytes) {
+	    			
+	    			File tempFile = null;
+	    			
+	    	        try {
+	    	            // 업로드된 파일을 임시로 저장
+	    	            tempFile = File.createTempFile("temp", "." + fileExtension);
+	    	            uploadFile.transferTo(tempFile);
+
+	    	            // 임시 파일의 경로를 얻음
+	    	            String tempFilePath = tempFile.getAbsolutePath();
+	    	            
+	    	            System.out.println(tempFilePath);
+	    	            
+	    	            //supportService.resizeAndUploaddamagedImage(tempFilePath, 1);
+	    	        }
+	    	        catch (Exception e) {}
+	    	        finally {tempFile.delete();}
+	    			
+	    		}
+	    		else {
+	    			// 파일 크기가 허용 범위를 초과하는 경우 처리
+	    			result = "Error : 파일 크기가 너무 큽니다. 5MB 이하의 파일을 선택해 주세요.";
+	    		}
+				
+	    	}
+	    	else {
+	    		// 허용되지 않는 확장자인 경우 처리
+	    		result = "Error : 허용되지 않는 파일 형식입니다. (jpg, jpeg , png, webp)";
+	    	}
+            
+        } else {
+            // 업로드된 파일이 비어 있을 경우 처리
+        	result = "Error : 파일이 비어 있습니다.";
+        }
+	    
+	    return result;
+	}
+	
+	@GetMapping("/imageTest")
+	public String imageTest() {
+		
+		supportService.resizeAndUploadImage();
+		
+		return "";
 	}
 	
 }

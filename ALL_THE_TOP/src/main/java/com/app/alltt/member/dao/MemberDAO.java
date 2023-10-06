@@ -35,4 +35,5 @@ public interface MemberDAO {
 	public List<FilteredDTO> selectListWishContentByMemberInfo(Map<String, Object> memberInfo);
 	public void updateThumbnailImg(MemberDTO memberDTO);
 	public int selectOnePlatformCntByFilterDTO(FilterDTO filterDTO);
+	public void updateProfileImg(MemberDTO memberDTO);
 }

@@ -14,6 +14,9 @@ public class MemberDTO {
 	private String dPostYn;
 	private String dReplyYn;
 	private String managerYn;
+	private byte[] imgData;
+	private String imgExtension;
+	
 	
 	public long getMemberId() {
 		return memberId;
@@ -68,6 +71,18 @@ public class MemberDTO {
 	}
 	public void setManagerYn(String managerYn) {
 		this.managerYn = managerYn;
+	}
+	public byte[] getImgData() {
+		return imgData;
+	}
+	public void setImgData(byte[] imgData) {
+		this.imgData = imgData;
+	}
+	public String getImgExtension() {
+		return imgExtension;
+	}
+	public void setImgExtension(String imgExtension) {
+		this.imgExtension = imgExtension;
 	}
 	
 	@Override

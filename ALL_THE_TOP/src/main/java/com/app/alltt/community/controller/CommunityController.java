@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.main.service.MainService;
 
 @Controller
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @RequestMapping("/community")
 public class CommunityController {
 	

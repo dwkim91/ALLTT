@@ -16,11 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
@@ -471,6 +470,30 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int getPlatformCntByFilterDTO(FilterDTO filterDTO) {
 		return memberDAO.selectOnePlatformCntByFilterDTO(filterDTO);
+	}
+
+	@Override
+	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO, boolean isUpdate) {
+		
+		// MultipartFile에서 바이너리 데이터 얻기
+        byte[] imageData = null;
+		try {
+			imageData = uploadFile.getBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        memberDTO.setImgData(imageData);
+        
+		if (!isUpdate) {
+			//memberDAO.insertImg(memberDTO);
+		}
+		else {
+			// Blob을 데이터베이스에 저장
+			memberDAO.updateProfileImg(memberDTO);
+	        
+		}
+		
 	}
 
 }
