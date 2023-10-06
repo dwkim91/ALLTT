@@ -47,7 +47,7 @@
 											<div data-v-c30698f4="" class="circle-profile-wrap">
 												<div data-v-c30698f4="" class="default-circle">
 													<img class="thumbnailImg" src="" onclick="openFileInput()" style="cursor: pointer;">
-													<input type="file" id="fileInput" style="display: none;">
+													<input type="file" id="fileInput" accept=".jpg, .jpeg, .png, .gif" style="display: none;">
 												</div>
 											</div>
 										</div>
