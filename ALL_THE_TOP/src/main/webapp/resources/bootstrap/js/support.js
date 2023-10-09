@@ -32,6 +32,10 @@ emailInput.addEventListener('input', function() {
 			data : {
 				email : email
 			},
+			beforeSend: function(xhr) {
+			    // CSRF 토큰을 요청 헤더에 추가
+			    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+			},
 			success: function(response) {
 				msg = response;
 				if (msg === 'vaildated') {
@@ -97,6 +101,10 @@ function sendInquiry(){
 	$.ajax({
 		url : '/support/inquiryRegistration',
 		type : 'POST',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		data: JSON.stringify(inquiryData),
         contentType: "application/json",
 		success : function(response) {

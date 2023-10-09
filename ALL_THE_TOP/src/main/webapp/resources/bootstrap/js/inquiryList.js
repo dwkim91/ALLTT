@@ -18,6 +18,10 @@ $(".fileInput").on("change", function() {
 			data: formData,
 			processData: false, // 데이터 처리 방지
 			contentType: false, // 컨텐츠 타입 설정
+			beforeSend: function(xhr) {
+			    // CSRF 토큰을 요청 헤더에 추가
+			    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+			},
 			success: function(response) {
             	
 				

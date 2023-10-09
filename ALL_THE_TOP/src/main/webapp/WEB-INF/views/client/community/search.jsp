@@ -51,6 +51,10 @@ $(function() {
 				type : "POST",
 				data : {"title" : search},
 				async : true,
+				beforeSend: function(xhr) {
+				    // CSRF 토큰을 요청 헤더에 추가
+				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
 				success : function(result) {
 					if (result.length > 0) {
 						
@@ -108,6 +112,10 @@ $(function() {
 				type : "POST",
 				data : {"title" : search},
 				async : true,
+				beforeSend: function(xhr) {
+				    // CSRF 토큰을 요청 헤더에 추가
+				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
 				success : function(result) {
 					if (result.length > 0) {
 						

@@ -4,6 +4,10 @@ $('#searchButton').click(function() {
     $.ajax({
       url: '/member/checkSession',
       type: 'POST',
+      beforeSend: function(xhr) {
+    	    // CSRF 토큰을 요청 헤더에 추가
+    	    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+    	},
       success: function(response) {
         if (response) {
         	var searchBarContainer = $('#searchBarContainer');
