@@ -88,7 +88,6 @@
 		<beans:constructor-arg ref="kakaoClientSecret"/>
 		<beans:constructor-arg ref="kakaoRedirectUrl"/>
 	</beans:bean>
-	
 
 	<!-- crawling 시 사용할 계정 정보 삽입을 위한 설정 -->
 	<context:property-placeholder location="classpath:properties/platform.properties"/>
@@ -117,8 +116,4 @@
 	
 	<!-- 크롤링 로그인을 위한 설정 -->
 	
-	
-	
-	
-
 </beans:beans>

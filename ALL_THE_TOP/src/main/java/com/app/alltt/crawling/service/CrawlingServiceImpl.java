@@ -21,8 +21,6 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
@@ -32,10 +30,7 @@ import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-
 @Service
-@PropertySource("classpath:properties/platform.properties")
 public class CrawlingServiceImpl implements CrawlingService {
 	
 	@Autowired
@@ -55,6 +50,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String[] TVING_LOGIN_KEY;
 	
 	private WebDriver driver;
+	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
+	private static final String WEB_DRIVER_PATH = "C:\\chromedriver\\chromedriver.exe";
 	
 	// ==================================== 
 	// ===== 크롤링 공통 메서드 Start ===== 
@@ -63,8 +60,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		WebDriverManager.chromedriver().setup();
-		driver = new ChromeDriver();
+		//        (크롬드라이버 명 , 크롬드라이버 경로)
+		System.setProperty(WEB_DRIVER_ID, 	WEB_DRIVER_PATH);
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
@@ -257,12 +254,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 		chromeDriverInit();
 
+
 //		tvingLogin("alltttv", "!allott1234");
 		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
 //		initExistYn();
 
 		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
 		initExistYn();
+
+
+//		tvingLogin("alltttv", "!allott1234");
+		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
+//		initExistYn();
 
 //		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
@@ -418,7 +421,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		while (driver.getTitle().equals("TVING")) {
 			quit();
 			chromeDriverInit();
-			tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
+			tvingLogin("alltttv", "!allott1234");
 			moveToTargetUrl(url);
 		}
 		
@@ -527,7 +530,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 //		readDBcontentTest();
 		
 		chromeDriverInit();
-		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
+		tvingLogin("alltttv", "!allott1234");
 		//addContents(getTvingCrawlingDTOList(0));
 		initExistYn();
 		//getTvingContentDetailInfo("https://www.tving.com/contents/P001635813", "series");
