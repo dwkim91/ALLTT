@@ -77,9 +77,6 @@ public class MemberController {
 	@GetMapping("/{service}/{source}")
 	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
-		if (StringUtils.equals(service, "naver")) {
-			
-		}
 		ModelAndView mv = new ModelAndView();
 		
 		SnsValue sns = null;
