@@ -5,19 +5,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<style>
-.contents_wrap.wrap_margin {
-	padding: 0;
-}
-
-.col-lg-5.col-md-5 li::before {
-	display: none;
-}
-</style>
 <script>
 	var memberSession = "${sessionScope.memberId}";
+	var tvingUrl = "${tvingUrl}";
+	var wavveUrl = "${wavveUrl}";
 </script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/detail.css" type="text/css">
 <script src="${contextPath}/resources/bootstrap/js/detailWish.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/contentDetail.js"></script>
 
 </head>
 <body>

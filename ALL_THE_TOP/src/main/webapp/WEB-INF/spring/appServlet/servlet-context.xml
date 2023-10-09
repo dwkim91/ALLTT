@@ -88,5 +88,32 @@
 		<beans:constructor-arg ref="kakaoClientSecret"/>
 		<beans:constructor-arg ref="kakaoRedirectUrl"/>
 	</beans:bean>
+
+	<!-- crawling 시 사용할 계정 정보 삽입을 위한 설정 -->
+	<context:property-placeholder location="classpath:properties/platform.properties"/>
+	
+	<!-- platform 정보 넘기는 bean 설정, 안됨 나중에 6.29 -->
+	<!-- 
+	<beans:bean id="netflixId" class="java.lang.String">
+		<beans:constructor-arg value="${netflix.id}"/>
+	</beans:bean>
+	<beans:bean id="netflixPw" class="java.lang.String">
+		<beans:constructor-arg value="${netflix.pw}"/>
+	</beans:bean>
+	
+	네이버와 똑같은 방식
+	<beans:bean id="netflixInfo" class="com.app.alltt.crawling.platform.PlatformValue">
+		<beans:constructor-arg ref="netflixId"/>
+		<beans:constructor-arg ref="netflixPw"/>
+	</beans:bean>
+	 
+	JDBC 와 똑같은 방식
+	<beans:bean id="netflixInfo" class="com.app.alltt.crawling.platform.PlatformValue">
+		<beans:property name="id"   value="${netflix.id}" />
+		<beans:property name="pw"   value="${netflix.pw}" />
+	</beans:bean>
+	-->
+	
+	<!-- 크롤링 로그인을 위한 설정 -->
 	
 </beans:beans>

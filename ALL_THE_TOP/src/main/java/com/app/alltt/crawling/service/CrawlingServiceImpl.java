@@ -36,10 +36,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Autowired
 	private CrawlingDAO crawlingDAO;
 	
+
 	// properties 로 어떻게 해볼 수 있을 것 같은데
 	private String[] WAVVE_LOGIN_KEY = {"life4603@naver.com", "testwavve930!"};
 	private String[] NETFLIX_LOGIN_KEY = {"hkiss7@naver.com", "gkskfh1511"};
 	private String[] TVING_LOGIN_KEY = {"alltttv", "!allott1234"};
+
+	@Value("${wavve.key}")
+	private String[] WAVVE_LOGIN_KEY;
+	@Value("${netflix.key}")
+	private String[] NETFLIX_LOGIN_KEY;
+	@Value("${tving.key}")
+	private String[] TVING_LOGIN_KEY;
 	
 	private WebDriver driver;
 	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
@@ -245,9 +253,20 @@ public class CrawlingServiceImpl implements CrawlingService {
 	public void addTving(GenreLinkDTO genreLinkDTO) {
 		
 		chromeDriverInit();
+
+
 //		tvingLogin("alltttv", "!allott1234");
 		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
 //		initExistYn();
+
+		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
+		initExistYn();
+
+
+//		tvingLogin("alltttv", "!allott1234");
+		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
+//		initExistYn();
+
 //		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
 		
