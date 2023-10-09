@@ -76,7 +76,6 @@ public class MainController {
 		
 		FilterDTO searchDTO = new FilterDTO();
 		searchDTO.setSearchKey(contentTitle);
-		
 		return mainService.getMoreContentByKeyword(searchDTO);
 	}
 	
