@@ -28,6 +28,10 @@ function getNewNickName() {
 	$.ajax({
 		url : '/member/randomNickname',
 		type : 'POST',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success : function(data) {
 			var newNick = data;
 			var nicknameElement = document.querySelector('.nickName');
@@ -42,6 +46,10 @@ function saveNickname() {
 	$.ajax({
 		url : '/member/saveNickname',
 		type : 'POST',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		data : {
 			nickname : nickname
 		},
@@ -80,6 +88,10 @@ function setSubscription() {
 		type : 'POST',
 		data : JSON.stringify(filterData),
 		contentType : 'application/json',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success : function(response) {
 			alert(response);
 		}
@@ -138,6 +150,10 @@ function setSearchFilter(contentType){
 		type : 'POST',
 		data : JSON.stringify(filterData),
 		contentType : 'application/json',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success : function(response) {
 			alert(response);
 		}
@@ -177,6 +193,10 @@ function updateMemberFilter(contentType) {
 		url : '/member/filterUpdate',
 		type : 'GET',
 		data : filterData,
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success : function(filterList) {
 			// 기존의 옵션 제거
 			$('.' + contentType + '-g-select ul').empty();
@@ -210,6 +230,10 @@ $("#fileInput").on("change", function() {
 			url: '/member/changeThumbnailImg',
 			type: 'POST',
 			data: formData,
+			beforeSend: function(xhr) {
+			    // CSRF 토큰을 요청 헤더에 추가
+			    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+			},
 			processData: false, // 데이터 처리 방지
 			contentType: false, // 컨텐츠 타입 설정
 			success: function(response) {
@@ -235,6 +259,10 @@ function getMemberImg() {
 	$.ajax({
 		url : '/member/memberInfo',
 		type : 'POST',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success : function(data) {
 			var member = data; // 받아온 data 정보를 member 변수에 할당
 			changeThumbnailImg(member); // member의 값을 설정하는 함수 호출

@@ -9,6 +9,10 @@ function getMember() {
 	$.ajax({
 		url : '/member/memberInfo',
 		type : 'POST',
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success : function(data) {
 			var member = data; // 받아온 data 정보를 member 변수에 할당
 			headerSetMemberInfo(member); // member의 값을 설정하는 함수 호출
