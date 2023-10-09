@@ -21,6 +21,7 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
@@ -35,12 +36,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	@Autowired
 	private CrawlingDAO crawlingDAO;
-	
-
-	// properties 로 어떻게 해볼 수 있을 것 같은데
-	private String[] WAVVE_LOGIN_KEY = {"life4603@naver.com", "testwavve930!"};
-	private String[] NETFLIX_LOGIN_KEY = {"hkiss7@naver.com", "gkskfh1511"};
-	private String[] TVING_LOGIN_KEY = {"alltttv", "!allott1234"};
 
 	@Value("${wavve.key}")
 	private String[] WAVVE_LOGIN_KEY;
