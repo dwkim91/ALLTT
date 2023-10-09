@@ -60,4 +60,9 @@ public class SupportDAOImpl implements SupportDAO {
 		return sqlSession.selectList("supportMapper.selectListImageRequiredToBeUploaded");
 	}
 
+	@Override
+	public void insertViewImage(FilteredDTO tempDTO) {
+		sqlSession.insert("supportMapper.insertViewImage",tempDTO);
+	}
+
 }
