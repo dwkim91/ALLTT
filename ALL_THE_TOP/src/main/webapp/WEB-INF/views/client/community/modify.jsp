@@ -54,6 +54,10 @@ $(function() {
 			type : "POST",
 			async : true,
 			data : {"searchTitle" : searchTitle},
+			beforeSend: function(xhr) {
+			    // CSRF 토큰을 요청 헤더에 추가
+			    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+			},
 			success : function(result) {
 				var searchList = $("#tag_list");
 				searchList.empty(); // 기존 내용 제거
@@ -110,6 +114,10 @@ $(function() {
 			type : "GET",
 			async : true,
 			data : { "contentId" : selectedContent.attr("contentId")},
+			beforeSend: function(xhr) {
+			    // CSRF 토큰을 요청 헤더에 추가
+			    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+			},
 			success : function(content) {
 
 				var html = '<div data-v-5dec5019="" data-v-4179835d="" class="movie_item">';
@@ -167,16 +175,25 @@ $(function() {
 				"contentId" : contentId
 			};
 			
-			// post 로 작성된 내용을 넘기고
-			$.post("${contextPath}/community/modifyPost", param, function(data) {
-				// 등록이 완료되면 게시판으로 이동
-				if (data == "modified") {
-					alert("게시글이 수정되었습니다.");
-					location.href="${contextPath}/community/feed";
-				}
-				else {
-					alert("비밀번호를 확인해주세요.");
-					location.reload();
+			$.ajax({
+				url : "${contextPath}/community/modifyPost",
+				async : true,
+				type : "POST",
+				data : param,
+				beforeSend: function(xhr) {
+				    // CSRF 토큰을 요청 헤더에 추가
+				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
+				success : function(data) {
+					// 등록이 완료되면 게시판으로 이동
+					if (data == "modified") {
+						alert("게시글이 수정되었습니다.");
+						location.href="${contextPath}/community/feed";
+					}
+					else {
+						alert("비밀번호를 확인해주세요.");
+						location.reload();
+					}
 				}
 			});
 		}
@@ -184,9 +201,7 @@ $(function() {
 			alert("게시글 비밀번호를 입력해주세요.");
 			$("#passwd").focus();
 		}
-
 	});
-
 
 });
 </script>

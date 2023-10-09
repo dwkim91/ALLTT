@@ -2,9 +2,6 @@ $('#searchButton').click(function() {
 	$(".searchInput").focus();
 });
 
-//CSRF 토큰 가져오기 (페이지 로딩 시 한 번만 수행)
-var csrfToken = $("meta[name='_csrf']").attr("content"); // CSRF 토큰 값 추출
-
 $(".searchInput").keyup(function() {
 	var searchContent = $(this).val();
 	
@@ -32,7 +29,6 @@ $(".searchInput").keyup(function() {
 				searchResultElement.empty();
 				
 				if (result.length > 0) {
-					console.log(result.length);
 					for (var i = 0; i < result.length; i++) {
 						var listItem = $("<li></li>");
 						var preBlock = $("<div class='preBlock'></div>");

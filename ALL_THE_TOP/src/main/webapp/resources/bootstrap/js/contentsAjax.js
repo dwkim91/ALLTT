@@ -1,9 +1,13 @@
 export function contentsLoadAjax(filterData) {
+	
 	$.ajax({
 		url: '/contentLoad',
 		type: 'POST',
 		data: filterData,
-	
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success: function(contentList) {
 			console.log(filterData);
 			var container = $("#container");
