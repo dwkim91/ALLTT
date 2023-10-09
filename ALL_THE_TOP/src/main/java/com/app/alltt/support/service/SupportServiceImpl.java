@@ -5,7 +5,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -87,19 +86,13 @@ public class SupportServiceImpl implements SupportService {
 	@Value("${allott.aws.bucket.name}")
     private String BUCKET_NAME;
 	
+	@Value("${allott.aws.image.path}")
+	private String imagePath;
+	
 	@Override
 	public void resizeAndUploadImage() {
 		
 		ImageResizeAndUploadService imageService = new ImageResizeAndUploadService();
-		
-		int platformId = 2;
-		
-		if (platformId != 1) {
-			imageService.uploadImageToS3(imageService.resizeImageUrl("", 480, 700), "image/image2.jpg");
-		}
-		else if (platformId == 1) {
-			//imageService.uploadImageToS3(imageService.newImageUrl("", 340, 700), "image/image2.jpg");
-		}
 		
 	}
 
@@ -113,9 +106,10 @@ public class SupportServiceImpl implements SupportService {
 			
 			int width = tempImage.getWidth(); // 이미지의 너비(가로 길이)
 			int height = tempImage.getHeight(); // 이미지의 높이(세로 길이)
-
 			
 			String objectKey = "image/" + contentId + ".jpg";
+			
+			System.out.println(width + "x" + height);
 			
 			if (width < height) {
 				imageService.uploadImageToS3(imageService.resizeImageFile(tempImage, 480, 700), objectKey);
@@ -123,6 +117,13 @@ public class SupportServiceImpl implements SupportService {
 			else {
 				imageService.uploadImageToS3(imageService.newImageFile(tempImage, 340, 700), objectKey);
 			}
+			
+			FilteredDTO tempDTO = new FilteredDTO();
+			
+			tempDTO.setContentId(contentId);
+			tempDTO.setImgUrl(imagePath + contentId + ".jpg");
+			
+			supportDAO.insertViewImage(tempDTO);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -132,57 +133,70 @@ public class SupportServiceImpl implements SupportService {
 	
 	public class ImageResizeAndUploadService {
 		
-	    public BufferedImage resizeImageFile(BufferedImage tempImage, int targetWidth, int targetHeight) {
-	            
-	    		// 이미지 리사이징
-	        	Image resizedImage = tempImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-	        	
-				BufferedImage bufferedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-				bufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
-
-	            return bufferedImage;
-	            
-	    }
-	    
-		public BufferedImage newImageFile(BufferedImage tempImage, int newWidth, int newHeight) {
-			
-            // 새로운 이미지를 생성합니다.
-            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = newImage.createGraphics();
-
-            // 원본 이미지를 새 이미지의 중앙에 그립니다.
-            int x = (newWidth - tempImage.getWidth()) / 2;
-            int y = (newHeight - tempImage.getHeight()) / 2;
-            g2d.drawImage(tempImage, x, y, tempImage.getWidth(), tempImage.getHeight(), null);
-            g2d.dispose();
-            
-            return newImage;
-			
-		}
-
-	    public BufferedImage resizeImageUrl(String imageUrl, int targetWidth, int targetHeight) {
+	    public BufferedImage resizeImage(String imageUrl, int targetWidth, int targetHeight) {
 	        try {
+	            BufferedImage originalImage = ImageIO.read(new URL(imageUrl));
 
-	        	BufferedImage originalImage = ImageIO.read(new URL(imageUrl));
+	            // 이미지 리사이징 (WebP, PNG, JPG 모두 지원)
+	            BufferedImage resizedImage = Thumbnails.of(originalImage)
+	                    .size(targetWidth, targetHeight)
+	                    .outputFormat("jpg")
+	                    .asBufferedImage();
 
-	            // 이미지 리사이징
-	        	Image resizedImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-	        	
-				BufferedImage bufferedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-				bufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
+	            return resizedImage;
 
-	            return bufferedImage;
-	            
-	        }
-	        catch (IOException e) {
+	        } catch (IOException e) {
 	            e.printStackTrace();
 	            return null;
 	        }
 	    }
 	    
-		public BufferedImage newImageUrl(BufferedImage tempImage, int newWidth, int newHeight) {
-			
-            // 새로운 이미지를 생성합니다.
+	    public BufferedImage resizeImageFile(BufferedImage tempImage, int targetWidth, int targetHeight) {
+	        try {
+
+	            // 이미지 리사이징 (WebP, PNG, JPG 모두 지원)
+	            BufferedImage resizedImage = Thumbnails.of(tempImage)
+	                    .size(targetWidth, targetHeight)
+	                    .outputFormat("jpg")
+	                    .asBufferedImage();
+
+	            return resizedImage;
+
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+	    }
+		
+		// 이미지 URL을 BufferedImage으로 변환
+	    public BufferedImage newImage(String url, int newWidth, int newHeight) {
+	        try {
+	            URL imageUrl = new URL(url);
+
+	            // WebP 이미지를 BufferedImage로 읽습니다.
+	            BufferedImage tempImage = ImageIO.read(imageUrl);
+
+	            // 새로운 WebP 이미지를 생성합니다.
+	            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+	            Graphics2D g2d = newImage.createGraphics();
+
+	            // 원본 이미지를 새 이미지의 중앙에 그립니다.
+	            int x = (newWidth - tempImage.getWidth()) / 2;
+	            int y = (newHeight - tempImage.getHeight()) / 2;
+	            g2d.drawImage(tempImage, x, y, tempImage.getWidth(), tempImage.getHeight(), null);
+	            g2d.dispose();
+
+	            return newImage;
+
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+	    }
+		
+		// 새이미지에 리사이징된 이미지파일 덮어쓰기
+	    public BufferedImage newImageFile(BufferedImage tempImage, int newWidth, int newHeight) {
+            // 새로운 WebP 이미지를 생성합니다.
             BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = newImage.createGraphics();
 
@@ -191,11 +205,11 @@ public class SupportServiceImpl implements SupportService {
             int y = (newHeight - tempImage.getHeight()) / 2;
             g2d.drawImage(tempImage, x, y, tempImage.getWidth(), tempImage.getHeight(), null);
             g2d.dispose();
-            
-            return newImage;
-			
-		}
 
+            return newImage;
+	    }
+		
+		// AWS S3 업로드
 	    public void uploadImageToS3(BufferedImage resizedImage, String objectKey) {
 	        try {
 	            // 이미지를 바이트 배열로 변환
@@ -224,6 +238,7 @@ public class SupportServiceImpl implements SupportService {
 	        }
 	    }
 	    
+	    // MultipartFile to BufferedImage
 	    public BufferedImage convertMultipartFileToBufferedImage(MultipartFile multipartFile) throws IOException {
 	        // MultipartFile을 바이트 배열로 읽어옴
 	        byte[] bytes = multipartFile.getBytes();
