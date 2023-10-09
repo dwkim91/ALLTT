@@ -106,4 +106,16 @@
 				CV.CONTENT_ID IS NULL
 	</select>
 	
+	<insert id="insertImgPath" parameterType="FilteredDTO">
+		INSERT INTO
+				CONTENT_VIEWIMG (
+						CONTENT_ID,
+						IMG_URL
+					)
+				VALUES (
+						#{contentId}, 
+						#{imgUrl}
+				)
+	</insert>
+	
 </mapper>
