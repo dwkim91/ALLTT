@@ -20,9 +20,12 @@ $(".fileInput").on("change", function() {
 			contentType: false, // 컨텐츠 타입 설정
 			success: function(response) {
             	
+				
 				if (response.startsWith("Error :")) {
 					alert(response);
 				}
+
+				window.location.reload();
             },
             error: function() {
                 // 업로드 실패 시 처리

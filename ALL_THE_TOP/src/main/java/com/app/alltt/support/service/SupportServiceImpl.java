@@ -1,9 +1,11 @@
 package com.app.alltt.support.service;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -92,58 +95,83 @@ public class SupportServiceImpl implements SupportService {
 		int platformId = 2;
 		
 		if (platformId != 1) {
-			imageService.uploadImageToS3(imageService.resizeImage("", 480, 700), "image/image2.jpg");
+			imageService.uploadImageToS3(imageService.resizeImageUrl("", 480, 700), "image/image2.jpg");
 		}
 		else if (platformId == 1) {
-			imageService.uploadImageToS3(imageService.newImage("", 340, 700), "image/image2.jpg");
+			//imageService.uploadImageToS3(imageService.newImageUrl("", 340, 700), "image/image2.jpg");
 		}
 		
 	}
 
 	@Override
-	public void resizeAndUploaddamagedImage(String tempFilePath, int contentId) {
+	public void resizeAndUploaddamagedImage(MultipartFile uploadFile, int contentId) {
 		
-		
+		try {
+			ImageResizeAndUploadService imageService = new ImageResizeAndUploadService();
+			
+			BufferedImage tempImage = imageService.convertMultipartFileToBufferedImage(uploadFile);
+			
+			int width = tempImage.getWidth(); // 이미지의 너비(가로 길이)
+			int height = tempImage.getHeight(); // 이미지의 높이(세로 길이)
+
+			
+			String objectKey = "image/" + contentId + ".jpg";
+			
+			if (width < height) {
+				imageService.uploadImageToS3(imageService.resizeImageFile(tempImage, 480, 700), objectKey);
+			}
+			else {
+				imageService.uploadImageToS3(imageService.newImageFile(tempImage, 340, 700), objectKey);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("예외 발생: " + e.getMessage());
+		}
 	}
 	
 	public class ImageResizeAndUploadService {
 		
-		public BufferedImage newImage(String url, int newWidth, int newHeight) {
-			
-			try {
+	    public BufferedImage resizeImageFile(BufferedImage tempImage, int targetWidth, int targetHeight) {
+	            
+	    		// 이미지 리사이징
+	        	Image resizedImage = tempImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+	        	
+				BufferedImage bufferedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+				bufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
 
-            BufferedImage originalImage = ImageIO.read(new URL(url));
-            
-            // 비어진 새로운 이미지 생성
+	            return bufferedImage;
+	            
+	    }
+	    
+		public BufferedImage newImageFile(BufferedImage tempImage, int newWidth, int newHeight) {
+			
+            // 새로운 이미지를 생성합니다.
             BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = newImage.createGraphics();
 
-            int x = (newWidth - originalImage.getWidth()) / 2;
-            int y = (newHeight - originalImage.getHeight()) / 2;
-            g2d.drawImage(originalImage, x, y, originalImage.getWidth(), originalImage.getHeight(), null);
+            // 원본 이미지를 새 이미지의 중앙에 그립니다.
+            int x = (newWidth - tempImage.getWidth()) / 2;
+            int y = (newHeight - tempImage.getHeight()) / 2;
+            g2d.drawImage(tempImage, x, y, tempImage.getWidth(), tempImage.getHeight(), null);
             g2d.dispose();
             
             return newImage;
 			
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				return null;
-			}
-			
 		}
 
-	    public BufferedImage resizeImage(String imageUrl, int targetWidth, int targetHeight) {
+	    public BufferedImage resizeImageUrl(String imageUrl, int targetWidth, int targetHeight) {
 	        try {
 
 	        	BufferedImage originalImage = ImageIO.read(new URL(imageUrl));
 
 	            // 이미지 리사이징
-	            BufferedImage resizedImage = Thumbnails.of(originalImage)
-	                    .size(targetWidth, targetHeight)
-	                    .asBufferedImage();
+	        	Image resizedImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+	        	
+				BufferedImage bufferedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+				bufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
 
-	            return resizedImage;
+	            return bufferedImage;
 	            
 	        }
 	        catch (IOException e) {
@@ -151,6 +179,22 @@ public class SupportServiceImpl implements SupportService {
 	            return null;
 	        }
 	    }
+	    
+		public BufferedImage newImageUrl(BufferedImage tempImage, int newWidth, int newHeight) {
+			
+            // 새로운 이미지를 생성합니다.
+            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = newImage.createGraphics();
+
+            // 원본 이미지를 새 이미지의 중앙에 그립니다.
+            int x = (newWidth - tempImage.getWidth()) / 2;
+            int y = (newHeight - tempImage.getHeight()) / 2;
+            g2d.drawImage(tempImage, x, y, tempImage.getWidth(), tempImage.getHeight(), null);
+            g2d.dispose();
+            
+            return newImage;
+			
+		}
 
 	    public void uploadImageToS3(BufferedImage resizedImage, String objectKey) {
 	        try {
@@ -178,6 +222,20 @@ public class SupportServiceImpl implements SupportService {
 	            // 예외 처리
 	            e.printStackTrace();
 	        }
+	    }
+	    
+	    public BufferedImage convertMultipartFileToBufferedImage(MultipartFile multipartFile) throws IOException {
+	        // MultipartFile을 바이트 배열로 읽어옴
+	        byte[] bytes = multipartFile.getBytes();
+	        
+	        // 바이트 배열을 ByteArrayInputStream으로 변환
+	        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+	        
+	        // ByteArrayInputStream을 사용하여 BufferedImage로 읽어옴
+	        BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
+	        
+	        // BufferedImage 반환
+	        return bufferedImage;
 	    }
 	    
 	}

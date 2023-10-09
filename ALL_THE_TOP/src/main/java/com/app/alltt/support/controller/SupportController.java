@@ -144,22 +144,7 @@ public class SupportController {
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
 	    			
-	    			File tempFile = null;
-	    			
-	    	        try {
-	    	            // 업로드된 파일을 임시로 저장
-	    	            tempFile = File.createTempFile("temp", "." + fileExtension);
-	    	            uploadFile.transferTo(tempFile);
-
-	    	            // 임시 파일의 경로를 얻음
-	    	            String tempFilePath = tempFile.getAbsolutePath();
-	    	            
-	    	            System.out.println(tempFilePath);
-	    	            
-	    	            //supportService.resizeAndUploaddamagedImage(tempFilePath, 1);
-	    	        }
-	    	        catch (Exception e) {}
-	    	        finally {tempFile.delete();}
+	    			supportService.resizeAndUploaddamagedImage(uploadFile, 9225);
 	    			
 	    		}
 	    		else {
