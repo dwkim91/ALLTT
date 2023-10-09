@@ -9,7 +9,7 @@
 		FROM
 				MEMBER
 		WHERE
-				USER_ID LIKE CONCAT('%', #{userId}, '%')
+				USER_ID = #{userId}
 	</select>
 	
 	<insert id="insertMember" parameterType="MemberDTO">
@@ -30,6 +30,17 @@
 	<select id="selectOneMemberByMemberId" parameterType="Long" resultType="MemberDTO">
 		SELECT
 				*
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="selectOneMemberSimpleInfoByMemberId" parameterType="Long" resultType="MemberDTO">
+		SELECT
+				NICK_NAME, 
+				IMG_DATA, 
+				IMG_EXTENSION
 		FROM
 				MEMBER
 		WHERE

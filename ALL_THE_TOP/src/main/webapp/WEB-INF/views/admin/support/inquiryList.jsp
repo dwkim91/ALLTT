@@ -14,7 +14,6 @@
 </head>
 <body>
 	<div class="container-fluid position-relative d-flex p-0">
-		<!-- Content Start -->
 		<div class="content">
 			<div class="container" style="padding-top: 5rem;">
 				<div class="row g-4">
@@ -22,7 +21,6 @@
 					<div class="col-sm-12 col-xl-6"></div>
 				</div>
 			</div>
-			<!-- Sale & Revenue Start -->
 			<div class="container-fluid pt-4 px-4">
 				<div class="row g-4">
 					<div class="col-sm-6 col-xl-3">
@@ -71,16 +69,12 @@
 					</div>
 				</div>
 			</div>
-			<!-- Sale & Revenue End -->
-			<!-- Sales Chart Start -->
 			<div class="container-fluid pt-4 px-4">
 				<div class="row g-4">
 					<div class="col-sm-12 col-xl-6"></div>
 					<div class="col-sm-12 col-xl-6"></div>
 				</div>
 			</div>
-			<!-- Sales Chart End -->
-			<!-- Recent Sales Start -->
 			<div class="container-fluid pt-4 px-4">
 				<div class="bg-secondary text-center rounded p-4">
 					<div class="d-flex align-items-center justify-content-between mb-4">
@@ -156,9 +150,7 @@
 					</div>
 				</div>
 			</div>
-			<!-- Recent Sales End -->
 		</div>
-		<!-- Content End -->
 	</div>
 	<script src="${contextPath}/resources/bootstrap/js/inquiryList.js"></script>
 </body>

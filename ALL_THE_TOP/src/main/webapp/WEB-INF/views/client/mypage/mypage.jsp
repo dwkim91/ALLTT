@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <script>
 	//구독정보
 	var netflixId = ${subscription.netflixId};
@@ -116,7 +117,7 @@
 								<div data-v-014a8b00="" class="link-action-wrap">
 									<span data-v-014a8b00="" class="link-count"
 										onclick="setSubscription()" style="cursor: pointer;">변경</span>
-									<svg data-v-014a8b00="" xmlns="http://www.w3.org/2000/svg">
+									<svg data-v-014a8b00="">
 										<path d="M5.293 3.05a1 1 0 000 1.415L8.828 8l-3.535 3.536a1 1 0 101.414 1.414l4.23-4.23a1 1 0 00.013-1.427L6.707 3.051a1 1 0 00-1.414 0z"></path>
 									</svg>
 								</div>
@@ -128,7 +129,7 @@
 								</div>
 								<div data-v-014a8b00="" class="link-action-wrap">
 									<span data-v-014a8b00="" class="link-count">${netflixWishCnt}</span>
-									<svg data-v-014a8b00="" xmlns="http://www.w3.org/2000/svg">
+									<svg data-v-014a8b00="">
 										<path d="M5.293 3.05a1 1 0 000 1.415L8.828 8l-3.535 3.536a1 1 0 101.414 1.414l4.23-4.23a1 1 0 00.013-1.427L6.707 3.051a1 1 0 00-1.414 0z"></path>
 									</svg>
 								</div>
@@ -140,7 +141,7 @@
 								</div>
 								<div data-v-014a8b00="" class="link-action-wrap">
 									<span data-v-014a8b00="" class="link-count">${tvingWishCnt}</span>
-									<svg data-v-014a8b00="" xmlns="http://www.w3.org/2000/svg">
+									<svg data-v-014a8b00="">
 										<path d="M5.293 3.05a1 1 0 000 1.415L8.828 8l-3.535 3.536a1 1 0 101.414 1.414l4.23-4.23a1 1 0 00.013-1.427L6.707 3.051a1 1 0 00-1.414 0z"></path>
 									</svg>
 								</div>
@@ -152,7 +153,7 @@
 								</div>
 								<div data-v-014a8b00="" class="link-action-wrap">
 									<span data-v-014a8b00="" class="link-count">${wavveWishCnt}</span>
-									<svg data-v-014a8b00="" xmlns="http://www.w3.org/2000/svg">
+									<svg data-v-014a8b00="">
 										<path d="M5.293 3.05a1 1 0 000 1.415L8.828 8l-3.535 3.536a1 1 0 101.414 1.414l4.23-4.23a1 1 0 00.013-1.427L6.707 3.051a1 1 0 00-1.414 0z"></path>
 									</svg>
 								</div>
@@ -221,7 +222,7 @@
 								<div data-v-014a8b00="" class="link-action-wrap">
 									<span data-v-014a8b00="" class="link-count"
 										onclick="setSearchFilter('series')" style="cursor: pointer;">변경</span>
-									<svg data-v-014a8b00="" xmlns="http://www.w3.org/2000/svg">
+									<svg data-v-014a8b00="">
 										<path d="M5.293 3.05a1 1 0 000 1.415L8.828 8l-3.535 3.536a1 1 0 101.414 1.414l4.23-4.23a1 1 0 00.013-1.427L6.707 3.051a1 1 0 00-1.414 0z"></path>
 									</svg>
 								</div>
@@ -287,7 +288,7 @@
 								<div data-v-014a8b00="" class="link-action-wrap">
 									<span data-v-014a8b00="" class="link-count"
 										onclick="setSearchFilter('movie')" style="cursor: pointer;">변경</span>
-									<svg data-v-014a8b00="" xmlns="http://www.w3.org/2000/svg">
+									<svg data-v-014a8b00="">
 										<path d="M5.293 3.05a1 1 0 000 1.415L8.828 8l-3.535 3.536a1 1 0 101.414 1.414l4.23-4.23a1 1 0 00.013-1.427L6.707 3.051a1 1 0 00-1.414 0z"></path>
 									</svg>
 								</div>
@@ -309,7 +310,6 @@
 		</div>
 		<div data-v-014a8b00="" class="contents-container"></div>
 	</div>
-<script src="${contextPath}/resources/bootstrap/js/mypage.js"></script>
-
+	<script src="${contextPath}/resources/bootstrap/js/mypage.js"></script>
 </body>
 </html>

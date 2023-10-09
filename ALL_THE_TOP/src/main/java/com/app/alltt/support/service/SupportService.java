@@ -2,6 +2,8 @@ package com.app.alltt.support.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
@@ -16,7 +18,7 @@ public interface SupportService {
 	int getInProgressCnt();
 	List<SupportDTO> getInquiryListByStatus(String status);
 	List<FilteredDTO> getImageRequiredToBeUploaded();
-	void resizeAndUploaddamagedImage(String tempFilePath, int contentId);
+	void resizeAndUploaddamagedImage(MultipartFile uploadFile, int contentId);
 	void resizeAndUploadImage();
 	
 }

@@ -3,7 +3,6 @@ package com.app.alltt.member.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -45,6 +37,7 @@ import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.member.service.MemberService;
 import com.app.alltt.member.sns.AuthModule;
 import com.app.alltt.member.sns.SnsValue;
+import com.app.alltt.security.ALLTTUserDetailsService;
 
 @Controller
 @RequestMapping("/member")
@@ -65,6 +58,9 @@ public class MemberController {
 	
 	@Autowired
 	private MainService mainService;
+	
+	@Autowired
+	private ALLTTUserDetailsService allttUserDetailsService;
 	
 	// instance 명을 servlet-context.xml에 설정된 이름으로 진행함으로써
 	// servlet-context.xml에 설정한 변수값들을 SnsValue에 바로 전달하면서 instance 생성
@@ -100,22 +96,24 @@ public class MemberController {
 		
 		// application을 구분하는 state 값을 초기화
 		session.removeAttribute("state");
-		// authModule에다가 naver client 정보들을 담은 SnsValue를 삽입해줌으로써 해당 method가 naver 인증을 위해 동작하도록 설정
-		//authModule.setSns(naverSns, "login");
+		// authModule에다가 sns client 정보들을 담은 SnsValue를 삽입해줌으로써 해당 method가 sns 인증을 위해 동작하도록 설정
 		authModule.setSns(sns, source);
 		// 인증 code를 요청
 		// 외부로 보이는 url이라 추후 확인 필요
 		// naver login api를 사용하는 상용 서비스들도 이 url은 보이는 편이긴 함
-		//mv.setViewName("redirect:" + authModule.connectNAVERAPI(session, "login"));
 		mv.setViewName("redirect:" + authModule.getSnsAuthUrl(session));
 		// 현재 browser에 저장된 session이 어떤 값들이 있나 검증용
-		getSessionStatus(session);
+		//getSessionStatus(session);
 		
 		return mv;
 	}
 	
 	@GetMapping("/logout")
 	public ResponseEntity<Object> logOut(HttpServletRequest request, HttpSession session) {
+		
+		// security clear
+		allttUserDetailsService.byeUser();
+		
 		// 로그인을 하며 session에 등록된 모든 값들을 날려버림
 		session.invalidate();
 		String jsScript = "<script>";
@@ -138,6 +136,11 @@ public class MemberController {
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
+		// ** 처리방향 논의 필요
+		// 다른 계정으로 로그인한 유저가 url로 로그인 접속을 하는 경우?
+		// 일단 로그인 정보를 날려놓
+		allttUserDetailsService.byeUser();
+		
 		// 사용자에게 보여주는 메세지
 		String jsScript = "<script>";
 		
@@ -159,35 +162,15 @@ public class MemberController {
 				session.setAttribute("memberId", dbMember.getMemberId());
 				session.setAttribute("managerYn", dbMember.getManagerYn());
 				
-		        // 사용자의 권한 정보를 설정
-		        List<GrantedAuthority> authorities = new ArrayList<>();
-		        authorities.add(new SimpleGrantedAuthority(dbMember.getManagerYn() == "Y" ? "ADMIN" : "USER"));
-
-		        // UserDetails를 생성하여 반환
-		        UserDetails userDetails = new User(
-		                dbMember.getMemberId() + "",
-		                dbMember.getNickName(),
-		                authorities
-	            );
-		        
-		        // UserDetails 객체를 포장한 Authentication 객체 생성
-		        Authentication authentication = new UsernamePasswordAuthenticationToken(
-		            userDetails, // UserDetails
-		            "", // 비밀번호 (또는 인증 토큰)
-		            userDetails.getAuthorities() // 권한 정보
-		        );
-		        
-		        // SecurityContextHolder에 Authentication 객체 저장
-		        SecurityContextHolder.getContext().setAuthentication(authentication);
-		        
+				// 인증정보 등록
+				allttUserDetailsService.loadUserByUsername(dbMember.getUserId());
+				
 				jsScript += "alert('로그인 되었습니다.');";
 			}
 			// DB에서 확인되지 않는 member라면
 			else {
 				// 닉네임 자동 생성
 				loginMember.setNickName(memberService.genNickName());		
-				// 프로필 이미지 저장 후 새 회원 추가
-				//memberService.addNewMember(memberService.imgDownload(loginMember, getThumbnailImagePath(session)));
 				// 회원 추가
 				memberService.addNewMember(loginMember);
 				// 로그인을 위해서 다시 가져와서 memberId 확인
@@ -226,7 +209,7 @@ public class MemberController {
 		// 사용자에게 보여주는 메세지
 		String jsScript = "<script>";
 		
-		// naver에서 보내주는 code 값
+		// sns에서 보내주는 code 값
 		String code = request.getParameter("code");
 		
 		// 서버에서 요청한 request일때만 (session의 state와 동일할때만 처리)
@@ -270,7 +253,7 @@ public class MemberController {
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 
 		// session 검증용
-		getSessionStatus(session);
+		//getSessionStatus(session);
 		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
@@ -280,11 +263,7 @@ public class MemberController {
 	@ResponseBody
 	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
-		MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
-		memberDTO.setUserId(""); // 개발자 모드나 외부로 노출되지 않도록 UserId 공백처리
-		// 이미지 데이터를 Base64로 인코딩하여 문자열로 반환
-		String base64Image = Base64.getEncoder().encodeToString(memberDTO.getImgData()); 
-        memberDTO.setThumbnailImg(base64Image);
+		MemberDTO memberDTO = memberService.getMemberSimpleInfoByMemberId(memberId);
 		return memberDTO;
 	} 
 	
@@ -401,13 +380,12 @@ public class MemberController {
 	@RequestMapping(value="/filterUpdate", method=RequestMethod.GET)
 	@ResponseBody
 	public List<FilterDTO> updateSearchFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-	    
 		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    return mainService.getMoreGenreList(filterDTO);
-	    
 	}
 	
+	// 세션 검증용 
 	@PostMapping("/sessionRemainingTime")
 	@ResponseBody
 	public int checkSessionTime(HttpSession session) {
@@ -494,7 +472,7 @@ public class MemberController {
 	    		long fileSize = uploadFile.getSize();
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
-// 프로젝트 내부저장방식 
+// 프로젝트 내부 저장방식 
 	    			/*
 	    			// 현재 프로필 이미지 파일 경로 가져오기
 	    			MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
@@ -512,13 +490,12 @@ public class MemberController {
 	    			memberService.changeThumbnailImg(memberDTO);
 	    			*/
 // DB 저장방식	    			
-	    			
 	    			MemberDTO memberDTO = new MemberDTO();
 	    			memberDTO.setMemberId(memberId);
 	    			memberDTO.setImgExtension(fileExtension);
 	    			
 	    			// 기존 프로필이미지 업데이트
-	    			memberService.saveProfileImg(uploadFile, memberDTO, true);
+	    			memberService.saveProfileImg(uploadFile, memberDTO);
 	    			
 	    		}
 	    		else {

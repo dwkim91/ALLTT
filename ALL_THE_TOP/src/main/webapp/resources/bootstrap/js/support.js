@@ -87,9 +87,6 @@ function sendInquiry(){
 	var questionType = $("input[name='question_type']:checked").val();
 	var suggestion = $("#suggestion-text").val();
 	var email = $("#email").val();
-	console.log("questionType :" + questionType);
-	console.log("suggestion :" + suggestion);
-	console.log("email :" + email);
 	
 	var inquiryData = {
 			"questionType" : questionType,

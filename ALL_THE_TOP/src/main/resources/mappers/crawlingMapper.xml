@@ -220,4 +220,29 @@
 			INNER JOIN CONTENT_LINK L ON C.CONTENT_ID = L.CONTENT_ID
 		LIMIT #{contentId}, 42;
 	</select>
+	
+	<!-- 서비스 종료된 컨텐츠 List -->
+	<select id="selectListNonServiceContent" resultType="CrawlingDTO">
+		SELECT
+				CONTENT_ID
+		FROM
+				CONTENT_LINK
+		WHERE
+				EXIST_YN = "N";
+	</select>
+
+	<delete id="deleteContent" parameterType="Long">
+		DELETE FROM
+				CONTENT
+		WHERE
+				CONTENT_ID = #{contentId};	
+	</delete>
+
+	<delete id="deletePost" parameterType="Long">
+		DELETE FROM
+				POST
+		WHERE
+				CONTENT_ID = #{contentId};	
+	</delete>
+	
 </mapper>

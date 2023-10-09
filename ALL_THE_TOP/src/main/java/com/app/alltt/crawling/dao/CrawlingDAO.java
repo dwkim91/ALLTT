@@ -39,5 +39,9 @@ public interface CrawlingDAO {
 	
 	//전체크롤링용 장르ID 별 플랫폼 별로 링크 가져오기 
 	public List<GenreLinkDTO> selectListGenreLinkByGenreId(GenreLinkDTO genreLinkDTO);
+	
+	public List<CrawlingDTO> selectListNonServiceContent();
+	public void deleteContent(long contentId);
+	public void deletePost(long contentId);
 
 }

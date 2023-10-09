@@ -17,4 +17,6 @@ public interface CrawlingService {
 	// scroll test
 	public List<CrawlingDTO> getMoreContents(int contentId);
 	
+	public void deleteContent();
+	
 }
