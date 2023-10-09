@@ -93,4 +93,17 @@
         	ENROLL_DT DESC;
 	</select>
 	
+	<select id="selectListImageRequiredToBeUploaded" resultType="FilteredDTO">
+		SELECT
+				CL.CONTENT_ID,
+				CL.IMG_URL,
+				CV.CONTENT_ID,
+				CV.IMG_URL
+		FROM
+				CONTENT_LINK CL
+			LEFT JOIN  CONTENT_VIEWIMG CV ON CL.CONTENT_ID = CV.CONTENT_ID
+		WHERE
+				CV.CONTENT_ID IS NULL
+	</select>
+	
 </mapper>

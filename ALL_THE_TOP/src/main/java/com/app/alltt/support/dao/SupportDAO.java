@@ -2,6 +2,7 @@ package com.app.alltt.support.dao;
 
 import java.util.List;
 
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
 public interface SupportDAO {
@@ -21,5 +22,7 @@ public interface SupportDAO {
 	int selectInProgress();
 
 	List<SupportDTO> selectInquiryListByStatus(String status);
+
+	List<FilteredDTO> selectListImageRequiredToBeUploaded();
 
 }
