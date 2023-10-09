@@ -21,8 +21,6 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
@@ -32,23 +30,20 @@ import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-
 @Service
-@PropertySource("classpath:properties/platform.properties")
 public class CrawlingServiceImpl implements CrawlingService {
 	
 	@Autowired
 	private CrawlingDAO crawlingDAO;
 	
-	@Value("${wavve.key}")
-	private String[] WAVVE_LOGIN_KEY;
-	@Value("${netflix.key}")
-	private String[] NETFLIX_LOGIN_KEY;
-	@Value("${tving.key}")
-	private String[] TVING_LOGIN_KEY;
+	// properties 로 어떻게 해볼 수 있을 것 같은데
+	private String[] WAVVE_LOGIN_KEY = {"life4603@naver.com", "testwavve930!"};
+	private String[] NETFLIX_LOGIN_KEY = {"hkiss7@naver.com", "gkskfh1511"};
+	private String[] TVING_LOGIN_KEY = {"alltttv", "!allott1234"};
 	
 	private WebDriver driver;
+	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
+	private static final String WEB_DRIVER_PATH = "C:\\chromedriver\\chromedriver.exe";
 	
 	// ==================================== 
 	// ===== 크롤링 공통 메서드 Start ===== 
@@ -57,8 +52,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		WebDriverManager.chromedriver().setup();
-		driver = new ChromeDriver();
+		//        (크롬드라이버 명 , 크롬드라이버 경로)
+		System.setProperty(WEB_DRIVER_ID, 	WEB_DRIVER_PATH);
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
@@ -153,6 +148,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 		crawlingDAO.updateExistYn();
 	}
 	
+	// 서비스종료된 작품 DB에서 삭제 메서드
+	public void deleteContent() {
+		//종료된 작품 contentId List 가져오기
+		for (CrawlingDTO nonService : crawlingDAO.selectListNonServiceContent()) {
+			System.out.println(nonService.getContentId());
+			//post 삭제
+			crawlingDAO.deletePost(nonService.getContentId());
+			//content 테이블에서 삭제
+			crawlingDAO.deleteContent(nonService.getContentId());
+			break;
+		}
+	}
+	
 	// DB에서 OTT플랫 폼별 GenreLinkList 가져오기
 	private List<GenreLinkDTO> getGenreLinkList(int platformId) {
 		return crawlingDAO.selectListGenreLink(platformId);
@@ -237,8 +245,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 	public void addTving(GenreLinkDTO genreLinkDTO) {
 		
 		chromeDriverInit();
-		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
-		initExistYn();
+//		tvingLogin("alltttv", "!allott1234");
+		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
+//		initExistYn();
 //		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
 		
@@ -393,7 +402,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		while (driver.getTitle().equals("TVING")) {
 			quit();
 			chromeDriverInit();
-			tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
+			tvingLogin("alltttv", "!allott1234");
 			moveToTargetUrl(url);
 		}
 		
@@ -502,7 +511,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 //		readDBcontentTest();
 		
 		chromeDriverInit();
-		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
+		tvingLogin("alltttv", "!allott1234");
 		//addContents(getTvingCrawlingDTOList(0));
 		initExistYn();
 		//getTvingContentDetailInfo("https://www.tving.com/contents/P001635813", "series");

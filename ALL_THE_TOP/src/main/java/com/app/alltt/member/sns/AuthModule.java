@@ -114,14 +114,11 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		    );
 		    
 		    String response = responseEntity.getBody();
-		    // 응답 결과 확인
-//		    System.out.println(response);
 		    
 		    // json을 mapping 해주는 역할
 	 		ObjectMapper mapper = new ObjectMapper();
 	 		JsonNode rootNode = mapper.readTree(responseEntity.getBody());
 	 		String access_token = rootNode.get("access_token").asText();
-//	 		System.out.println("access_token : " + access_token);
 
 	 		accessToken = access_token;
 			
@@ -158,7 +155,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		// json을 mapping 해주는 역할
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.readTree(response.getBody());
-		System.out.println(rootNode.toString());
 		
 		return response.isSuccessful();
 	}
@@ -205,7 +201,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 			member.setImgData(imgUrlToByte(imgUrl));
 			member.setImgExtension(extractFileExtensionFromUrl(imgUrl));
 			member.setSocialNm(this.sns.getService());
-
 		}
 		return member;
 		
@@ -216,7 +211,7 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	    URL url = new URL(imgUrl);
 	    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-	    // 이미지 다운로드
+	    // 이미지 읽어오기
 	    InputStream inputStream = connection.getInputStream();
 
 	    // 이미지 데이터를 byte[]로 반환

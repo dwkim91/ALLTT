@@ -3,7 +3,10 @@ export function wishContentListAjax(contentType) {
 		url: '/member/getWishList',
 		type: 'POST',
 		data: contentType,
-		
+		beforeSend: function(xhr) {
+		    // CSRF 토큰을 요청 헤더에 추가
+		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		},
 		success: function(contentList) {
 			
 			var container = $("#wishContainer");

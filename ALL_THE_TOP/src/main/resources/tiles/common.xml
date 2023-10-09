@@ -157,4 +157,10 @@
 		<put-attribute name="body" value="/WEB-INF/views/common/error_page/500.jsp" />
 	</definition>
 	
+	<!-- 크롤링 -->
+	<definition name="/alltt/crawling" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/admin/crawling/crawling.jsp"/>	
+		<put-attribute name="title" value="crawling"/>	
+	</definition>
+	
 </tiles-definitions>

@@ -151,4 +151,9 @@ public class MemberDAOImpl implements MemberDAO {
 		sqlSession.selectOne("memberMapper.updateProfileImg", memberDTO);
 	}
 
+	@Override
+	public MemberDTO selectOneMemberSimpleInfoByMemberId(long memberId) {
+		return sqlSession.selectOne("memberMapper.selectOneMemberSimpleInfoByMemberId", memberId);
+	}
+
 }

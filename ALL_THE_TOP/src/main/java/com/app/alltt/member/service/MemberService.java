@@ -37,6 +37,7 @@ public interface MemberService {
 	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
 	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData);
 	public int getPlatformCntByFilterDTO(FilterDTO filterDTO);
-	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO, boolean isUpdate);
+	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO);
+	public MemberDTO getMemberSimpleInfoByMemberId(long memberId);
 	
 }
