@@ -45,6 +45,10 @@ function withdrawMember(socialNm){
 				type : 'POST',
 				data : JSON.stringify(delete_data),
 				contentType : 'application/json',
+				beforeSend: function(xhr) {
+				    // CSRF 토큰을 요청 헤더에 추가
+				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
 				success : function(response) {
 					alert(response);
 					alert("다음에 다시 만나요.");
