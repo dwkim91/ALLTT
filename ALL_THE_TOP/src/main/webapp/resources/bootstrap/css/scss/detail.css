@@ -1,0 +1,12 @@
+.contents_wrap.wrap_margin {
+	padding: 0;
+}
+
+.col-lg-5.col-md-5 li::before {
+	display: none;
+}
+
+.anime__details__pic {
+	background-size: contain;
+	background-position: center;
+}
