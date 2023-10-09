@@ -106,7 +106,7 @@
 				CV.CONTENT_ID IS NULL
 	</select>
 	
-	<insert id="insertImgPath" parameterType="FilteredDTO">
+	<insert id="insertViewImage" parameterType="FilteredDTO">
 		INSERT INTO
 				CONTENT_VIEWIMG (
 						CONTENT_ID,
