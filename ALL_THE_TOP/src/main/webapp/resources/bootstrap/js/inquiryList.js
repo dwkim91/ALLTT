@@ -24,9 +24,12 @@ $(".fileInput").on("change", function() {
 			},
 			success: function(response) {
             	
+				
 				if (response.startsWith("Error :")) {
 					alert(response);
 				}
+
+				window.location.reload();
             },
             error: function() {
                 // 업로드 실패 시 처리
