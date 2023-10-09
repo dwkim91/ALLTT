@@ -25,4 +25,6 @@ public interface SupportDAO {
 
 	List<FilteredDTO> selectListImageRequiredToBeUploaded();
 
+	void insertViewImage(FilteredDTO tempDTO);
+
 }

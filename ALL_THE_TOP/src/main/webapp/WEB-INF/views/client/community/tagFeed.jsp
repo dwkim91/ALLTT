@@ -47,6 +47,10 @@ $(function() {
 				 async : true,
 				 type : "POST",
 				 data : param,
+				 beforeSend: function(xhr) {
+					    // CSRF 토큰을 요청 헤더에 추가
+					    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
 				 success : function(result) {
 					targetBtn.find("span").html(result);
 				 }

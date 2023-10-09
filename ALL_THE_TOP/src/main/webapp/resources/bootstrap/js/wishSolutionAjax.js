@@ -7,7 +7,10 @@ export function wishSolutionAjax(filtered) {
 		type: 'POST',
 	    data: JSON.stringify(filtered), // 데이터를 JSON 문자열로 변환하여 전송
 	    contentType: 'application/json', // 전송하는 데이터의 형식을 JSON으로 지정
-		
+	    beforeSend: function(xhr) {
+	        // CSRF 토큰을 요청 헤더에 추가
+	        xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+	    },
 		success: function(response) {
 			
 			platformMap = response;

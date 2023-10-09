@@ -1,6 +1,5 @@
 package com.app.alltt.support.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.app.alltt.member.dto.MemberDTO;
 import com.app.alltt.support.dto.SupportDTO;
 import com.app.alltt.support.service.SupportService;
 
@@ -122,10 +120,9 @@ public class SupportController {
 	    return "답변이 등록 되었습니다.";
 	}
 	
-	/// 프로필사진 변경
 	@RequestMapping(value="/changeImg", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile) throws Exception, IOException {
+	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, @RequestParam("contentId") int contentId) throws Exception, IOException {
 
 	    String result = "";
 	    
@@ -144,7 +141,7 @@ public class SupportController {
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
 	    			
-	    			supportService.resizeAndUploaddamagedImage(uploadFile, 9225);
+	    			supportService.resizeAndUploaddamagedImage(uploadFile, contentId);
 	    			
 	    		}
 	    		else {

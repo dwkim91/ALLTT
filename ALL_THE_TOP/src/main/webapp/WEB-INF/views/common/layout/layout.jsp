@@ -11,6 +11,7 @@
     <meta name="keywords" content="Anime, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="X-CSRF-TOKEN" content="${_csrf.token}">
     <link rel="shortcut icon" href="${contextPath}/resources/bootstrap/img/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="${contextPath}/resources/bootstrap/img/favicon.ico" type="image/x-icon">
     <title>ALLTT</title>
@@ -1060,6 +1061,7 @@ transform
 <script src="${contextPath}/resources/bootstrap/js/jquery.slicknav.js"></script>
 <script src="${contextPath}/resources/bootstrap/js/owl.carousel.min.js"></script>
 <script src="${contextPath}/resources/bootstrap/js/main.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/ctalk.js"></script>
 
 
 </body>
