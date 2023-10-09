@@ -22,6 +22,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
@@ -32,6 +33,7 @@ import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
 
 @Service
+@PropertySource("classpath:properties/platform.properties")
 public class CrawlingServiceImpl implements CrawlingService {
 	
 	@Autowired
