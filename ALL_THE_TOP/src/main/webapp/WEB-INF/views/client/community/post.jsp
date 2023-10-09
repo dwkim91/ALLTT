@@ -10,6 +10,8 @@
 <link data-n-head="ssr" rel="icon" type="image/png" sizes="32x32" href="https://nujhrcqkiwag1408085.cdn.ntruss.com/static/common/icon/favicon-33x33.png">
 <script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
 <script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/checkContentWish.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/replyAction.js"></script>
 <script>
 $(function() {
 
@@ -26,7 +28,7 @@ $(function() {
 		$(this).text(formattedDate);
 	});
 	
-	checkContentWish();
+	checkContentWish("${checkContentMyWish}");
 	
 	// 뒤로가기
 	$(".back-btn").click(function() {
@@ -66,11 +68,20 @@ $(function() {
 				"memberId" : memberId
 			};
 			
-			// post 로 작성된 내용을 넘기고
-			$.post("${contextPath}/community/addReply", param, function(data) {
-				// 등록이 완료되면 게시판으로 이동
-				if (data == "inserted") {
-					alert("댓글이 등록되었습니다.");
+			$.ajax({
+				url : "${contextPath}/community/addReply",
+				async : true,
+				type : "POST",
+				data : param,
+				beforeSend: function(xhr) {
+				    // CSRF 토큰을 요청 헤더에 추가
+				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
+				success : function(data) {
+					// 등록이 완료되면 게시판으로 이동
+					if (data == "inserted") {
+						alert("댓글이 등록되었습니다.");
+					}
 				}
 			});
 		}
@@ -90,6 +101,10 @@ $(function() {
 			 async : true,
 			 type : "POST",
 			 data : param,
+			 beforeSend: function(xhr) {
+				    // CSRF 토큰을 요청 헤더에 추가
+				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+				},
 			 success : function(result) {
 				$("#likeCnt").html(result);
 			 }
@@ -161,16 +176,25 @@ $(function() {
 								"passwd" : $("#deletePwIn").val()
 							};
 						
-						// post 로 작성된 내용을 넘기고
-						$.post("${contextPath}/community/deletePost", param, function(data) {
-							// 등록이 완료되면 게시판으로 이동
-							if (data == "deleted") {
-								alert("게시글이 삭제되었습니다.");
-								location.href="${contextPath}/community/feed";
-							}
-							else {
-								alert("비밀번호를 확인해주세요.");
-								$("#deletePwIn").focus();
+						$.ajax({
+							url : "${contextPath}/community/deletePost",
+							data : param,
+							async : true,
+							type : "POST",
+							beforeSend: function(xhr) {
+							    // CSRF 토큰을 요청 헤더에 추가
+							    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+							},
+							success : function(data) {
+								// 등록이 완료되면 게시판으로 이동
+								if (data == "deleted") {
+									alert("게시글이 삭제되었습니다.");
+									location.href="${contextPath}/community/feed";
+								}
+								else {
+									alert("비밀번호를 확인해주세요.");
+									$("#deletePwIn").focus();
+								}
 							}
 						});
 					});
@@ -203,6 +227,10 @@ $(function() {
 			data : param,
 			async : true,
 			type : "POST",
+			beforeSend: function(xhr) {
+			    // CSRF 토큰을 요청 헤더에 추가
+			    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+			},
 			success : function(result) {
 				
 				if (result) {
@@ -219,131 +247,6 @@ $(function() {
 	});
 	
 });
-</script>
-<script>
-	// 댓글 추가, 삭제 진행 버튼
-	function replyAction(replyId, memberId) {
-		
-		// 만약 댓글 쓴 member와 지금 로그인한 사람이 같다면
-		if (memberId == "${sessionScope.memberId}") {
-			$("div[data-v-327582cc][data-v-00101c0c]").css("display", "block");
-			$("#replyModal").css("display", "block");
-			$("body").css("overflow", "hidden");
-			
-			// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
-			$("body").on("click", ".modal-bg", function() {
-				$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-				$("#replyModal").css("display", "none");
-				$("body").css("overflow", "auto");
-			});
-			
-			// 댓글 수정하기 버튼
-			$("#modifyReply").click(function() {
-				// 모달창을 닫고
-				$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-				$("#replyModal").css("display", "none");
-				$("body").css("overflow", "auto");
-				
-				// 댓글 입력하는 칸에다가 댓글내용 수정 받고
-				$("#replyArea").focus().val("");
-				$("#addReplyBtn").attr("id", "modifyReplyBtn").removeClass("submit").addClass("submit active").prop("disabled", false).text("수정");
-				$("#modifyCancel").css("display", "block");
-				
-				$.ajax({
-					url : "${contextPath}/community/getReply",
-					async : true,
-					type : "GET",
-					data : {"replyId" : replyId},
-					success : function(result) {
-						$("#replyArea").val(result.content);
-					}
-				});
-				
-				// 취소버튼을 누르면
-				$("#modifyCancel").click(function() {
-					$(this).css("display", "none");
-					$("#replyArea").val("");
-					$("#modifyReplyBtn").attr("id", "addReplyBtn").removeClass("submit active").addClass("submit").prop("disabled", true).text("등록");
-				});
-				
-				// 댓글 수정하기
-				$("#modifyReplyBtn").click(function(){
-					if ($("#modifyCancel").css("display") === "block") {
-						var postId = "${post.postId}";
-						var content = $("#replyArea").val();
-						var memberId = "${sessionScope.memberId}";
-						
-						var param = {
-							"postId" : postId,
-							"content" : content,
-							"memberId" : memberId,
-							"replyId" : replyId
-						};
-						
-						// post 로 작성된 내용을 넘기고
-						$.post("${contextPath}/community/modifyReply", param, function(data) {
-							// 등록이 완료되면 게시판으로 이동
-							if (data == "modified") {
-								alert("댓글이 수정되었습니다.");
-							}
-						});
-					}
-				});
-			});
-			
-			// 댓글 삭제하기 버튼
-			$("#deleteReply").click(function() {
-				$("#confirmModal").css("display", "block");
-				$("#replyModal").css("display", "none");
-				
-				// 동적으로 모달창 닫는 클릭 이벤트 핸들러 등록
-				$("body").on("click", ".modal-bg", function() {
-					$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-					$("#replyModal").css("display", "none");
-					$("body").css("overflow", "auto");
-					$("#confirmModal").css("display", "none");
-				});
-				
-				// 뒤로가기
-				$("#closeButton").click(function() {
-					$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-					$("#replyModal").css("display", "none");
-					$("body").css("overflow", "auto");
-					$("#confirmModal").css("display", "none");
-				});
-				
-				// 삭제 확인버튼
-				$("#confirmButton").click(function() {
-					$("div[data-v-327582cc][data-v-00101c0c]").css("display", "none");
-					$("#replyModal").css("display", "none");
-					$("body").css("overflow", "auto");
-					$("#confirmModal").css("display", "none");
-					
-					$.ajax({
-						url : "${contextPath}/community/deleteReply",
-						async : true,
-						type : "POST",
-						data : {"replyId" : replyId},
-						success : function(result) {
-							if (result == "deleted") {
-								location.reload();
-							}
-						}
-					});
-				});
-			});
-		}
-	}
-	
-function checkContentWish() {
-	// 찜 이미지 로그인한 멤버에 맞춰서 표시
-	if ("${checkContentMyWish}" == "true") {
-		$("#contentWish").attr("src", "${contextPath}/resources/bootstrap/img/like_after.png");
-	}
-	else {
-		$("#contentWish").attr("src", "${contextPath}/resources/bootstrap/img/like_before.png");
-	}
-}
 </script>
 </head>
 <body>
@@ -471,7 +374,7 @@ function checkContentWish() {
 											</div>
 											<div data-v-4851ddd6="" class="right-area">
 												<span data-v-4851ddd6="" data-replyId="${reply.replyId}" title="${reply.enrollDt}" class="date">${reply.enrollDt}</span>
-												<button data-v-4851ddd6="" class="more" onclick='replyAction("${reply.replyId}", "${reply.memberId}")'>
+												<button data-v-4851ddd6="" class="more" onclick='replyAction("${post.postId}", "${reply.replyId}", "${reply.memberId}", "${sessionScope.memberId}")'>
 													<svg data-v-4851ddd6="" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" class="">
 														<path data-v-4851ddd6="" fill-rule="evenodd" clip-rule="evenodd" d="M10.5 3.563a1.313 1.313 0 11-2.625 0 1.313 1.313 0 012.625 0zm0 5.718a1.312 1.312 0 11-2.625 0 1.312 1.312 0 012.625 0zm-1.313 7.031a1.313 1.313 0 100-2.625 1.313 1.313 0 000 2.626z" fill="#98A4B7"/>
 													</svg>
