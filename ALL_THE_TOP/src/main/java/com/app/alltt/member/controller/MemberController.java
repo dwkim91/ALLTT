@@ -247,7 +247,6 @@ public class MemberController {
 		
 		jsScript += "location.href='" + request.getContextPath() + "/main';";
 		jsScript += "</script>";
-		
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 
@@ -443,7 +442,6 @@ public class MemberController {
 	    	communityService.removeAllReply(memberId);
 	    }
 	    
-	    System.out.println(memberDTO);
 	    return "선택된 정보가 삭제되었습니다.";
 	}
 	
