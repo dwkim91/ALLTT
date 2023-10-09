@@ -264,6 +264,7 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
+    object-fit: cover;
 }
 
 /* 화면 너비가 768px 미만일 때 font size 변경 */

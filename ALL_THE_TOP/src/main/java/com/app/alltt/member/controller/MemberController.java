@@ -77,7 +77,6 @@ public class MemberController {
 	@GetMapping("/{service}/{source}")
 	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
-		
 		if (StringUtils.equals(service, "naver")) {
 			
 		}
@@ -160,7 +159,6 @@ public class MemberController {
 				// 로그인 처리, session 등록
 				session.setAttribute("memberId", dbMember.getMemberId());
 				session.setAttribute("managerYn", dbMember.getManagerYn());
-				
 				// 인증정보 등록
 				allttUserDetailsService.loadUserByUsername(dbMember.getUserId());
 				
@@ -179,6 +177,9 @@ public class MemberController {
 				memberService.setMemberFilter(newMemberId);
 				// 로그인 처리, session에 값 부여
 				session.setAttribute("memberId", newMemberId);
+				session.setAttribute("managerYn", "");
+				// 인증정보 등록
+				allttUserDetailsService.loadUserByUsername(newMember.getUserId());
 				
 				jsScript += "alert('환영합니다!');";
 			}
@@ -200,7 +201,6 @@ public class MemberController {
 	// 회원 탈퇴 메서드
 	@RequestMapping(value = "/{service}/callback/withdraw", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
-		
 		// state 값 검증
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
