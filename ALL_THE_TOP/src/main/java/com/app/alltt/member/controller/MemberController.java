@@ -131,7 +131,6 @@ public class MemberController {
 	// 추후 개발 방향에 따라서, callback을 받는 위치를 나눠서 개발 가능
 	@RequestMapping(value = "/{service}/callback/login", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<Object> callBackSnsLogin(HttpSession session, HttpServletRequest request) throws Exception {
-		
 		// state 값 검증
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");

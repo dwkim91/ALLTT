@@ -31,7 +31,10 @@ public class ALLTTUserDetailsService implements UserDetailsService{
 		
 		// 사용자의 권한 정보를 설정
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		authorities.add(new SimpleGrantedAuthority(newMember.getManagerYn().equals("Y") ? "ROLE_ADMIN" : "ROLE_USER"));
+
+		String role = (newMember.getManagerYn() != null && newMember.getManagerYn().equals("Y")) ? "ROLE_ADMIN" : "ROLE_USER";
+
+		authorities.add(new SimpleGrantedAuthority(role));
 		
 		UserDetails test = new User(newMember.getUserId(), newMember.getNickName(), authorities);
 		
