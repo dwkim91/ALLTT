@@ -290,7 +290,7 @@
 		GROUP BY C.CONTENT_ID
 		ORDER BY
 		    CASE
-		        WHEN TITLE LIKE #{searchKey} THEN 1
+		        WHEN TITLE LIKE CONCAT(#{searchKey}, '%') THEN 1
 		        ELSE 2
 		    END,
 		    TITLE ASC
