@@ -32,6 +32,8 @@ import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 @Service
 @PropertySource("classpath:properties/platform.properties")
 public class CrawlingServiceImpl implements CrawlingService {
@@ -57,8 +59,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		//        (크롬드라이버 명 , 크롬드라이버 경로)
-		System.setProperty(WEB_DRIVER_ID, 	WEB_DRIVER_PATH);
+		WebDriverManager.chromedriver().setup();
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
@@ -251,20 +252,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 		chromeDriverInit();
 
-
-//		tvingLogin("alltttv", "!allott1234");
-		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
-//		initExistYn();
-
 		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
 		initExistYn();
 
-
-//		tvingLogin("alltttv", "!allott1234");
-		tvingLogin(TVING_LOGIN_KEY[0],TVING_LOGIN_KEY[1]);
-//		initExistYn();
-
-//		addContents(crawlTvingContents(genreLinkDTO));
+		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
 		
 	}
@@ -337,21 +328,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 //			if(count >= 350) break;
 //		} 
 		showGenreLinkDTO(webElementList, genreLinkDTO);
-//		// 가져온 엘리먼트 하위 요소 다시 선택
-//		for (WebElement webElement : webElementList) {
-//			System.out.println(count++ + " webElement");
-//			String tagClass = "item__tags"; // 개별 구매 태그 작품은 제외
-//			WebElement tagElement = webElement.findElement(By.className(tagClass));
-//			List<WebElement> tagList = tagElement.findElements(By.className("tag"));
-//			boolean isExtraPurchase = false;
-//			for (WebElement tag : tagList) {
-//				if (tag.getText().equals("개별구매")) {
-//					isExtraPurchase = true;
-//				}
-//			}
-//			if (isExtraPurchase) continue;
-		 // 가져온 엘리먼트 하위 요소 다시 선택
-	      for (WebElement webElement : webElementList) {
+		// 가져온 엘리먼트 하위 요소 다시 선택
+		for (WebElement webElement : webElementList) {
 	         
 	        String tagClass = "item__tags"; // 개별 구매 태그 작품은 제외
 	        WebElement tagElement = webElement.findElement(By.className(tagClass));
@@ -373,7 +351,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 			String url = urlElement.getAttribute("href");
 			String rawImgUrl = imgElement.getAttribute("src");
 			String imgUrl = rawImgUrl.replace("/dims/resize/400", ""); // jpg 뒷부분 제거
-			
 			crawlingDTO.setImgUrl(imgUrl);
 			crawlingDTO.setTitle(title);
 			crawlingDTO.setUrl(url);
@@ -392,6 +369,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
 //				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
 //				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교
+				System.out.println("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
 					continue; // 같은 작품으로 분류 하고 디테일 정보입력은 패스
 //				}
 			}
@@ -400,8 +378,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			crawlingDTO.setActors(detailTemp.getActors());
 			crawlingDTO.setSummary(detailTemp.getSummary());
 			crawlingDTO.setEnrollDt(detailTemp.getEnrollDt());
-//@@@@@@			System.out.print(contentCnt++ +" ");
-//@@@@@@			showCrawlingDTO(crawlingDTO);
+			System.out.print(contentCnt++ +" ");
+			showCrawlingDTO(crawlingDTO);
 
 		}
 			
@@ -527,14 +505,15 @@ public class CrawlingServiceImpl implements CrawlingService {
 //		readDBcontentTest();
 		
 		chromeDriverInit();
-		tvingLogin("alltttv", "!allott1234");
+		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
 		//addContents(getTvingCrawlingDTOList(0));
 		initExistYn();
 		//getTvingContentDetailInfo("https://www.tving.com/contents/P001635813", "series");
 		
-		String contentType = "movie";
-		int str =25;
-		int end = 25;
+		//String contentType = "movie";
+		String contentType = "series";
+		int str = 6;
+		int end = 6;
 		
 		for (GenreLinkDTO genreLinkDTO : getGenreLinkList(2)) {
 			if (genreLinkDTO.getContentType().equals(contentType)) {
@@ -1163,6 +1142,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			boolean isInsertDetail = false;
 			boolean isInsertContentKey = false;
 			boolean isUpdateInfo = false;
+			boolean isUpdateImgUrl = false;
 			
 			Set<String> contentKeyList = null;
 			Set<String> updateKeyList = null;
@@ -1204,6 +1184,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 								isInsertGenre = true;
 								isInsertDetail = true;
 								isInsertContentKey = true;
+								// 같은 플랫폼의 같은 작품의 imgUrl 이 변경된경우
+								Long linkId = crawlingDAO.selectLinkId(crawlingDTO);
+								if(linkId != null) {
+									crawlingDTO.setLinkId(linkId);
+									isUpdateImgUrl = true;
+								}
 							}
 							else { // 다른 작품 => C, G, D, K => INSERT
 								isInsertContent = true;
@@ -1290,6 +1276,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 						crawlingDAO.insertContentKey(new ContentKeyDTO(crawlingDTO.getContentId(),key));
 					}
 				}
+			}
+			if (isUpdateImgUrl) {
+				System.out.println("이미지 URL 업데이트");
+				crawlingDAO.updateImgUrl(crawlingDTO);
 			}
 			
 		}
