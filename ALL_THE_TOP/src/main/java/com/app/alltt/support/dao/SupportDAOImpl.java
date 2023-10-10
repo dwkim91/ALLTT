@@ -61,6 +61,11 @@ public class SupportDAOImpl implements SupportDAO {
 	}
 
 	@Override
+	public List<FilteredDTO> selectListImageRequiredToBeUploadedByPlatformId(int platformId) {
+		return sqlSession.selectList("supportMapper.selectListImageRequiredToBeUploadedByPlatformId", platformId);
+	}
+
+	@Override
 	public void insertViewImage(FilteredDTO tempDTO) {
 		sqlSession.insert("supportMapper.insertViewImage",tempDTO);
 	}

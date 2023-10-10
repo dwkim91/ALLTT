@@ -32,6 +32,8 @@ import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 @Service
 @PropertySource("classpath:properties/platform.properties")
 public class CrawlingServiceImpl implements CrawlingService {
@@ -47,8 +49,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String[] TVING_LOGIN_KEY;
 	
 	private WebDriver driver;
-	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-	private static final String WEB_DRIVER_PATH = "C:\\chromedriver\\chromedriver.exe";
 	
 	// ==================================== 
 	// ===== 크롤링 공통 메서드 Start ===== 
@@ -57,8 +57,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		//        (크롬드라이버 명 , 크롬드라이버 경로)
-		System.setProperty(WEB_DRIVER_ID, 	WEB_DRIVER_PATH);
+		WebDriverManager.chromedriver().setup();
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
@@ -638,7 +637,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 				
 				contentList.add(crawlingDTO);
-// 1개만 가져옴 test				
+// 1개만 가져옴 test
 			//	break;
 			}	
 			
@@ -678,27 +677,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 					
 					// 등록일자
 					year = driver.findElements(By.className("year")).get(0).getText();
-					while (year == null) {
-						
-						while(!driver.getTitle().equals("홈 - 넷플릭스")) {
-						// 드라이버 종료
-						quit();
-						
-						// 드라이버 재시작
-						chromeDriverInit();
-						
-						netflixLogin(NETFLIX_LOGIN_KEY[0], NETFLIX_LOGIN_KEY[1]);
-
-						}
-						
-						// 디테일 페이지 이동
-						moveToTargetUrl(crawlingDTO.getUrl());
-						
-						year = driver.findElement(By.xpath("//*[@id=\"appMountPoint\"]/div/div/div[1]/div[2]/div/div[3]/div/div[1]/div/div/div[1]/div[1]/div/div[1]/div/div[2]/div")).getText();
-						
-						if (year == null) year = driver.findElements(By.className("year")).get(0).getText();
-					}
-						
+					
+					if (year.equals("") || year == null) year = "9999";
+					
 					// 디테일 페이지내 상세정보가 담긴 요소
 					List<WebElement> aboutContainer = driver.findElement(By.className("about-container")).findElements(By.className("previewModal--tags"));
 	
@@ -1328,6 +1309,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 		return crawlingDAO.selectListScrollContent(contentId);
 	}
+
 	
  	// ==================================== 
   	// ====== 스크롤 관련 메서드 End ====== 
