@@ -245,4 +245,23 @@
 				CONTENT_ID = #{contentId};	
 	</delete>
 	
+	<select id="selectLinkId" parameterType="CrawlingDTO" resultType="Long">
+		SELECT
+				LINK_ID
+		FROM
+				CONTENT_LINK
+		WHERE
+				CONTENT_ID = #{contentId} AND
+				PLATFORM_ID = #{platformId};
+	</select>
+	
+	<update id="updateImgUrl" parameterType="CrawlingDTO">
+		UPDATE 
+				CONTENT_LINK
+		SET
+				IMG_URL = 'imgUrl'
+		WHERE
+		        LINK_ID = 'linkId'
+	</update>
+	
 </mapper>

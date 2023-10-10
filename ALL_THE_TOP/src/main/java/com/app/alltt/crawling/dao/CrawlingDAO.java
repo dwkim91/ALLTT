@@ -43,5 +43,8 @@ public interface CrawlingDAO {
 	public List<CrawlingDTO> selectListNonServiceContent();
 	public void deleteContent(long contentId);
 	public void deletePost(long contentId);
+	// linkId 확인
+	public Long selectLinkId(CrawlingDTO crawlingDTO);
+	public void updateImgUrl(CrawlingDTO crawlingDTO);
 
 }

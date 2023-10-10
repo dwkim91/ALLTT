@@ -139,6 +139,16 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 		sqlSession.delete("crawlingMapper.deletePost", contentId);
 	}
 
+	@Override
+	public Long selectLinkId(CrawlingDTO crawlingDTO) {
+		return sqlSession.selectOne("crawlingMapper.selectLinkId", crawlingDTO);
+	}
+
+	@Override
+	public void updateImgUrl(CrawlingDTO crawlingDTO) {
+		sqlSession.update("crawlingMapper.updateImgUrl", crawlingDTO);
+	}
+
 	
 	
 }
