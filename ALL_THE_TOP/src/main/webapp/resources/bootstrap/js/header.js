@@ -4,6 +4,19 @@ $(document).ready(function() {
 	}
 });
 
+function searchBtn() {
+	var currentUrl = window.location.href;
+	var targetRegex = /\main/;
+	
+	if (targetRegex.test(currentUrl)) {
+		$(".searchInput").focus();
+	}
+	else {
+		location.href="/main";
+		$(".searchInput").focus();
+	}
+}
+
 function getMember() {
 	// AJAX 요청을 통해 member 정보를 가져오는 코드
 	$.ajax({
