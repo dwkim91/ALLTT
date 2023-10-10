@@ -17,7 +17,8 @@ public class CrawlingDTO {
 	private String url;				
 	private int genreId;
 	private int platformId;
-	private String existYn; 
+	private String existYn;
+	private long linkId;
 	
 	public long getContentId() {
 		return contentId;
@@ -84,19 +85,26 @@ public class CrawlingDTO {
 	}
 	public void setPlatformId(int platformId) {
 		this.platformId = platformId;
-	}	
+	}
 	public String getExistYn() {
 		return existYn;
 	}
 	public void setExistYn(String existYn) {
 		this.existYn = existYn;
 	}
+	public long getLinkId() {
+		return linkId;
+	}
+	public void setLinkId(long linkId) {
+		this.linkId = linkId;
+	}
+	
 	@Override
 	public String toString() {
 		return "CrawlingDTO [contentId=" + contentId + ", title=" + title + ", creator=" + creator + ", actors="
 				+ actors + ", summary=" + summary + ", enrollDt=" + enrollDt + ", contentType=" + contentType
 				+ ", imgUrl=" + imgUrl + ", url=" + url + ", genreId=" + genreId + ", platformId=" + platformId
-				+ ", existYn=" + existYn + "]";
+				+ ", existYn=" + existYn + ", linkId=" + linkId + "]";
 	}
 	
 }
