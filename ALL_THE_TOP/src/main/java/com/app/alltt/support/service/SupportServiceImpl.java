@@ -1,7 +1,6 @@
 package com.app.alltt.support.service;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -91,13 +90,44 @@ public class SupportServiceImpl implements SupportService {
 	
 	@Override
 	public void resizeAndUploadImage() {
-		
 		ImageResizeAndUploadService imageService = new ImageResizeAndUploadService();
-		
+
+		for (int i = 3; i > 0; i--) {
+			try {
+				
+				List<FilteredDTO> tempList = supportDAO.selectListImageRequiredToBeUploadedByPlatformId(i);
+				
+				for (FilteredDTO tempDTO : tempList) {
+					
+					BufferedImage tempImage = null;
+					String objectKey = "image/" + tempDTO.getContentId() + ".jpg";
+					
+					if (tempDTO.getPlatformId() != 1) {
+						tempImage = imageService.resizeImage(tempDTO.getImgUrl(), 480, 700);
+					}
+					else {
+						tempImage = imageService.newImage(tempDTO.getImgUrl(), 340, 700);
+					}
+					
+					tempDTO.setImgUrl(imagePath + tempDTO.getContentId() + ".jpg");
+					
+					imageService.uploadImageToS3(tempImage, objectKey);
+					
+					supportDAO.insertViewImage(tempDTO);
+					
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("예외 발생: " + e.getMessage());
+				
+			}
+			
+		}
 	}
 
 	@Override
-	public void resizeAndUploaddamagedImage(MultipartFile uploadFile, int contentId) {
+	public void resizeAndUploadDamagedImage(MultipartFile uploadFile, int contentId) {
 		
 		try {
 			ImageResizeAndUploadService imageService = new ImageResizeAndUploadService();
@@ -108,8 +138,6 @@ public class SupportServiceImpl implements SupportService {
 			int height = tempImage.getHeight(); // 이미지의 높이(세로 길이)
 			
 			String objectKey = "image/" + contentId + ".jpg";
-			
-			System.out.println(width + "x" + height);
 			
 			if (width < height) {
 				imageService.uploadImageToS3(imageService.resizeImageFile(tempImage, 480, 700), objectKey);

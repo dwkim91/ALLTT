@@ -141,7 +141,7 @@ public class SupportController {
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
 	    			
-	    			supportService.resizeAndUploaddamagedImage(uploadFile, contentId);
+	    			supportService.resizeAndUploadDamagedImage(uploadFile, contentId);
 	    			
 	    		}
 	    		else {
