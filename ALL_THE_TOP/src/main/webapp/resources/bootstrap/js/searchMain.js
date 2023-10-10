@@ -1,7 +1,3 @@
-$('#searchButton').click(function() {
-	$(".searchInput").focus();
-});
-
 $(".searchInput").keyup(function() {
 	var searchContent = $(this).val();
 	

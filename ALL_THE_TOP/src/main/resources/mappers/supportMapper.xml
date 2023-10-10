@@ -106,6 +106,20 @@
 				CV.CONTENT_ID IS NULL
 	</select>
 	
+	<select id="selectListImageRequiredToBeUploadedByPlatformId" resultType="FilteredDTO" parameterType="int">
+		SELECT
+				CL.CONTENT_ID,
+				CL.IMG_URL,
+				CV.CONTENT_ID,
+				CV.IMG_URL
+		FROM
+				CONTENT_LINK CL
+			LEFT JOIN  CONTENT_VIEWIMG CV ON CL.CONTENT_ID = CV.CONTENT_ID
+		WHERE
+				PLATFORM_ID = #{platformId} AND
+				CV.CONTENT_ID IS NULL
+	</select>
+	
 	<insert id="insertViewImage" parameterType="FilteredDTO">
 		INSERT INTO
 				CONTENT_VIEWIMG (
