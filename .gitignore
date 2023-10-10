@@ -13,3 +13,5 @@ ALL_THE_TOP/target/classes/properties/jdbc.properties
 ALL_THE_TOP/src/main/resources/properties/aws.properties
 ALL_THE_TOP/target/classes/properties/aws.properties
 ALL_THE_TOP/target/m2e-wtp/web-resources/META-INF/maven/com.app/alltt/pom.properties
+ALL_THE_TOP/target/classes/properties/platform.properties
+ALL_THE_TOP/target/classes/properties/sns.properties
