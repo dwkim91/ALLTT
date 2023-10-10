@@ -23,6 +23,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
@@ -31,6 +32,8 @@ import com.app.alltt.crawling.dto.ContentKeyDTO;
 import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 @Service
 @PropertySource("classpath:properties/platform.properties")
@@ -47,8 +50,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String[] TVING_LOGIN_KEY;
 	
 	private WebDriver driver;
-	private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-	private static final String WEB_DRIVER_PATH = "C:\\chromedriver\\chromedriver.exe";
 	
 	// ==================================== 
 	// ===== 크롤링 공통 메서드 Start ===== 
@@ -57,8 +58,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		//        (크롬드라이버 명 , 크롬드라이버 경로)
-		System.setProperty(WEB_DRIVER_ID, 	WEB_DRIVER_PATH);
+		WebDriverManager.chromedriver().setup();
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
@@ -827,7 +827,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		driver.get("https://www.wavve.com/member/login?referer=%2Findex.html");
 		List<WebElement> loginInput = driver.findElements(By.className("input-style01"));
 		loginInput.get(0).sendKeys(wavveId);
-		loginInput.get(0).sendKeys(wavvePw);
+		loginInput.get(1).sendKeys(wavvePw);
 		// click login
 		driver.findElement(By.className("btn-purple-dark")).click();
 		// save login cookies
@@ -841,7 +841,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		List<GenreLinkDTO> testGenreLink = new ArrayList<GenreLinkDTO>();
 		for (GenreLinkDTO genre : crawlingDAO.selectListGenreLink(platformId)) {
 			// 장르가 바뀌면 숫자만 바뀌는걸로
-			if (genre.getGenreId() == 6) {
+			if (genre.getGenreId() == 8) {
 				testGenreLink.add(genre);
 				break;
 			}
@@ -1007,11 +1007,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 			List<WebElement> detailTableRow = detailTable.findElements(By.tagName("tr"));
 			String actors = "";
 			String creator = "";
+			// 영화일 경우, 년도 가져오는 위치
+			if (crawlingDTO.getContentType().equals("movie")) {
+				crawlingDTO.setEnrollDt(Integer.parseInt(getEnrolledYear(driver.findElement(By.xpath("//*[@id=\"contents\"]/section/div/div/div/div[2]/dl/dd[1]")).getText())));
+			}
 			for (WebElement tableRow : detailTableRow) {
-				if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("개요")) {
-					// 개요에 있는 년도 가져오기
+				// series일 경우, 개요에 있는 년도 가져오기
+				if (crawlingDTO.getContentType().equals("series") && tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("개요")) {
 					crawlingDTO.setEnrollDt(Integer.parseInt(getEnrolledYear(tableRow.findElement(By.tagName("td")).getAttribute("innerHTML"))));
 				}
+				// 출연자 정보 가져오기
 				else if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("출연")) {
 					List<WebElement> actorList = tableRow.findElements(By.className("genre"));
 					for (int j = 0; j < actorList.size(); j++) {
@@ -1019,6 +1024,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						actors += actorList.get(j).getAttribute("innerHTML").replaceAll("\\s+", "").trim() + ",";
 					}
 				}
+				// 감독정보 가져오기
 				else if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("감독")) {
 					creator += tableRow.findElement(By.className("genre")).getAttribute("innerHTML").replaceAll("\\s+", " ").trim();
 				}
@@ -1333,4 +1339,13 @@ public class CrawlingServiceImpl implements CrawlingService {
   	// ====== 스크롤 관련 메서드 End ====== 
   	// ====================================
 
+	// ====================================
+	// ========== batch test ==============
+	// ====================================
+	
+//	@Scheduled(cron="*/30 * * * * *")
+//	public void batchTest() {
+//		System.out.println("===== batch test =====");
+//	}
+	
 }
