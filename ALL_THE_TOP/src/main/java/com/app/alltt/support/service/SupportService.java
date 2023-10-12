@@ -18,7 +18,7 @@ public interface SupportService {
 	int getInProgressCnt();
 	List<SupportDTO> getInquiryListByStatus(String status);
 	List<FilteredDTO> getImageRequiredToBeUploaded();
-	void resizeAndUploaddamagedImage(MultipartFile uploadFile, int contentId);
+	void resizeAndUploadDamagedImage(MultipartFile uploadFile, int contentId);
 	void resizeAndUploadImage();
 	
 }

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,9 @@ public class MemberController {
 
 	// 이미지 저장 상대 경로용 서버에 올려서는 서버 내의 별도 이미지경로의 절대 경로 사용 예정
 	private static String THUMBNAIL_IMG_PATH = "/resources/bootstrap/img/thumbnailImg/";
+	
+	// 로그 기록용
+	private static Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
 	public static String getThumbnailImagePath(HttpSession session) {
         return session.getServletContext().getRealPath(THUMBNAIL_IMG_PATH);		
@@ -224,7 +229,7 @@ public class MemberController {
 					
 					session.invalidate();
 					
-					jsScript += "alert('탈퇴되었습니다.');";
+					jsScript += "alert('다음에 다시 만나요!');";
 				}
 				// NAVER 에서 연동을 해제하는 요청은 boolean 형태로 result를 확인하도록 했는데, 혹시나 안됐을 경우?
 				// 예외처리 방향 확인
@@ -429,17 +434,16 @@ public class MemberController {
 	public String deleteMyPost(@RequestBody MemberDTO memberDTO, HttpSession session) {
 		
 	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    
+	    boolean deletePost = memberDTO.getdPostYn().equals("Y");
+	    boolean deleteReply = memberDTO.getdReplyYn().equals("Y");
 
 	    // 글 삭제
-	    if (memberDTO.getdPostYn().equals("Y")) {
-	    	communityService.removeAllPost(memberId);
-	    }
+	    if (deletePost) communityService.removeAllPost(memberId);
 	    // 댓글 삭제
-	    if (memberDTO.getdReplyYn().equals("Y")) {
-	    	communityService.removeAllReply(memberId);
-	    }
+	    if (deleteReply) communityService.removeAllReply(memberId);
 	    
-	    return "선택된 정보가 삭제되었습니다.";
+	    return deletePost || deleteReply ? "선택된 정보가 삭제되었습니다." : "none";
 	}
 	
 	/// 프로필사진 변경

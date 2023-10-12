@@ -11,8 +11,19 @@
 	</appender>
 	
 	<!-- DailyFile Appenders -->
-	<appender name="dailyFileAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="/Users/hyun/documents/alltt_log.log" />
+	<appender name="dailyLogAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/var/lib/tomcat9/logs/alltt/alltt_log.log" />
+		<param name="Append" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+		  <param name="DatePattern"   value="'.'yyyy-MM-dd-HH-mm"/>
+		  <param name="ConversionPattern"   value="[%d{HH:mm:ss}][%-5p](%F:%L)-%m%n"/>
+		</layout>
+	</appender>
+	
+	<!-- crawling log Appenders -->
+	<appender name="crawlingLogAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/var/lib/tomcat9/logs/alltt/crawling/crawling_log.log" />
+		<param name="Append" value="true"/>
 		<layout class="org.apache.log4j.PatternLayout">
 		  <param name="DatePattern"   value="'.'yyyy-MM-dd-HH-mm"/>
 		  <param name="ConversionPattern"   value="[%d{HH:mm:ss}][%-5p](%F:%L)-%m%n"/>
@@ -44,11 +55,17 @@
 	<logger name="org.springframework.security">
 		<level value="info" />
 	</logger>
+	
+	<logger name="com.app.alltt.crawling.service.CrawlingServiceImpl">
+		<level value="info"/>
+		<appender-ref ref="crawlingLogAppender"/>
+	</logger>
 
 	<!-- Root Logger -->
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="console" />
+		<appender-ref ref="dailyLogAppender"/>
 	</root>
 	
 </log4j:configuration>
