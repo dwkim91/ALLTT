@@ -1,7 +1,9 @@
 package com.app.alltt.crawling.service;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -216,8 +218,21 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return crawlingDAO.selectListGenreLinkByGenreId(temp);
 	}
 	
+	public String getToday() {
+		Date currentDate = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(currentDate);
+	}
+	
 	@Override
 	public void addAllttContent() throws InterruptedException {
+		
+		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		String contentType = "series";
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= 38 ; i++) {
@@ -249,10 +264,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 		}
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		logger.info(sb.toString());
 	}
 	
 	public void addTving(GenreLinkDTO genreLinkDTO) {
+		logger.info("========================================================");
+		logger.info("================= tving crawling start =================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		
 		chromeDriverInit();
 
@@ -262,9 +285,17 @@ public class CrawlingServiceImpl implements CrawlingService {
 		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
 		
+		logger.info("========================================================");
+		logger.info("================== tving crawling end ==================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	public void addNetflix(GenreLinkDTO genreLinkDTO) {
+		logger.info("========================================================");
+		logger.info("================ netflix crawling start ================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		
 		chromeDriverInit();
 		netflixLogin(NETFLIX_LOGIN_KEY[0],NETFLIX_LOGIN_KEY[1]);
@@ -272,14 +303,28 @@ public class CrawlingServiceImpl implements CrawlingService {
 //		addContents(getNetflixDetailInfo(crawlNetflixdContents(genreLinkDTO)));
 		quit();
 		
+		logger.info("========================================================");
+		logger.info("================= netflix crawling end =================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	public void addWavve(GenreLinkDTO genreLinkDTO) throws InterruptedException {
+		logger.info("========================================================");
+		logger.info("================= wavve crawling start =================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
 		initExistYn(genreLinkDTO);
 //		addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
 		quit();
+		
+		logger.info("========================================================");
+		logger.info("================== wavve crawling end ==================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	// ==================================== 
@@ -512,6 +557,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addTvingContent() {
 		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		chromeDriverInit();
 		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
 		
@@ -530,6 +580,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 		}
 		
 		quit();
+		
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	
@@ -725,6 +780,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addNetflixContent() {
 		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 //		Netflix 단일장르 Test Start
 
 //		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
@@ -767,6 +827,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 드라이버 종료
 		quit();
 		
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	
@@ -780,6 +844,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 	@Override
 	public void addWavveContent() throws InterruptedException {
+		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
 //		for (GenreLinkDTO genre : this.getGenreLinkList(3)) {
@@ -792,6 +862,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 			addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
 		}
 		quit();
+		
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	 
 	// login wavve
