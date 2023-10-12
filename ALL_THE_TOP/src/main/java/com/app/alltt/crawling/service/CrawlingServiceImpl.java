@@ -20,6 +20,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -50,6 +52,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String[] TVING_LOGIN_KEY;
 	
 	private WebDriver driver;
+
+	private Logger logger = LoggerFactory.getLogger(CrawlingServiceImpl.class);
 	
 	// ==================================== 
 	// ===== 크롤링 공통 메서드 Start ===== 
@@ -93,13 +97,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// 크롬드라이버 현재 URL
 			String currentUrl = driver.getCurrentUrl();
 			// url이동이 정상적으로 완료 되었는지 확인
-			if (url.equals(currentUrl)) {
-				isTargetUrl = true;
-			}
+			if (url.equals(currentUrl)) isTargetUrl = true;
 		}
-		
 		return isTargetUrl;
-		
 	}
 	
 	// 페이지 아래 끝으로 이동 
@@ -136,7 +136,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	// 창닫기, WebDriver 종료
 	private void quit() {
-		// WebDriver 종료
         driver.quit();
 	}
 	
@@ -157,7 +156,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	public void deleteContent() {
 		//종료된 작품 contentId List 가져오기
 		for (CrawlingDTO nonService : crawlingDAO.selectListNonServiceContent()) {
-			System.out.println(nonService.getContentId());
+			logger.info(nonService.getContentId() + "");
 			//post 삭제
 			crawlingDAO.deletePost(nonService.getContentId());
 			//content 테이블에서 삭제
@@ -173,16 +172,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	// 크롤링 테스트 확인용
 	private void showCrawlingDTO (CrawlingDTO crawlingDTO){
-		System.out.println("CrawlingDTO " + " [contentId=" + crawlingDTO.getContentId() + 
-				", title=" + crawlingDTO.getTitle() + ", creator=" + crawlingDTO.getCreator() + 
-				", actors=" + crawlingDTO.getActors() + ", enrollDt=" + crawlingDTO.getEnrollDt() + 
-				", contentType=" + crawlingDTO.getContentType() + ", genreId=" + crawlingDTO.getGenreId() + 
-				", platformId=" + crawlingDTO.getPlatformId() + ", getExistYn=" + crawlingDTO.getExistYn() + "]");
+		System.out.println(crawlingDTO);
+		logger.info(crawlingDTO.toString());
 	}
 	
 	// 크롤링 테스트 확인용
 	private void showGenreLinkDTO (List<WebElement> webElementTemp, GenreLinkDTO genreLinkDTO) {
 		System.out.println("Genre CNT=" + webElementTemp.size() + " [contentType=" + genreLinkDTO.getContentType() + ", genreId=" + genreLinkDTO.getGenreId()
+		+ ", platformId=" + genreLinkDTO.getPlatformId() + ", url=" + genreLinkDTO.getUrl() + "]");
+		
+		logger.info("Genre CNT=" + webElementTemp.size() + " [contentType=" + genreLinkDTO.getContentType() + ", genreId=" + genreLinkDTO.getGenreId()
 		+ ", platformId=" + genreLinkDTO.getPlatformId() + ", url=" + genreLinkDTO.getUrl() + "]");
 	}
 	
@@ -193,6 +192,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		dbContentList = crawlingDAO.selectListContent();
 		for (ContentDTO contentDTO : dbContentList) {
 			System.out.println(contentDTO.getContentId() + ", " + contentDTO.getTitle());
+			logger.info(contentDTO.getContentId() + ", " + contentDTO.getTitle());
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						addNetflix(genreLinkDTO);
 					} catch (Exception e) {
 						sb.append(genreLinkDTO.toString() + e.toString());
-						System.out.println(genreLinkDTO.toString() + e.toString());
+						logger.error(genreLinkDTO.toString() + e.toString());
 					}
 				}
 				if (platformId == 2) {
@@ -231,7 +231,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						addTving(genreLinkDTO);
 					} catch (Exception e) {
 						sb.append(genreLinkDTO.toString() + e.toString());
-						System.out.println(genreLinkDTO.toString() + e.toString());
+						logger.error(genreLinkDTO.toString() + e.toString());
 					}
 				}
 				if (platformId == 3) {
@@ -239,12 +239,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 						addWavve(genreLinkDTO);
 					} catch (Exception e) {
 						sb.append(genreLinkDTO.toString() + e.toString());
-						System.out.println(genreLinkDTO.toString() + e.toString());
+						logger.error(genreLinkDTO.toString() + e.toString());
 					}
 				}
 			}
 		}
-		System.out.println(sb.toString());
+		logger.info(sb.toString());
 	}
 	
 	public void addTving(GenreLinkDTO genreLinkDTO) {
@@ -369,6 +369,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 //				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
 //				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교
 				System.out.println("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
+				logger.info("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
 					continue; // 같은 작품으로 분류 하고 디테일 정보입력은 패스
 //				}
 			}
@@ -377,7 +378,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			crawlingDTO.setActors(detailTemp.getActors());
 			crawlingDTO.setSummary(detailTemp.getSummary());
 			crawlingDTO.setEnrollDt(detailTemp.getEnrollDt());
-			System.out.print(contentCnt++ +" ");
+			logger.info(contentCnt++ +" ");
 			showCrawlingDTO(crawlingDTO);
 
 		}
@@ -438,6 +439,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 				checkWebElement = webElement.findElement(By.tagName("dt")).getText();
 			} catch (NoSuchElementException e) {
 			    System.out.println(e.getMessage()+"작품 감독, 출연 관련 webElement 요소를 찾을 수 없습니다.");
+			    logger.error(e.getMessage()+"작품 감독, 출연 관련 webElement 요소를 찾을 수 없습니다.");
 			}
 			
 			if (checkWebElement.equals("크리에이터")) {
@@ -445,6 +447,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 					creator = webElement.findElement(By.tagName("dd")).getText();
 				} catch (NoSuchElementException e) {
 				    System.out.println(e.getMessage()+"creator 요소를 찾을 수 없습니다.");
+				    logger.error(e.getMessage()+"creator 요소를 찾을 수 없습니다.");
 				}
 			}
 			
@@ -453,6 +456,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 					actors = webElement.findElement(By.tagName("dd")).getText();
 				} catch (NoSuchElementException e) {
 				    System.out.println(e.getMessage()+"actors 요소를 찾을 수 없습니다.");
+				    logger.error(e.getMessage()+"actors 요소를 찾을 수 없습니다.");
 				}
 			}
 			
@@ -462,6 +466,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			summary = driver.findElement(By.xpath("//*[@id=\"__next\"]/main/section/article/article/div[2]/div[2]/p")).getText();
 		} catch (NoSuchElementException e) {
 			System.out.println(e.getMessage()+"summary 요소를 찾을 수 없습니다.");
+			logger.error(e.getMessage()+"summary 요소를 찾을 수 없습니다.");
 		}
 		
 		creator = genCreatorActorString(creator, 1);
@@ -518,8 +523,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 			if (genreLinkDTO.getContentType().equals(contentType)) {
 				if (genreLinkDTO.getGenreId()>=str && genreLinkDTO.getGenreId()<=end) {
 					System.out.println("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
+					logger.info("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
 					addContents(crawlTvingContents(genreLinkDTO));
 					System.out.println("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
+					logger.info("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
 				}
 			}
 		}
@@ -612,7 +619,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 				else { // 있을경우 contentId DTO에 추가
 					crawlingDTO.setContentId(crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl()).getContentId());
 					System.out.println("img : " + crawlingDTO.getImgUrl());
+					logger.info("img : " + crawlingDTO.getImgUrl());
 					System.out.println("contentId : " + crawlingDTO.getContentId());
+					logger.info("contentId : " + crawlingDTO.getContentId());
 				}
 				
 				contentList.add(crawlingDTO);
@@ -707,7 +716,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 					    
 					}
 				}
-			System.out.print(contentCnt++ +" ");
+			logger.info(contentCnt++ +" ");
 			showCrawlingDTO(crawlingDTO);
 //				System.out.println(crawlingDTO);
 					
@@ -801,7 +810,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		List<GenreLinkDTO> testGenreLink = new ArrayList<GenreLinkDTO>();
 		for (GenreLinkDTO genre : crawlingDAO.selectListGenreLink(platformId)) {
 			// 장르가 바뀌면 숫자만 바뀌는걸로
-			if (genre.getGenreId() == 8) {
+			if (genre.getGenreId() == 23) {
 				testGenreLink.add(genre);
 				break;
 			}
@@ -834,41 +843,52 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 최초 페이지 index
 		int pageNum = 1;
 		while (pageCycle) {
-			System.out.println(driver.getCurrentUrl());
 			// 페이지 로딩 대기
 			Thread.sleep(1200);
+			// 현재 페이지 url
+			String currentUrl = driver.getCurrentUrl();
 			// 크롤링 작업 진행
 			wavveContentList.addAll(this.crawlWavveCurrentPageContentList(genre, loginCookies));
-			// 페이지 리스트에서 다음 페이지가 있는지 확인
-			List<WebElement> pageList = driver.findElement(By.className("paging-type01")).findElements(By.tagName("a"));
-			boolean nextPageFound = false;
-			for (WebElement page : pageList) {
-				// 만약 다음 페이지가 있다면
-				if (page.getText().equals((pageNum+1) + "")) {
-					// 현재 page 보다 하나 늘린 page로 url 변경하고, pageIdx 증가시킴
-					String nextPage = driver.getCurrentUrl().replaceAll("&page=" + pageNum, "&page=" + (++pageNum));
-					// 다음 페이지로 이동
-					driver.get(nextPage);
-					// 차단 방지
-					while (driver.getTitle().equals("웨이브 로그인")) {
-						moveToUrl(nextPage, loginCookies);
+			// 페이지 리스트에서 다음 페이지가 있는지 확인 << not found error 나는중, 왜지?
+			// 페이지가 로딩 되었을 때, 빈 페이지가 나오는 경우가 있다
+			// 해당 페이지로 들어갔을 때, 그게 없다면 현재 페이지를 refresh 
+			List<WebElement> pageList = null;
+			try {
+				pageList = driver.findElement(By.className("paging-type01")).findElements(By.tagName("a"));
+				
+				boolean nextPageFound = false;
+				for (WebElement page : pageList) {
+					// 만약 다음 페이지가 있다면
+					if (page.getText().equals((pageNum+1) + "")) {
+						// 현재 page 보다 하나 늘린 page로 url 변경하고, pageIdx 증가시킴
+						String nextPage = driver.getCurrentUrl().replaceAll("&page=" + pageNum, "&page=" + (++pageNum));
+						// 다음 페이지로 이동
+						driver.get(nextPage);
+						// 차단 방지
+						while (driver.getTitle().equals("웨이브 로그인")) {
+							moveToUrl(nextPage, loginCookies);
+						}
+						nextPageFound = true;
+						break;
 					}
-				    nextPageFound = true;
-					break;
 				}
+				// 다음 페이지가 없는 경우, pageCycle을 false로 설정하여 while 루프 종료
+				if (!nextPageFound) pageCycle = false;
+				// 10의 배수라면
+				if (pageNum % 10 == 0) {
+					WebElement nextPageList = null;
+					try {
+						// 다음 페이지 리스틑로 가는 링크가 있는지 확인하고
+						nextPageList = driver.findElement(By.id("next-page"));
+					} catch (Exception e) {logger.error("This genre has under 10 pages");}
+					// 다음 페이지 리스트로 가는 링크가 있다면 클릭
+					if (nextPageList != null) nextPageList.click();
+				}
+			} catch (Exception e) {
+				// page에 아무런 컨텐츠가 안 뜨는 경우가 있다
+				// refresh 추가
+				this.moveToUrl(currentUrl, loginCookies);
 			}
-			// 다음 페이지가 없는 경우, pageCycle을 false로 설정하여 while 루프 종료
-		    if (!nextPageFound) pageCycle = false;
-			// 10의 배수라면
-		    if (pageNum % 10 == 0) {
-		    	WebElement nextPageList = null;
-		    	try {
-		    		// 다음 페이지 리스틑로 가는 링크가 있는지 확인하고
-		    		nextPageList = driver.findElement(By.id("next-page"));
-		    	} catch (Exception e) {System.out.println("This genre has under 10 pages");}
-		    	// 다음 페이지 리스트로 가는 링크가 있다면 클릭
-		    	if (nextPageList != null) nextPageList.click();
-		    }
 		}
 		return wavveContentList;
 	}
@@ -885,11 +905,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// 영화 개별구매 거르기
 			try {
 				if (pageTotalContent.get(i).findElement(By.className("left-top-area")).findElement(By.tagName("span")) != null) {
-					System.out.println("개별구매 content 입니다");
+					logger.info("개별구매 컨텐츠입니다.");
 					continue;
 				}
 			} catch (Exception e) {
-				System.out.println("개별구매가 아닙니다");
+				logger.info("crawling 가능한 content 입니다");
 			}
 			// title, contentType, platformId, imgUrl 가져옴
 			CrawlingDTO content = new CrawlingDTO();
@@ -915,10 +935,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// -1이면 지금 현재 DB에 아예 없음
 			if (content.getContentId() == -1) {
 				CrawlingDTO newContent = null;
-				try {
-					// 디테일 페이지로 들어가서 정보 긁어오기
-					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
-				} catch (InterruptedException e) {System.out.println("FAIL TO CRAWL CONTENT DETAIL");}
+//				try {
+//					// 디테일 페이지로 들어가서 정보 긁어오기
+//					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
+//				} catch (InterruptedException e) {
+//					logger.error("FAIL TO CRAWL CONTENT DETAIL");
+//				}
 				// 컨텐츠를 못 가져왔거나, 페이지 리로드되며 디테일 정보를 못 가져오는 경우가 아니면 리스트에 넣기
 				if (newContent != null && newContent.getCreator() != null) wavveContentList.add(newContent);
 			}
@@ -959,8 +981,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 			for (WebElement button : buttonList) {
 				if (button.getAttribute("innerHTML").equals("상세정보")) button.click();
 			}
-			// 요약
-			crawlingDTO.setSummary(driver.findElement(By.className("detail-dsc")).getAttribute("innerHTML").trim());
+			try {
+				// 요약
+				crawlingDTO.setSummary(driver.findElement(By.className("detail-dsc")).getAttribute("innerHTML").trim());
+			} catch (Exception e) {
+				logger.info(crawlingDTO.getTitle() + " 작품의 요약 정보를 가져올 수 없습니다.");
+			}
 			// 상세정보 탭에서 table 을 훑으며 정보 가져오기
 			WebElement detailTable = driver.findElement(By.className("detail-info-table"));
 			// 헤더를 돌면서 정보가 있는 탭 확인
@@ -968,25 +994,40 @@ public class CrawlingServiceImpl implements CrawlingService {
 			String actors = "";
 			String creator = "";
 			// 영화일 경우, 년도 가져오는 위치
-			if (crawlingDTO.getContentType().equals("movie")) {
-				crawlingDTO.setEnrollDt(Integer.parseInt(getEnrolledYear(driver.findElement(By.xpath("//*[@id=\"contents\"]/section/div/div/div/div[2]/dl/dd[1]")).getText())));
-			}
+			try {
+				if (crawlingDTO.getContentType().equals("movie")) {
+					crawlingDTO.setEnrollDt(Integer.parseInt(getEnrolledYear(driver.findElement(By.xpath("//*[@id=\"contents\"]/section/div/div/div/div[2]/dl/dd[1]")).getText())));
+				}
+			} catch (Exception e) {e.printStackTrace();}
 			for (WebElement tableRow : detailTableRow) {
 				// series일 경우, 개요에 있는 년도 가져오기
-				if (crawlingDTO.getContentType().equals("series") && tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("개요")) {
-					crawlingDTO.setEnrollDt(Integer.parseInt(getEnrolledYear(tableRow.findElement(By.tagName("td")).getAttribute("innerHTML"))));
-				}
-				// 출연자 정보 가져오기
-				else if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("출연")) {
-					List<WebElement> actorList = tableRow.findElements(By.className("genre"));
-					for (int j = 0; j < actorList.size(); j++) {
-						if (j > 3) break;
-						actors += actorList.get(j).getAttribute("innerHTML").replaceAll("\\s+", "").trim() + ",";
+				try {
+					if (crawlingDTO.getContentType().equals("series") && tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("개요")) {
+						crawlingDTO.setEnrollDt(Integer.parseInt(getEnrolledYear(tableRow.findElement(By.tagName("td")).getAttribute("innerHTML"))));
 					}
+					
+				} catch (Exception e) {
+					logger.info(crawlingDTO.getTitle() + " 작품의 출시연도 정보가 없습니다.");
 				}
-				// 감독정보 가져오기
-				else if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("감독")) {
-					creator += tableRow.findElement(By.className("genre")).getAttribute("innerHTML").replaceAll("\\s+", " ").trim();
+				try {
+					// 출연자 정보 가져오기
+					if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("출연")) {
+						List<WebElement> actorList = tableRow.findElements(By.className("genre"));
+						for (int j = 0; j < actorList.size(); j++) {
+							if (j > 3) break;
+							actors += actorList.get(j).getAttribute("innerHTML").replaceAll("\\s+", "").trim() + ",";
+						}
+					}
+				} catch (Exception e) {
+					logger.info(crawlingDTO.getTitle() + " 작품의 출연자 정보가 없습니다.");
+				}
+				try {
+					// 감독정보 가져오기
+					if (tableRow.findElement(By.tagName("th")).getAttribute("innerHTML").equals("감독")) {
+						creator += tableRow.findElement(By.className("genre")).getAttribute("innerHTML").replaceAll("\\s+", " ").trim();
+					}
+				} catch (Exception e) {
+					logger.info(crawlingDTO.getTitle() + " 작품의 감독 정보가 없습니다.");
 				}
 			}
 			// actor가 있다면, 맨 뒤에 , 빼고 다시 저장
@@ -995,9 +1036,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 			crawlingDTO.setActors(actors);
 			crawlingDTO.setCreator(creator);
-			System.out.println(crawlingDTO);
+			logger.info(crawlingDTO.toString());
 		} catch (Exception e) {
-			System.out.println("content list 페이지가 달라졌습니다. 다시 crawling이 필요합니다.");
+			e.printStackTrace();
 		}
 		// 새창 닫기
 		driver.close();
@@ -1265,13 +1306,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 			if (isUpdateImgUrl) {
-				System.out.println("이미지 URL 업데이트");
+				logger.info("이미지 URL 업데이트");
 				crawlingDAO.updateImgUrl(crawlingDTO);
 			}
 			
 		}
-		System.out.println("INSERT CONTENTS COUNT     = " + insertCnt);	
-		System.out.println("DUPLICATED CONTENTS COUNT = " + duplCnt);	
+		logger.info("INSERT CONTENTS COUNT     = " + insertCnt);
+		logger.info("DUPLICATED CONTENTS COUNT = " + duplCnt);
 	}
 	
 	// 식별자 key 확인 중복 checkDupl N개 이상이면 중복된 작품으로 처리
