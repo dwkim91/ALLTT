@@ -79,8 +79,8 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public void updateExistYn() {
-		sqlSession.update("crawlingMapper.updateExistYn");
+	public void updateExistYnInitByGenre(GenreLinkDTO genreLinkDTO) {
+		sqlSession.update("crawlingMapper.updateExistYnInitByGenre", genreLinkDTO);
 	}
 
 	@Override
@@ -140,13 +140,18 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public Long selectLinkId(CrawlingDTO crawlingDTO) {
-		return sqlSession.selectOne("crawlingMapper.selectLinkId", crawlingDTO);
+	public Long selectLinkIdByPlatformIdAndContentId(CrawlingDTO crawlingDTO) {
+		return sqlSession.selectOne("crawlingMapper.selectLinkIdByPlatformIdAndContentId", crawlingDTO);
 	}
 
 	@Override
 	public void updateImgUrl(CrawlingDTO crawlingDTO) {
 		sqlSession.update("crawlingMapper.updateImgUrl", crawlingDTO);
+	}
+
+	@Override
+	public void updateExistYnByLinkId(long linkId) {
+		sqlSession.update("crawlingMapper.updateExistYnByLinkId", linkId);
 	}
 
 	

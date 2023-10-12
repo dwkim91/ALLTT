@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.app.alltt.crawling.service.CrawlingService;
+import com.app.alltt.support.service.SupportService;
 
 @Controller
 @RequestMapping("/crawling")
@@ -15,6 +16,9 @@ public class CrawlingController {
 	
 	@Autowired
 	private CrawlingService crawlingService;
+	
+	@Autowired
+	private SupportService supportService;
 	
 	@GetMapping("/controller")
 	@ResponseBody
@@ -66,6 +70,8 @@ public class CrawlingController {
 	public String addAllttContent() throws InterruptedException {
 		
 		crawlingService.addAllttContent();
+		
+		supportService.resizeAndUploadImage();
 		
 		return "<h1>Success</h1>";
 	}
