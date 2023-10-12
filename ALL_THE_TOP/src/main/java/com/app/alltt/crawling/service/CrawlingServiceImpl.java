@@ -75,8 +75,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--mute-audio");
 		// 이미지 로드 X
 		options.addArguments("--blink-settings=imagesEnabled=false");
-		//option.addArguments("--headless");
-		//option.addArguments("--disable-gpu");
+		options.addArguments("--headless");
+//		option.addArguments("--disable-gpu");
 		
 		// HTTP 헤더추가
 		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
