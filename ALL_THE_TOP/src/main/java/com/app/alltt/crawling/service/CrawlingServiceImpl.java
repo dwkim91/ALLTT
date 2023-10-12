@@ -1,7 +1,9 @@
 package com.app.alltt.crawling.service;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -73,8 +75,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--mute-audio");
 		// 이미지 로드 X
 		options.addArguments("--blink-settings=imagesEnabled=false");
-		//option.addArguments("--headless");
-		//option.addArguments("--disable-gpu");
+		options.addArguments("--headless");
+//		option.addArguments("--disable-gpu");
 		
 		// HTTP 헤더추가
 		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
@@ -148,16 +150,21 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// ====================================
 	
 	// 삭제된 작품확인용 Status 초기화 메서드
-	private void initExistYn() {
-		crawlingDAO.updateExistYn();
+	private void initExistYn(GenreLinkDTO genreLinkDTO) {
+		crawlingDAO.updateExistYnInitByGenre(genreLinkDTO);
 	}
 	
 	// 서비스종료된 작품 DB에서 삭제 메서드
 	public void deleteContent() {
 		//종료된 작품 contentId List 가져오기
 		for (CrawlingDTO nonService : crawlingDAO.selectListNonServiceContent()) {
+
 			logger.info(nonService.getContentId() + "");
 			//post 삭제
+
+			System.out.println(nonService.getContentId());
+			//Content관련 post 삭제
+
 			crawlingDAO.deletePost(nonService.getContentId());
 			//content 테이블에서 삭제
 			crawlingDAO.deleteContent(nonService.getContentId());
@@ -211,8 +218,21 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return crawlingDAO.selectListGenreLinkByGenreId(temp);
 	}
 	
+	public String getToday() {
+		Date currentDate = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(currentDate);
+	}
+	
 	@Override
 	public void addAllttContent() throws InterruptedException {
+		
+		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		String contentType = "series";
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= 38 ; i++) {
@@ -244,35 +264,67 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 		}
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		logger.info(sb.toString());
 	}
 	
 	public void addTving(GenreLinkDTO genreLinkDTO) {
+		logger.info("========================================================");
+		logger.info("================= tving crawling start =================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		
 		chromeDriverInit();
 
 		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
-		initExistYn();
+		initExistYn(genreLinkDTO);
 
 		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
 		
+		logger.info("========================================================");
+		logger.info("================== tving crawling end ==================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	public void addNetflix(GenreLinkDTO genreLinkDTO) {
+		logger.info("========================================================");
+		logger.info("================ netflix crawling start ================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		
 		chromeDriverInit();
 		netflixLogin(NETFLIX_LOGIN_KEY[0],NETFLIX_LOGIN_KEY[1]);
+		initExistYn(genreLinkDTO);
 //		addContents(getNetflixDetailInfo(crawlNetflixdContents(genreLinkDTO)));
 		quit();
 		
+		logger.info("========================================================");
+		logger.info("================= netflix crawling end =================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	public void addWavve(GenreLinkDTO genreLinkDTO) throws InterruptedException {
+		logger.info("========================================================");
+		logger.info("================= wavve crawling start =================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
+		initExistYn(genreLinkDTO);
 //		addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
 		quit();
+		
+		logger.info("========================================================");
+		logger.info("================== wavve crawling end ==================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	// ==================================== 
@@ -319,14 +371,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// 장르별 페이지에 작품이 전부 로딩된 상태의 데이터 ( 저장 시작부분 )	
 		List<WebElement> webElementList = driver.findElements(By.className("item"));
-//		List<WebElement> webElementTemp = new ArrayList<WebElement>();
 		int count = 1;
-//		for (WebElement webElement : webElementList) {
-//			webElementTemp.add(webElement);
-//			count++;
-//			if(count >= 350) break;
-//		} 
 		showGenreLinkDTO(webElementList, genreLinkDTO);
+
 		// 가져온 엘리먼트 하위 요소 다시 선택
 		for (WebElement webElement : webElementList) {
 	         
@@ -366,20 +413,24 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// 조건문 detail 링크 안들어가기 imgUrl로 사전 확인 -> 있으면 아래코드 안들어가고 패스
 			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
 			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
-//				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
-//				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교
+
 				System.out.println("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
 				logger.info("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
-					continue; // 같은 작품으로 분류 하고 디테일 정보입력은 패스
-//				}
+				continue; // 같은 작품으로 분류 하고 디테일 정보입력은 패스
+
 			}
 			CrawlingDTO detailTemp = getTvingContentDetailInfo(crawlingDTO.getUrl(), genreLinkDTO.getContentType());
 			crawlingDTO.setCreator(detailTemp.getCreator());
 			crawlingDTO.setActors(detailTemp.getActors());
 			crawlingDTO.setSummary(detailTemp.getSummary());
 			crawlingDTO.setEnrollDt(detailTemp.getEnrollDt());
+
 			logger.info(contentCnt++ +" ");
 			showCrawlingDTO(crawlingDTO);
+
+
+//			System.out.print(contentCnt++ +" ");
+//			showCrawlingDTO(crawlingDTO);
 
 		}
 			
@@ -396,7 +447,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		while (driver.getTitle().equals("TVING")) {
 			quit();
 			chromeDriverInit();
-			tvingLogin("alltttv", "!allott1234");
+			tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
 			moveToTargetUrl(url);
 		}
 		
@@ -475,14 +526,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 		crawlingDTO.setCreator(creator);
 		crawlingDTO.setActors(actors);
 		crawlingDTO.setSummary(summary);
-//		System.out.println("creator : " + creator + ", actors : " + actors);
+
 		return crawlingDTO;
 		
 	}
 	
 	// 티빙 감독, 출연정보에 ")"이 누락된경우 사용 "(괄호사이의 내용)" -> "," 변경 메서드  
 	private String genCreatorActorString (String data, int length) {
-		//String result;
+
 		if (data.contains("(") && !data.endsWith(")")) {
 			data = data + ")";
 		}
@@ -506,32 +557,34 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addTvingContent() {
 		
-//		readDBcontentTest();
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 		
 		chromeDriverInit();
 		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
-		//addContents(getTvingCrawlingDTOList(0));
-		initExistYn();
-		//getTvingContentDetailInfo("https://www.tving.com/contents/P001635813", "series");
-		
-		//String contentType = "movie";
-		String contentType = "series";
-		int str = 6;
-		int end = 6;
 		
 		for (GenreLinkDTO genreLinkDTO : getGenreLinkList(2)) {
-			if (genreLinkDTO.getContentType().equals(contentType)) {
-				if (genreLinkDTO.getGenreId()>=str && genreLinkDTO.getGenreId()<=end) {
-					System.out.println("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
-					logger.info("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
-					addContents(crawlTvingContents(genreLinkDTO));
-					System.out.println("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
-					logger.info("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
-				}
+
+			if (genreLinkDTO.getContentType().equals("series") && genreLinkDTO.getGenreId() == 1){
+				initExistYn(genreLinkDTO);
+				System.out.println(genreLinkDTO.toString());
+				//System.out.println("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
+				logger.info("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
+				addContents(crawlTvingContents(genreLinkDTO));
+				//System.out.println("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
+				logger.info("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
+
 			}
 		}
 		
 		quit();
+		
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	
@@ -727,6 +780,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addNetflixContent() {
 		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 //		Netflix 단일장르 Test Start
 
 //		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
@@ -752,7 +810,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 		ArrayList<CrawlingDTO> netflixContentList = new ArrayList<>();
 		
 		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
-			netflixContentList = crawlNetflixdContents(genreLinkDTO);
+			if (genreLinkDTO.getContentType().equals("series") && genreLinkDTO.getGenreId() == 7){
+				
+				initExistYn(genreLinkDTO);
+				netflixContentList = crawlNetflixdContents(genreLinkDTO);
+			}
 		}
 		
 		netflixContentList = getNetflixDetailInfo(netflixContentList);
@@ -765,6 +827,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 드라이버 종료
 		quit();
 		
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	
 	
@@ -778,16 +844,30 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 	@Override
 	public void addWavveContent() throws InterruptedException {
+		
+		logger.info("========================================================");
+		logger.info("==================== CRAWLING START ====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
+		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
 //		for (GenreLinkDTO genre : this.getGenreLinkList(3)) {
+//			initExistYn(genre);
 //			this.addContents(this.crawlWavve(genre, loginCookies));
 //		}
 		// test genre
-		for (GenreLinkDTO genre : getGenreLinkTestWavve(3)) {
-			addContents(ctrlWavveContentsPage(genre, loginCookies));
+		for (GenreLinkDTO genreLinkDTO : getGenreLinkTestWavve(3)) {
+			System.out.println(genreLinkDTO.toString());
+			initExistYn(genreLinkDTO);
+			addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
 		}
 		quit();
+		
+		logger.info("========================================================");
+		logger.info("===================== CRAWLING END =====================");
+		logger.info("==========" + this.getToday() + "==========");
+		logger.info("========================================================");
 	}
 	 
 	// login wavve
@@ -935,12 +1015,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// -1이면 지금 현재 DB에 아예 없음
 			if (content.getContentId() == -1) {
 				CrawlingDTO newContent = null;
-//				try {
-//					// 디테일 페이지로 들어가서 정보 긁어오기
-//					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
-//				} catch (InterruptedException e) {
-//					logger.error("FAIL TO CRAWL CONTENT DETAIL");
-//				}
+				try {
+					// 디테일 페이지로 들어가서 정보 긁어오기
+					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
+				} catch (InterruptedException e) {
+					logger.error("FAIL TO CRAWL CONTENT DETAIL");
+				}
 				// 컨텐츠를 못 가져왔거나, 페이지 리로드되며 디테일 정보를 못 가져오는 경우가 아니면 리스트에 넣기
 				if (newContent != null && newContent.getCreator() != null) wavveContentList.add(newContent);
 			}
@@ -1158,7 +1238,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 	public void addContents(List<CrawlingDTO> crawlingDTOList) {
 		int contentCnt = 0;
 		int insertCnt = 0;
+		int updateInfoCnt = 0;
+		int imgUpdateCnt = 0;
 		int duplCnt = 0;
+		int test = 0;
 		
 		for(CrawlingDTO crawlingDTO : crawlingDTOList) {
 			contentCnt++;
@@ -1171,31 +1254,20 @@ public class CrawlingServiceImpl implements CrawlingService {
 			boolean isInsertContentKey = false;
 			boolean isUpdateInfo = false;
 			boolean isUpdateImgUrl = false;
+			boolean isUpdateExistYn = false;
 			
 			Set<String> contentKeyList = null;
 			Set<String> updateKeyList = null;
 			// img_url로 T:detail_link 검색
 			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
 			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
-//				String titleDB = crawlingDAO.selectOneTitle(contentLinkDTO.getContentId());
-//				System.out.println("장르비교");
 				crawlingDTO.setContentId(contentLinkDTO.getContentId());
+				crawlingDTO.setLinkId(contentLinkDTO.getLinkId());;
 				isInsertGenre = true; // G만 비교 후 G => UPDATE
-//				if (titleDB.equals(crawlingDTO.getTitle())) { // 제목 비교, 같은 작품
-//					System.out.println("장르비교");
-//					crawlingDTO.setContentId(contentLinkDTO.getContentId());
-//					isInsertGenre = true; // G만 비교 후 G => UPDATE
-//				}
-//				else { // 다른 작품
-//					isInsertContent = true;
-//					isInsertGenre = true;
-//					isInsertDetail = true;
-//					isInsertContentKey = true;
-//				}
+				isUpdateExistYn = true;
 			}
 			else { //imgUrl 다르다 => 나머지 2개의 ott를 검사해야함 => 식별자가 필요!
 				contentKeyList = genContentKeyList(crawlingDTO);
-//				System.out.println("contentKeyList : " + contentKeyList);
 				// title -> title_key -> T:content_key 검색 -> contentId 확인
 				String title_key = genKorAlphaNumStr(convertRomanToNumber(crawlingDTO.getTitle()));
 				List<Long> contentIdList = crawlingDAO.selectListContentId(title_key);
@@ -1213,7 +1285,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 								isInsertDetail = true;
 								isInsertContentKey = true;
 								// 같은 플랫폼의 같은 작품의 imgUrl 이 변경된경우
-								Long linkId = crawlingDAO.selectLinkId(crawlingDTO);
+								Long linkId = crawlingDAO.selectLinkIdByPlatformIdAndContentId(crawlingDTO);
 								if(linkId != null) {
 									crawlingDTO.setLinkId(linkId);
 									isUpdateImgUrl = true;
@@ -1242,14 +1314,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 			
-//			System.out.println("isInsertContent    : " + isInsertContent);
-//			System.out.println("isInsertGenre      : " + isInsertGenre);
-//			System.out.println("isInsertDetail     : " + isInsertDetail);
-//			System.out.println("isInsertContentKey : " + isInsertContentKey);
 			// 데이터 입력단
 			if (isInsertContent) {
-				insertCnt++;// insert 개수 확인용
-//				System.out.println(contentCnt + " " + crawlingDTO.toString());
 				if (isUpdateInfo) { // 누락 정보업데이트
 					long contentId = crawlingDTO.getContentId();
 					ContentDTO contentDTO = crawlingDAO.selectOneContent(crawlingDTO.getContentId());
@@ -1265,14 +1331,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 					if (contentDTO.getEnrollDt() == 9999 && crawlingDTO.getEnrollDt() != 9999) {
 						crawlingDAO.updateEnrollDt(crawlingDTO);
 					}
+					updateInfoCnt++;// 정보 업데이트 확인용
 				}
-				else crawlingDAO.insertContent(crawlingDTO);
+				else {
+					crawlingDAO.insertContent(crawlingDTO);
+					insertCnt++;// insert 개수 확인용
+				}
 				
-			}
-			else {
-				//test확인용 
-				duplCnt++;
-//				System.out.println("중복컨텐츠 : " + duplCnt);
 			}
 			if (isInsertGenre) {
 				boolean isExist = false;
@@ -1282,11 +1347,15 @@ public class CrawlingServiceImpl implements CrawlingService {
 				if (!isExist) {
 					crawlingDAO.insertGenre(crawlingDTO);
 				}
+				if (isUpdateExistYn) {
+					crawlingDAO.updateExistYnByLinkId(crawlingDTO.getLinkId());
+					duplCnt++;
+				}
 			}
 			if (isInsertDetail) {
 				boolean isExist = false;
-				for (int platformCd : crawlingDAO.selectListPlatformId(crawlingDTO.getContentId())) {
-					if (platformCd == crawlingDTO.getPlatformId()) isExist = true; 
+				for (int platformId : crawlingDAO.selectListPlatformId(crawlingDTO.getContentId())) {
+					if (platformId == crawlingDTO.getPlatformId()) isExist = true; 
 				}
 				if (!isExist) {
 					crawlingDTO.setExistYn("Y");
@@ -1306,13 +1375,25 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 			if (isUpdateImgUrl) {
+
 				logger.info("이미지 URL 업데이트");
+
+				System.out.println("이미지 URL 업데이트 LINK_ID : " + crawlingDTO.getLinkId());
+
 				crawlingDAO.updateImgUrl(crawlingDTO);
+				imgUpdateCnt++;
 			}
 			
 		}
+
 		logger.info("INSERT CONTENTS COUNT     = " + insertCnt);
 		logger.info("DUPLICATED CONTENTS COUNT = " + duplCnt);
+
+		System.out.println("INSERT CONTENTS COUNT     = " + insertCnt);
+		System.out.println("UPDATE CONTENTS COUNT     = " + updateInfoCnt);
+		System.out.println("IMG UPDATE CONTENTS COUNT = " + insertCnt);
+		System.out.println("EXISTED CONTENTS COUNT      = " + duplCnt);
+
 	}
 	
 	// 식별자 key 확인 중복 checkDupl N개 이상이면 중복된 작품으로 처리

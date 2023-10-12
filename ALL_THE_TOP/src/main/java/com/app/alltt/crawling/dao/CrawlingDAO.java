@@ -23,7 +23,7 @@ public interface CrawlingDAO {
 	public List<String> selectListContentKey(long conteneId);
 	public List<Integer> selectListPlatformId(long contentId);
 	public ContentDTO selectOneContent(long contentId);
-	public void updateExistYn();
+	public void updateExistYnInitByGenre(GenreLinkDTO genreLinkDTO);
 	
 	public String selectOneTitle(long contentId);
 	public void updateCreator(CrawlingDTO crawlingDTO);
@@ -44,7 +44,8 @@ public interface CrawlingDAO {
 	public void deleteContent(long contentId);
 	public void deletePost(long contentId);
 	// linkId 확인
-	public Long selectLinkId(CrawlingDTO crawlingDTO);
+	public Long selectLinkIdByPlatformIdAndContentId(CrawlingDTO crawlingDTO);
 	public void updateImgUrl(CrawlingDTO crawlingDTO);
+	public void updateExistYnByLinkId(long linkId);
 
 }
