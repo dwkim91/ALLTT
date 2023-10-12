@@ -812,7 +812,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
 			if (genreLinkDTO.getContentType().equals("series") && genreLinkDTO.getGenreId() == 7){
 				
-				//initExistYn(genreLinkDTO);
+				initExistYn(genreLinkDTO);
 				netflixContentList = crawlNetflixdContents(genreLinkDTO);
 			}
 		}
@@ -853,6 +853,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
 //		for (GenreLinkDTO genre : this.getGenreLinkList(3)) {
+//			initExistYn(genre);
 //			this.addContents(this.crawlWavve(genre, loginCookies));
 //		}
 		// test genre
