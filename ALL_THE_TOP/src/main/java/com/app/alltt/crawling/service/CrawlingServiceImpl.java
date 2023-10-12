@@ -935,12 +935,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// -1이면 지금 현재 DB에 아예 없음
 			if (content.getContentId() == -1) {
 				CrawlingDTO newContent = null;
-//				try {
-//					// 디테일 페이지로 들어가서 정보 긁어오기
-//					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
-//				} catch (InterruptedException e) {
-//					logger.error("FAIL TO CRAWL CONTENT DETAIL");
-//				}
+				try {
+					// 디테일 페이지로 들어가서 정보 긁어오기
+					newContent = getWavveDetailInfo(currentUrl, loginCookies, i, content);
+				} catch (InterruptedException e) {
+					logger.error("FAIL TO CRAWL CONTENT DETAIL");
+				}
 				// 컨텐츠를 못 가져왔거나, 페이지 리로드되며 디테일 정보를 못 가져오는 경우가 아니면 리스트에 넣기
 				if (newContent != null && newContent.getCreator() != null) wavveContentList.add(newContent);
 			}
