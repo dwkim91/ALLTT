@@ -224,14 +224,42 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return sdf.format(currentDate);
 	}
 	
+	private void crawlingTimelog(int platformId, String status) {
+		
+		
+		String temp = "";
+		
+		logger.info("========================================================");
+		
+		if (platformId == 0) {
+			logger.info("==================== ALL PLATFORM ======================");
+		}
+		if (platformId == 1) {
+			logger.info("======================= NETFILX ========================");
+		}
+		else if (platformId == 2) {
+			logger.info("======================== TVING =========================");
+		}
+		else if (platformId == 3) {
+			logger.info("======================== WAVVE =========================");
+		}
+		
+		if (status.equals("str")) {
+			logger.info("==================== CRAWLING START ====================");	
+		}
+		else if (status.equals("end")) {
+			logger.info("===================== CRAWLING END =====================");
+		} 
+		logger.info("================== "+this.getToday()+" =================");
+		logger.info("========================================================");
+		
+	}
+	
 	@Override
 	public void addAllttContent() throws InterruptedException {
 		
 		
-		logger.info("========================================================");
-		logger.info("==================== CRAWLING START ====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(0, "str");
 		
 		String contentType = "series";
 		StringBuilder sb = new StringBuilder();
@@ -264,18 +292,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 			}
 		}
-		logger.info("========================================================");
-		logger.info("===================== CRAWLING END =====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(0, "end");
 		logger.info(sb.toString());
 	}
 	
 	public void addTving(GenreLinkDTO genreLinkDTO) {
-		logger.info("========================================================");
-		logger.info("================= tving crawling start =================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		
+		crawlingTimelog(2, "str");
 		
 		chromeDriverInit();
 
@@ -285,17 +308,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 		addContents(crawlTvingContents(genreLinkDTO));
 		quit();
 		
-		logger.info("========================================================");
-		logger.info("================== tving crawling end ==================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(2, "end");
 	}
 	
 	public void addNetflix(GenreLinkDTO genreLinkDTO) {
-		logger.info("========================================================");
-		logger.info("================ netflix crawling start ================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		
+		crawlingTimelog(1, "str");
 		
 		chromeDriverInit();
 		netflixLogin(NETFLIX_LOGIN_KEY[0],NETFLIX_LOGIN_KEY[1]);
@@ -303,17 +321,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 //		addContents(getNetflixDetailInfo(crawlNetflixdContents(genreLinkDTO)));
 		quit();
 		
-		logger.info("========================================================");
-		logger.info("================= netflix crawling end =================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(1, "end");
 	}
 	
 	public void addWavve(GenreLinkDTO genreLinkDTO) throws InterruptedException {
-		logger.info("========================================================");
-		logger.info("================= wavve crawling start =================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		
+		crawlingTimelog(3, "str");
 		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
@@ -321,10 +334,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 //		addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
 		quit();
 		
-		logger.info("========================================================");
-		logger.info("================== wavve crawling end ==================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(3, "end");
 	}
 	
 	// ==================================== 
@@ -413,12 +423,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// 조건문 detail 링크 안들어가기 imgUrl로 사전 확인 -> 있으면 아래코드 안들어가고 패스
 			ContentLinkDTO contentLinkDTO = crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl());
 			if (contentLinkDTO != null) { // if (같다) 내 ott와 일치하는 작품이 있다!
-
-				System.out.println("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
-				logger.info("DB에 있는작품 : " + crawlingDAO.selectOneTitle(contentLinkDTO.getContentId()));
 				continue; // 같은 작품으로 분류 하고 디테일 정보입력은 패스
-
 			}
+			
 			CrawlingDTO detailTemp = getTvingContentDetailInfo(crawlingDTO.getUrl(), genreLinkDTO.getContentType());
 			crawlingDTO.setCreator(detailTemp.getCreator());
 			crawlingDTO.setActors(detailTemp.getActors());
@@ -427,7 +434,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 			logger.info(contentCnt++ +" ");
 			showCrawlingDTO(crawlingDTO);
-
 
 //			System.out.print(contentCnt++ +" ");
 //			showCrawlingDTO(crawlingDTO);
@@ -557,10 +563,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addTvingContent() {
 		
-		logger.info("========================================================");
-		logger.info("==================== CRAWLING START ====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(2, "str");
 		
 		chromeDriverInit();
 		tvingLogin(TVING_LOGIN_KEY[0], TVING_LOGIN_KEY[1]);
@@ -581,10 +584,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 		quit();
 		
-		logger.info("========================================================");
-		logger.info("===================== CRAWLING END =====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(2, "end");
 	}
 	
 	
@@ -625,7 +625,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private ArrayList<CrawlingDTO> crawlNetflixdContents(GenreLinkDTO genreLinkDTO) {
 		
 		ArrayList<CrawlingDTO> contentList = new ArrayList<CrawlingDTO>();
-		
+int testCnt = 0;			
 			// 장르 URL
 			String url = genreLinkDTO.getUrl();
 			// 장르 코드
@@ -671,15 +671,17 @@ public class CrawlingServiceImpl implements CrawlingService {
 				}
 				else { // 있을경우 contentId DTO에 추가
 					crawlingDTO.setContentId(crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl()).getContentId());
-					System.out.println("img : " + crawlingDTO.getImgUrl());
-					logger.info("img : " + crawlingDTO.getImgUrl());
-					System.out.println("contentId : " + crawlingDTO.getContentId());
-					logger.info("contentId : " + crawlingDTO.getContentId());
+//					System.out.println("img : " + crawlingDTO.getImgUrl());
+//					logger.info("img : " + crawlingDTO.getImgUrl());
+//					System.out.println("contentId : " + crawlingDTO.getContentId());
+//					logger.info("contentId : " + crawlingDTO.getContentId());
 				}
 				
 				contentList.add(crawlingDTO);
-// 1개만 가져옴 test
-			//	break;
+// 1개만 가져옴 test @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+if (testCnt++ == 20) {
+	return contentList;
+}
 			}	
 			
 		return contentList;
@@ -769,9 +771,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 					    
 					}
 				}
-			logger.info(contentCnt++ +" ");
-			showCrawlingDTO(crawlingDTO);
-//				System.out.println(crawlingDTO);
+//			logger.info(contentCnt++ +" ");
+//			showCrawlingDTO(crawlingDTO);
 					
 		}
 		return crawlingList;
@@ -780,10 +781,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addNetflixContent() {
 		
-		logger.info("========================================================");
-		logger.info("==================== CRAWLING START ====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(1, "str");
 		
 //		Netflix 단일장르 Test Start
 
@@ -810,27 +808,24 @@ public class CrawlingServiceImpl implements CrawlingService {
 		ArrayList<CrawlingDTO> netflixContentList = new ArrayList<>();
 		
 		for (GenreLinkDTO genreLinkDTO : genreLinkList) {
-			if (genreLinkDTO.getContentType().equals("series") && genreLinkDTO.getGenreId() == 7){
+			if (genreLinkDTO.getContentType().equals("series") && genreLinkDTO.getGenreId() == 7){// test
 				
 				initExistYn(genreLinkDTO);
 				netflixContentList = crawlNetflixdContents(genreLinkDTO);
+			
 			}
 		}
-		
 		netflixContentList = getNetflixDetailInfo(netflixContentList);
 		
-		scan.nextInt();
+//		scan.nextInt();
 		
-		scan.close();
+//		scan.close();
 		
 		addContents(netflixContentList);
 		// 드라이버 종료
 		quit();
 		
-		logger.info("========================================================");
-		logger.info("===================== CRAWLING END =====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(1, "end");
 	}
 	
 	
@@ -845,10 +840,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public void addWavveContent() throws InterruptedException {
 		
-		logger.info("========================================================");
-		logger.info("==================== CRAWLING START ====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(3, "str");
 		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
@@ -864,10 +856,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		}
 		quit();
 		
-		logger.info("========================================================");
-		logger.info("===================== CRAWLING END =====================");
-		logger.info("==========" + this.getToday() + "==========");
-		logger.info("========================================================");
+		crawlingTimelog(3, "end");
 	}
 	 
 	// login wavve
@@ -1391,8 +1380,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		System.out.println("INSERT CONTENTS COUNT     = " + insertCnt);
 		System.out.println("UPDATE CONTENTS COUNT     = " + updateInfoCnt);
-		System.out.println("IMG UPDATE CONTENTS COUNT = " + insertCnt);
-		System.out.println("EXISTED CONTENTS COUNT      = " + duplCnt);
+		System.out.println("IMG UPDATE CONTENTS COUNT = " + imgUpdateCnt);
+		System.out.println("EXISTED CONTENTS COUNT    = " + duplCnt);
 
 	}
 	
