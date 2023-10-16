@@ -123,6 +123,8 @@ $(function() {
 	// 태그 검색 삭제
 	$(".form__clear").click(function() {
 		$("#input-search").val("");
+		var searchList = $("#tag_list");
+		searchList.empty(); // 기존 내용 제거
 	})
 
 	// 태그 검색
