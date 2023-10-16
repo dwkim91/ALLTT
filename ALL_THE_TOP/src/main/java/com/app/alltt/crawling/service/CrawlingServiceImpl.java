@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
 import com.app.alltt.crawling.dto.ContentDTO;
@@ -36,6 +37,7 @@ import com.app.alltt.crawling.dto.ContentKeyDTO;
 import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
+import com.app.alltt.support.service.SupportService;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -45,6 +47,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	@Autowired
 	private CrawlingDAO crawlingDAO;
+	
+	@Autowired
+	private SupportService supportService;
 
 	@Value("${wavve.key}")
 	private String[] WAVVE_LOGIN_KEY;
@@ -52,6 +57,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String[] NETFLIX_LOGIN_KEY;
 	@Value("${tving.key}")
 	private String[] TVING_LOGIN_KEY;
+	
+	@Value("${chrome.driver.path}")
+	private String chromeDriverPath;
 	
 	private WebDriver driver;
 
@@ -64,20 +72,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		WebDriverManager.chromedriver().setup();
+		WebDriverManager.chromedriver().cachePath(chromeDriverPath).resolutionCachePath(chromeDriverPath).setup();
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
-		
 		// 크롬드라이버 시작시 window 창 최대화
 		options.addArguments("--start-maximized");
 		// 음소거
 		options.addArguments("--mute-audio");
 		// 이미지 로드 X
 		options.addArguments("--blink-settings=imagesEnabled=false");
-		//option.addArguments("--headless");
-		//option.addArguments("--disable-gpu");
 		
+		options.addArguments("--headless");
 		// HTTP 헤더추가
 		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
 		
@@ -135,6 +141,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	// 창닫기, WebDriver 종료
 	private void quit() {
+		driver.close();
         driver.quit();
 	}
 	
@@ -152,6 +159,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// 서비스종료된 작품 DB에서 삭제 메서드
+	@Transactional
 	public void deleteContent() {
 		//종료된 작품 contentId List 가져오기
 		for (CrawlingDTO nonService : crawlingDAO.selectListNonServiceContent()) {
@@ -160,11 +168,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 			//post 삭제
 
 			System.out.println(nonService.getContentId());
+			
 			//Content관련 post 삭제
-
 			crawlingDAO.deletePost(nonService.getContentId());
 			//content 테이블에서 삭제
 			crawlingDAO.deleteContent(nonService.getContentId());
+			//S3에서 이미지 삭제
+			supportService.deleteViewImage(nonService.getContentId());
+			
 			break;
 		}
 	}
@@ -311,9 +322,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		crawlingTimelog(3, "str");
 		
 		chromeDriverInit();
-		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
 		initExistYn(genreLinkDTO);
-//		addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
+		addContents(ctrlWavveContentsPage(genreLinkDTO, loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1])));
 		quit();
 		
 		crawlingTimelog(3, "end");
@@ -796,10 +806,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
-//		for (GenreLinkDTO genre : this.getGenreLinkList(3)) {
-//			initExistYn(genre);
-//			this.addContents(this.crawlWavve(genre, loginCookies));
-//		}
 		// test genre
 		for (GenreLinkDTO genreLinkDTO : getGenreLinkTestWavve(3)) {
 			System.out.println(genreLinkDTO.toString());
@@ -837,8 +843,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 		}
 		return testGenreLink;
-//		전체 장르
-//		return crawlingDAO.selectListGenreLink(platformId);
 	}
 
 	// 해당 url로 이동
@@ -915,6 +919,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// wavve 해당 페이지의 content 정보 긁기
+	@Transactional
 	private List<CrawlingDTO> crawlWavveCurrentPageContentList(GenreLinkDTO genre, Set<Cookie> loginCookies) {
 		List<CrawlingDTO> wavveContentList = new ArrayList<CrawlingDTO>();
 		// 현재 페이지에서 가져올 수 있는 모든 content list
@@ -1059,7 +1064,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			crawlingDTO.setCreator(creator);
 			logger.info(crawlingDTO.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		// 새창 닫기
 		driver.close();
@@ -1176,6 +1181,7 @@ public class CrawlingServiceImpl implements CrawlingService {
    	// ====================================
  	
  	// 크롤링한 데이터리스트 List<CrawlingDTO>의 작품 중복검사 후 DB로 넘기기
+ 	@Transactional
 	public void addContents(List<CrawlingDTO> crawlingDTOList) {
 		int insertCnt = 0;
 		int updateInfoCnt = 0;

@@ -48,9 +48,6 @@ public class MemberController {
 	// 이미지 저장 상대 경로용 서버에 올려서는 서버 내의 별도 이미지경로의 절대 경로 사용 예정
 	private static String THUMBNAIL_IMG_PATH = "/resources/bootstrap/img/thumbnailImg/";
 	
-	// 로그 기록용
-	private static Logger logger = LoggerFactory.getLogger(MemberController.class);
-	
 	public static String getThumbnailImagePath(HttpSession session) {
         return session.getServletContext().getRealPath(THUMBNAIL_IMG_PATH);		
     }

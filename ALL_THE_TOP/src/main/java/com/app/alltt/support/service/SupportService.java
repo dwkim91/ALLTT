@@ -20,5 +20,6 @@ public interface SupportService {
 	List<FilteredDTO> getImageRequiredToBeUploaded();
 	void resizeAndUploadDamagedImage(MultipartFile uploadFile, int contentId);
 	void resizeAndUploadImage();
+	void deleteViewImage(long contentId);
 	
 }
