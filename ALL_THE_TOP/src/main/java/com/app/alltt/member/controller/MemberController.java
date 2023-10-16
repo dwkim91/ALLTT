@@ -525,10 +525,10 @@ public class MemberController {
 			
 			while (sessionData.hasMoreElements()) {
 				String attName = sessionData.nextElement();
-				System.out.println(attName + " = " + session.getAttribute(attName));
+				logger.info(attName + " = " + session.getAttribute(attName));
 			}
 		} catch (Exception e) {
-			System.out.println("세션이 이미 털렸습니다");
+			logger.info("세션이 이미 털렸습니다");
 		}
 	}
 	
