@@ -29,4 +29,6 @@ public interface SupportDAO {
 
 	void insertViewImage(FilteredDTO tempDTO);
 
+	void deleteViewImage(long contentId);
+
 }

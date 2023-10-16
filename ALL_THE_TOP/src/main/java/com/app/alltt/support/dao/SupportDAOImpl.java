@@ -70,4 +70,9 @@ public class SupportDAOImpl implements SupportDAO {
 		sqlSession.insert("supportMapper.insertViewImage",tempDTO);
 	}
 
+	@Override
+	public void deleteViewImage(long contentId) {
+		sqlSession.delete("supportMapper.deleteViewImage", contentId);
+	}
+
 }
