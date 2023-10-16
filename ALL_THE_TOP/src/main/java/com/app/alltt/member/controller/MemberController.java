@@ -136,6 +136,10 @@ public class MemberController {
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
+		//로그인 state 값확인 폰접속애러 확인용 
+		logger.info("stateSession : " + stateSession);
+		logger.info("state        : " + state);
+		
 		// ** 처리방향 논의 필요
 		// 다른 계정으로 로그인한 유저가 url로 로그인 접속을 하는 경우?
 		// 일단 로그인 정보를 날려놓
