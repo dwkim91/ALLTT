@@ -288,4 +288,20 @@ public class SupportServiceImpl implements SupportService {
 		return supportDAO.selectListImageRequiredToBeUploaded();
 	}
 
+	@Override
+	public void deleteViewImage(long contentId) {
+		
+		String deleteImageFileName = contentId + ".jpg";
+		
+		BasicAWSCredentials awsCredentials = new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY);
+        AmazonS3 s3Client = AmazonS3Client.builder()
+                .withRegion("ap-northeast-2") // 원하는 AWS 리전 선택
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .build();
+		
+        s3Client.deleteObject(BUCKET_NAME, deleteImageFileName);
+        
+        supportDAO.deleteViewImage(contentId);
+	}
+
 }
