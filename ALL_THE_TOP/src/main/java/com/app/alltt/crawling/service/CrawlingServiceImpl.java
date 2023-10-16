@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.alltt.crawling.dao.CrawlingDAO;
 import com.app.alltt.crawling.dto.ContentDTO;
@@ -155,6 +156,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 	
 	// 서비스종료된 작품 DB에서 삭제 메서드
+	@Transactional
 	public void deleteContent() {
 		//종료된 작품 contentId List 가져오기
 		for (CrawlingDTO nonService : crawlingDAO.selectListNonServiceContent()) {
@@ -329,9 +331,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		crawlingTimelog(3, "str");
 		
 		chromeDriverInit();
-		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
 		initExistYn(genreLinkDTO);
-//		addContents(ctrlWavveContentsPage(genreLinkDTO, loginCookies));
+		addContents(ctrlWavveContentsPage(genreLinkDTO, loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1])));
 		quit();
 		
 		crawlingTimelog(3, "end");
@@ -844,10 +845,6 @@ if (testCnt++ == 20) {
 		
 		chromeDriverInit();
 		Set<Cookie> loginCookies = loginWavve(WAVVE_LOGIN_KEY[0], WAVVE_LOGIN_KEY[1]);
-//		for (GenreLinkDTO genre : this.getGenreLinkList(3)) {
-//			initExistYn(genre);
-//			this.addContents(this.crawlWavve(genre, loginCookies));
-//		}
 		// test genre
 		for (GenreLinkDTO genreLinkDTO : getGenreLinkTestWavve(3)) {
 			System.out.println(genreLinkDTO.toString());
@@ -885,8 +882,6 @@ if (testCnt++ == 20) {
 			}
 		}
 		return testGenreLink;
-//		전체 장르
-//		return crawlingDAO.selectListGenreLink(platformId);
 	}
 
 	// 해당 url로 이동
@@ -963,6 +958,7 @@ if (testCnt++ == 20) {
 	}
 	
 	// wavve 해당 페이지의 content 정보 긁기
+	@Transactional
 	private List<CrawlingDTO> crawlWavveCurrentPageContentList(GenreLinkDTO genre, Set<Cookie> loginCookies) {
 		List<CrawlingDTO> wavveContentList = new ArrayList<CrawlingDTO>();
 		// 현재 페이지에서 가져올 수 있는 모든 content list
@@ -1107,7 +1103,7 @@ if (testCnt++ == 20) {
 			crawlingDTO.setCreator(creator);
 			logger.info(crawlingDTO.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 		// 새창 닫기
 		driver.close();
@@ -1224,6 +1220,7 @@ if (testCnt++ == 20) {
    	// ====================================
  	
  	// 크롤링한 데이터리스트 List<CrawlingDTO>의 작품 중복검사 후 DB로 넘기기
+ 	@Transactional
 	public void addContents(List<CrawlingDTO> crawlingDTOList) {
 		int contentCnt = 0;
 		int insertCnt = 0;

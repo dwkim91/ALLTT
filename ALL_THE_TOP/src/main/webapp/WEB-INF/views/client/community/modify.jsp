@@ -145,7 +145,6 @@ $(function() {
 					
 					// 저장 버튼 활성화
 					$("#modifyBtn").removeClass("disabled").prop("disabled", false);
-					$("#modifyBtn").addClass("disabled").prop("disabled", true);
 			}
 		});
 	});
