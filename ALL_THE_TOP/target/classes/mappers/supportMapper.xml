@@ -132,4 +132,11 @@
 				)
 	</insert>
 	
+	<delete id="deleteViewImage" parameterType="long">
+		DELETE FROM
+				CONTENT_VIEWIMG
+		WHERE
+				CONTENT_ID = #{contentId}
+	</delete>
+	
 </mapper>
