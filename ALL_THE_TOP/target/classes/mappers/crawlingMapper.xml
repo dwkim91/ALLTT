@@ -136,11 +136,18 @@
 				CONTENT_ID = #{contentId}
 	</select>
 	
-	<update id="updateExistYn">
-		UPDATE 
-				CONTENT_LINK
-		SET
-				EXIST_YN = 'N'
+	<update id="updateExistYnInitByGenre" parameterType="genreLinkDTO">	
+		UPDATE CONTENT_LINK CL
+			JOIN CONTENT_GENRE CG 
+			  ON CL.CONTENT_ID = CG.CONTENT_ID
+		    JOIN CONTENT C 
+		      ON CL.CONTENT_ID = C.CONTENT_ID
+		SET 
+			CL.EXIST_YN = 'N'
+		WHERE 
+			CL.PLATFORM_ID = #{platformId} AND 
+			CG.GENRE_ID = #{genreId} AND 
+			C.CONTENT_TYPE = #{contentType};	
 	</update>
 	
 	<select id="selectOneTitle" parameterType="Long" resultType="String">
@@ -244,5 +251,33 @@
 		WHERE
 				CONTENT_ID = #{contentId};	
 	</delete>
+	
+	<select id="selectLinkIdByPlatformIdAndContentId" parameterType="CrawlingDTO" resultType="Long">
+		SELECT
+				LINK_ID
+		FROM
+				CONTENT_LINK
+		WHERE
+				CONTENT_ID = #{contentId} AND
+				PLATFORM_ID = #{platformId};
+	</select>
+	
+	<update id="updateImgUrl" parameterType="CrawlingDTO">
+		UPDATE 
+				CONTENT_LINK
+		SET
+				IMG_URL = #{imgUrl}
+		WHERE
+		        LINK_ID = #{linkId};
+	</update>
+	
+	<update id="updateExistYnByLinkId" parameterType="Long">
+		UPDATE 
+				CONTENT_LINK
+		SET
+				EXIST_YN = 'Y'
+		WHERE
+		        LINK_ID = #{linkId};
+	</update>
 	
 </mapper>

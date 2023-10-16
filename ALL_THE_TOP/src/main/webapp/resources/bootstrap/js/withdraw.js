@@ -50,8 +50,8 @@ function withdrawMember(socialNm){
 				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
 				},
 				success : function(response) {
-					alert(response);
-					alert("다음에 다시 만나요.");
+					console.log(response);
+					if (response !== "none") alert(response);
 					var service = socialNm;	
 					location.href = '/member/' + service + '/withdraw';
 				}

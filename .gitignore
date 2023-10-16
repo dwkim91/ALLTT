@@ -4,7 +4,7 @@
 /.settings
 /target/
 
-ALL_THE_TOP/src/main/resources/properties/*
+ALL_THE_TOP/src/main/resources/properties/*.*
 
 ALL_THE_TOP/target/m2e-wtp/web-resources/META-INF/MANIFEST.MF
 ALL_THE_TOP/src/main/resources/properties/jdbc.properties
@@ -15,3 +15,6 @@ ALL_THE_TOP/target/classes/properties/aws.properties
 ALL_THE_TOP/target/m2e-wtp/web-resources/META-INF/maven/com.app/alltt/pom.properties
 ALL_THE_TOP/target/classes/properties/platform.properties
 ALL_THE_TOP/target/classes/properties/sns.properties
+
+ALL_THE_TOP/src/main/resources/log4j.xml
+ALL_THE_TOP/target/classes/log4j.xml
