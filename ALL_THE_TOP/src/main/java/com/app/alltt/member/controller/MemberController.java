@@ -75,6 +75,8 @@ public class MemberController {
 	@Autowired
 	private AuthModule authModule;
 	
+	private Logger logger = LoggerFactory.getLogger(MemberController.class);
+	
 	// 회원 가입 및 탈퇴 메서드
 	@GetMapping("/{service}/{source}")
 	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
