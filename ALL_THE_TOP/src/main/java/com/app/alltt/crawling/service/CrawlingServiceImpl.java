@@ -1330,14 +1330,5 @@ public class CrawlingServiceImpl implements CrawlingService {
  	// ==================================== 
   	// ===== 중복검사 관련 메서드 End ===== 
   	// ====================================
-
-	// ====================================
-	// =========== batch test =============
-	// ====================================
-	
-	@Scheduled(cron="*/30 * * * * *")
-	public void batchTest() {
-		System.out.println("===== batch test =====");
-	}
 	
 }
