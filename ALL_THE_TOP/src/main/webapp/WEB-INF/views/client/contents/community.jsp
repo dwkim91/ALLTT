@@ -3,8 +3,8 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <head>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/community.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/footerCustom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/community.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/footerCustom.css" type="text/css">
 </head>
 <section class="list-item list-area list-area--home" data-v-f04faaa6="">
 	<div class="recommended-tags recommended-tags" data-v-2a221ade=""

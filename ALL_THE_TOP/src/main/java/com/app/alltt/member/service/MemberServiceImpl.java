@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +26,17 @@ import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dao.MemberDAO;
 import com.app.alltt.member.dto.MemberDTO;
+import com.app.alltt.support.dto.PlatformDTO;
+import com.app.alltt.support.service.SupportService;
 
 @Service
 public class MemberServiceImpl implements MemberService {
 	
 	@Autowired
 	private MemberDAO memberDAO;
+	
+	@Autowired
+	private SupportService supportService;
 	
 	// 랜덤 닉네임 생성 메소드
 	@Override
@@ -416,12 +422,29 @@ public class MemberServiceImpl implements MemberService {
 				    platformPriority.add(platformId);
 				}
 			}
-			else if (buttonVal.equals("expenseBtn")) {
+			else if (buttonVal.equals("costBtn")) {
 				
-				// 임시로 웨이브부터
-				platformPriority.add(3);
-				platformPriority.add(2);
-				platformPriority.add(1);
+				PlatformDTO netflixInfo = supportService.getCostByPlatformId(1);
+				PlatformDTO tvingInfo = supportService.getCostByPlatformId(2);
+				PlatformDTO wavveInfo = supportService.getCostByPlatformId(3);
+				
+				List<PlatformDTO> platformList = new ArrayList<PlatformDTO>();
+				
+				platformList.add(netflixInfo);
+				platformList.add(tvingInfo);
+				platformList.add(wavveInfo);
+				
+		        // platformCostBasic 값을 기준으로 오름차순으로 정렬
+		        Collections.sort(platformList, new Comparator<PlatformDTO>() {
+		            @Override
+		            public int compare(PlatformDTO platform1, PlatformDTO platform2) {
+		                return Integer.compare(platform1.getPlatformCostBasic(), platform2.getPlatformCostBasic());
+		            }
+		        });
+				
+				platformPriority.add(platformList.get(0).getPlatformId());
+				platformPriority.add(platformList.get(1).getPlatformId());
+				platformPriority.add(platformList.get(2).getPlatformId());
 				
 			}
 			

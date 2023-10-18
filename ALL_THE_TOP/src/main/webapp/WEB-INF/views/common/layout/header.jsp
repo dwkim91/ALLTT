@@ -7,7 +7,6 @@
 <script>
 	var memberSession = '${sessionScope.memberId}';
 </script>
-
     <!-- Css Styles -->
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/font-awesome.min.css" type="text/css">
@@ -17,12 +16,11 @@
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/style.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/normalize.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/swiper.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/c958e41d94d69c7e.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/custom.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/header_custom.css" type="text/css">
-
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/normalize.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/c958e41d94d69c7e.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/custom.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/header_custom.css" type="text/css">
 </head>
 <body>
 	<div id="__next">

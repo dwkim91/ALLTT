@@ -6,12 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>500</title>
-	 <style>
-        body {
-            display: flex;
-            justify-content: center; /* 가로 중앙 정렬 */
-        }
-    </style>
+	 <style>body {display: flex; justify-content: center;}</style>
 </head>
 <body>
 	<img src="/resources/bootstrap/img/500.jpg">

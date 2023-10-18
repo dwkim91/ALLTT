@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.app.alltt.main.dto.FilteredDTO;
+import com.app.alltt.support.dto.PlatformDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
 @Repository
@@ -73,6 +74,16 @@ public class SupportDAOImpl implements SupportDAO {
 	@Override
 	public void deleteViewImage(long contentId) {
 		sqlSession.delete("supportMapper.deleteViewImage", contentId);
+	}
+
+	@Override
+	public void updatePlatformCost(PlatformDTO platformDTO) {
+		sqlSession.update("supportMapper.updatePlatformCost", platformDTO);
+	}
+
+	@Override
+	public PlatformDTO selectOnePlatformCost(int platformId) {
+		return sqlSession.selectOne("supportMapper.selectOnePlatformCost", platformId);
 	}
 
 }

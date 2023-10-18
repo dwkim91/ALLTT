@@ -25,6 +25,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.support.dao.SupportDAO;
+import com.app.alltt.support.dto.PlatformDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
 import net.coobird.thumbnailator.Thumbnails;
@@ -302,6 +303,31 @@ public class SupportServiceImpl implements SupportService {
         s3Client.deleteObject(BUCKET_NAME, deleteImageFileName);
         
         supportDAO.deleteViewImage(contentId);
+	}
+
+	@Override
+	public void platformCostModify(List<String> dataArray) {
+		
+		int platformCnt = 3;
+		int dataIdx = 0;
+		
+		for (int i = 1; i <= platformCnt; i++) {
+			PlatformDTO dto = new PlatformDTO();
+			
+			dto.setPlatformId(i);
+			dto.setPlatformCostBasic(Integer.parseInt(dataArray.get(dataIdx++)));
+			dto.setPlatformCostStandard(Integer.parseInt(dataArray.get(dataIdx++)));
+			dto.setPlatformCostPremium(Integer.parseInt(dataArray.get(dataIdx++)));
+			
+			supportDAO.updatePlatformCost(dto);
+			
+		}
+		
+	}
+
+	@Override
+	public PlatformDTO getCostByPlatformId(int platformId) {
+		return supportDAO.selectOnePlatformCost(platformId);
 	}
 
 }

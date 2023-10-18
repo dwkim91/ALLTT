@@ -12,7 +12,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,6 +101,9 @@ public class SupportController {
 		mv.addObject("damagedImageList",supportService.getImageRequiredToBeUploaded());
 		mv.addObject("damagedImageCnt",supportService.getImageRequiredToBeUploaded().size());
 		mv.addObject("status",status);
+		mv.addObject("netflixCost",supportService.getCostByPlatformId(1));
+		mv.addObject("tvingCost",supportService.getCostByPlatformId(2));
+		mv.addObject("wavveCost",supportService.getCostByPlatformId(3));
 		return mv;
 	}
 	
@@ -163,12 +168,13 @@ public class SupportController {
 	    return result;
 	}
 	
-	@GetMapping("/imageTest")
-	public String imageTest() {
+	@RequestMapping(value="/platformCostModify", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+    @ResponseBody
+	public String platformCostModify(@RequestBody List<String> dataArray) {
 		
-		supportService.resizeAndUploadImage();
+		if (dataArray != null) supportService.platformCostModify(dataArray);
 		
-		return "";
+	    return "구독가격 업데이트가 완료되었습니다.";
 	}
 	
 }
