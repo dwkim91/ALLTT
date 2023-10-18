@@ -7,7 +7,6 @@
 <script>
 	var memberSession = '${sessionScope.memberId}';
 </script>
-
     <!-- Css Styles -->
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/font-awesome.min.css" type="text/css">
@@ -17,12 +16,11 @@
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/style.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/normalize.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/swiper.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/c958e41d94d69c7e.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/custom.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/header_custom.css" type="text/css">
-
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/normalize.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/c958e41d94d69c7e.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/custom.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/header_custom.css" type="text/css">
 </head>
 <body>
 	<div id="__next">
@@ -45,7 +43,7 @@
 				<div class="paramount">커뮤니티</div>
 			</a>
 			<aside class="css-13co1xy e10hkk350">
-				<button type="button" id="searchButton" onclick="searchBtn()" class="css-xyumn e10hkk356" style="background-image:url(${contextPath}/resources/bootstrap/img/icon_search.svg);">찾기</button>
+				<button type="button" id="searchButton" class="css-xyumn e10hkk356" style="background-image:url(${contextPath}/resources/bootstrap/img/icon_search.svg);">찾기</button>
 				<div class="menu_my">
 					<div class="profile_img css-8nwm4w e10hkk353">
 						<picture class="loaded css-ovhph3 euf32k20">

@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/withdraw.css" type="text/css">
-	<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/withdraw_custom.css" type="text/css">
+	<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/withdraw.css" type="text/css">
+	<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/withdraw_custom.css" type="text/css">
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>

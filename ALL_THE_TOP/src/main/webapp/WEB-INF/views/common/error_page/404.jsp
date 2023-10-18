@@ -6,16 +6,9 @@
 <head>
 <meta charset="UTF-8">
 <title>404</title>
-	 <style>
-        body {
-            display: flex;
-            justify-content: center; /* 가로 중앙 정렬 */
-        }
-    </style>
+	<style>body {display: flex; justify-content: center;}</style>
 </head>
 <body>
-
 	<img src="/resources/bootstrap/img/404.jpg">
-	
 </body>
 </html>

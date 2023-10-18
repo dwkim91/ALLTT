@@ -94,16 +94,7 @@ public class MemberDAOImpl implements MemberDAO {
 
 	@Override
 	public boolean selectOneIsWishContent(FilteredDTO filteredDTO) {
-		boolean isWishContent;
-		
-		if (sqlSession.selectOne("memberMapper.selectOneIsWishContent",filteredDTO) == null) {
-			isWishContent = true;
-		}
-		else {
-			isWishContent = false;
-		}
-		
-		return isWishContent;
+		return sqlSession.selectOne("memberMapper.selectOneIsWishContent",filteredDTO) == null ? true : false;
 	}
 
 	@Override
@@ -134,11 +125,6 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public List<FilteredDTO> selectListWishContentByMemberInfo(Map<String, Object> memberInfo) {
 		return sqlSession.selectList("memberMapper.selectListWishContentByMemberInfo", memberInfo);
-	}
-
-	@Override
-	public void updateThumbnailImg(MemberDTO memberDTO) {
-		sqlSession.update("memberMapper.updateThumbnailImg", memberDTO);		
 	}
 
 	@Override

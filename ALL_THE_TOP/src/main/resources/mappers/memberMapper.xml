@@ -84,15 +84,6 @@
 				MEMBER_ID = #{memberId}
 	</update>
 	
-	<update id="updateThumbnailImg" parameterType="MemberDTO">
-		UPDATE
-				MEMBER
-		SET
-				THUMBNAIL_IMG = #{thumbnailImg}
-		WHERE
-				MEMBER_ID = #{memberId}
-	</update>
-	
 	<update id="updateProfileImg" parameterType="MemberDTO">
 		UPDATE
 				MEMBER
