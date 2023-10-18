@@ -4,9 +4,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/contentsWish.js" type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/searchMain.js" type="module"></script>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/main.css" type="text/css">
+<script src="${contextPath}/resources/bootstrap/js/main-search.js" type="module"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/main-custom.css" type="text/css">
 </head>
 <body>
 

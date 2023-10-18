@@ -1,4 +1,4 @@
-import { contentsLoadAjax } from './contentsAjax.js';
+import { contentsLoadAjax } from './contentType-loadAjax.js';
 
 var delay = 100;		 // 딜레이 시간 설정 (밀리초 단위)
 var timer;				 // 타이머 변수 선언

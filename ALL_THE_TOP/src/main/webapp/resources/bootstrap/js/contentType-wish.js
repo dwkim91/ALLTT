@@ -1,4 +1,4 @@
-import { wishStateChange } from './contentsWishAjax.js';
+import { wishStateChange } from './contentType-wishAjax.js';
 
 $("#container").on("click",".item__thumb.item__thumb-25x36", function(event) {
 	// 이벤트가 발생된 요소

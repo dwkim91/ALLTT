@@ -8,19 +8,19 @@
 	var memberSession = '${sessionScope.memberId}';
 </script>
     <!-- Css Styles -->
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/plyr.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/nice-select.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/style.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/normalize.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/swiper.min.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/c958e41d94d69c7e.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/custom.css" type="text/css">
-    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/header_custom.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-plyr.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-nice-select.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-style.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-normalize.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-c958e41d94d69c7e.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/all-custom.css" type="text/css">
+    <link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/header-custom.css" type="text/css">
 </head>
 <body>
 	<div id="__next">
@@ -87,6 +87,6 @@
 				</c:if>
 			</aside>
 		</header>
-		<script src="${contextPath}/resources/bootstrap/js/header.js"></script>
+		<script src="${contextPath}/resources/bootstrap/js/header-profile.js"></script>
 </body>
 </html>

@@ -26,8 +26,8 @@
 	
 </script>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/mypage.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/mypage_custom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/mypage-bootstrap.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/mypage-custom.css" type="text/css">
 <title>Insert title here</title>
 </head>
 <body>
