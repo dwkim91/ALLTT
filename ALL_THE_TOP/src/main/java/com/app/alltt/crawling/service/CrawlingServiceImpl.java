@@ -37,6 +37,7 @@ import com.app.alltt.crawling.dto.ContentKeyDTO;
 import com.app.alltt.crawling.dto.ContentLinkDTO;
 import com.app.alltt.crawling.dto.CrawlingDTO;
 import com.app.alltt.crawling.dto.GenreLinkDTO;
+import com.app.alltt.support.service.SupportService;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -46,6 +47,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	@Autowired
 	private CrawlingDAO crawlingDAO;
+	
+	@Autowired
+	private SupportService supportService;
 
 	@Value("${wavve.key}")
 	private String[] WAVVE_LOGIN_KEY;
@@ -53,6 +57,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String[] NETFLIX_LOGIN_KEY;
 	@Value("${tving.key}")
 	private String[] TVING_LOGIN_KEY;
+	
+	@Value("${chrome.driver.path}")
+	private String chromeDriverPath;
 	
 	private WebDriver driver;
 
@@ -65,20 +72,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// 크롬드라이버 초기화 
 	private void chromeDriverInit() {
 		
-		WebDriverManager.chromedriver().setup();
+		WebDriverManager.chromedriver().cachePath(chromeDriverPath).resolutionCachePath(chromeDriverPath).setup();
 		
 		// 크롬드라이버 옵션
 		ChromeOptions options = new ChromeOptions();
-		
 		// 크롬드라이버 시작시 window 창 최대화
 		options.addArguments("--start-maximized");
 		// 음소거
 		options.addArguments("--mute-audio");
 		// 이미지 로드 X
 		options.addArguments("--blink-settings=imagesEnabled=false");
-		options.addArguments("--headless");
-//		option.addArguments("--disable-gpu");
 		
+		options.addArguments("--headless");
 		// HTTP 헤더추가
 		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
 		
@@ -111,7 +116,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		boolean isBottom = false;
 		int delay = 250;
 		int count = 0;
-		int testCnt = 0;
 		while(!isBottom) {
 			
 			// 작품명이 담겨져있는 요소의 부모 클래스 List에 담기
@@ -125,13 +129,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 			
 			// 작품명이 담겨져있는 요소의 부모 클래스 List에 담기 
 			List<WebElement> current = driver.findElements(By.className(className));
-//			testCnt++;
 			// 사이즈 비교
 			if (previous.size() == current.size()) count++;
 			else count = 0;
 			// 스크롤이동이 50번동안 없다면 isBottom = true
 			if (count == 50) isBottom = true;
-//			if (testCnt == 5) isBottom = true;
 			
 		}
 		
@@ -139,6 +141,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	// 창닫기, WebDriver 종료
 	private void quit() {
+		driver.close();
         driver.quit();
 	}
 	
@@ -165,11 +168,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 			//post 삭제
 
 			System.out.println(nonService.getContentId());
+			
 			//Content관련 post 삭제
-
 			crawlingDAO.deletePost(nonService.getContentId());
 			//content 테이블에서 삭제
 			crawlingDAO.deleteContent(nonService.getContentId());
+			//S3에서 이미지 삭제
+			supportService.deleteViewImage(nonService.getContentId());
+			
 			break;
 		}
 	}
@@ -181,28 +187,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 	
 	// 크롤링 테스트 확인용
 	private void showCrawlingDTO (CrawlingDTO crawlingDTO){
-		System.out.println(crawlingDTO);
 		logger.info(crawlingDTO.toString());
 	}
 	
 	// 크롤링 테스트 확인용
 	private void showGenreLinkDTO (List<WebElement> webElementTemp, GenreLinkDTO genreLinkDTO) {
-		System.out.println("Genre CNT=" + webElementTemp.size() + " [contentType=" + genreLinkDTO.getContentType() + ", genreId=" + genreLinkDTO.getGenreId()
-		+ ", platformId=" + genreLinkDTO.getPlatformId() + ", url=" + genreLinkDTO.getUrl() + "]");
-		
 		logger.info("Genre CNT=" + webElementTemp.size() + " [contentType=" + genreLinkDTO.getContentType() + ", genreId=" + genreLinkDTO.getGenreId()
 		+ ", platformId=" + genreLinkDTO.getPlatformId() + ", url=" + genreLinkDTO.getUrl() + "]");
-	}
-	
-	
-	// test 메서드 
-	private void readDBcontentTest() {
-		List<ContentDTO> dbContentList = new ArrayList<ContentDTO>();
-		dbContentList = crawlingDAO.selectListContent();
-		for (ContentDTO contentDTO : dbContentList) {
-			System.out.println(contentDTO.getContentId() + ", " + contentDTO.getTitle());
-			logger.info(contentDTO.getContentId() + ", " + contentDTO.getTitle());
-		}
 	}
 	
 	// ==================================== 
@@ -382,7 +373,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// 장르별 페이지에 작품이 전부 로딩된 상태의 데이터 ( 저장 시작부분 )	
 		List<WebElement> webElementList = driver.findElements(By.className("item"));
-		int count = 1;
 		showGenreLinkDTO(webElementList, genreLinkDTO);
 
 		// 가져온 엘리먼트 하위 요소 다시 선택
@@ -435,9 +425,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 			logger.info(contentCnt++ +" ");
 			showCrawlingDTO(crawlingDTO);
-
-//			System.out.print(contentCnt++ +" ");
-//			showCrawlingDTO(crawlingDTO);
 
 		}
 			
@@ -574,10 +561,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			if (genreLinkDTO.getContentType().equals("series") && genreLinkDTO.getGenreId() == 1){
 				initExistYn(genreLinkDTO);
 				System.out.println(genreLinkDTO.toString());
-				//System.out.println("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
 				logger.info("CRAWLING START ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
 				addContents(crawlTvingContents(genreLinkDTO));
-				//System.out.println("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
 				logger.info("CRAWLING DONE ContentType : " + genreLinkDTO.getContentType() + ", GenreId : " + genreLinkDTO.getGenreId());
 
 			}
@@ -626,64 +611,59 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private ArrayList<CrawlingDTO> crawlNetflixdContents(GenreLinkDTO genreLinkDTO) {
 		
 		ArrayList<CrawlingDTO> contentList = new ArrayList<CrawlingDTO>();
-int testCnt = 0;			
-			// 장르 URL
-			String url = genreLinkDTO.getUrl();
-			// 장르 코드
-			int genreId = genreLinkDTO.getGenreId();
-			
-			// 장르 URL로 이동
-			moveToTargetUrl(url);
-			
-			// 스크롤 작업
-			moveToBottomPage("fallback-text");
-			
-			// 원하는 정보가 모두 포함된 요소
-			List<WebElement> content = driver.findElements(By.className("slider-refocus"));
-			showGenreLinkDTO(content, genreLinkDTO);
-			
-			// title, imgUrl, detailLink, genreId, contentType
-			for (WebElement webElement : content) {
+		// 장르 URL
+		String url = genreLinkDTO.getUrl();
+		// 장르 코드
+		int genreId = genreLinkDTO.getGenreId();
+		
+		// 장르 URL로 이동
+		moveToTargetUrl(url);
+		
+		// 스크롤 작업
+		moveToBottomPage("fallback-text");
+		
+		// 원하는 정보가 모두 포함된 요소
+		List<WebElement> content = driver.findElements(By.className("slider-refocus"));
+		showGenreLinkDTO(content, genreLinkDTO);
+		
+		// title, imgUrl, detailLink, genreId, contentType
+		for (WebElement webElement : content) {
 
-				// 가져온 엘리먼트 하위 요소 선택
-				WebElement imgLink = webElement.findElement(By.tagName("img"));
+			// 가져온 엘리먼트 하위 요소 선택
+			WebElement imgLink = webElement.findElement(By.tagName("img"));
 
-				// 해당 문자열의 첫번째 ?의 인덱스
-				int urlIdxOf = webElement.getAttribute("href").indexOf("?");
-				
-				CrawlingDTO crawlingDTO = new CrawlingDTO();
-				// title
-				crawlingDTO.setTitle(webElement.getAttribute("aria-label"));
-				// imgUrl
-				crawlingDTO.setImgUrl(imgLink.getAttribute("src"));
-				// genreId
-				crawlingDTO.setGenreId(genreId);
-				// contentType
-				crawlingDTO.setContentType(genreLinkDTO.getContentType());
-				// platformId
-				crawlingDTO.setPlatformId(genreLinkDTO.getPlatformId());
-				
-				String detailUrl = webElement.getAttribute("href").substring(0,urlIdxOf).replace("/watch/", "/title/");
-				
-				// detail 중복검사 후 없을경우에만 detailUrl 추가 
-				if (crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl()) == null) {
-					// detailUrl
-					crawlingDTO.setUrl(detailUrl);
-				}
-				else { // 있을경우 contentId DTO에 추가
-					crawlingDTO.setContentId(crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl()).getContentId());
+			// 해당 문자열의 첫번째 ?의 인덱스
+			int urlIdxOf = webElement.getAttribute("href").indexOf("?");
+			
+			CrawlingDTO crawlingDTO = new CrawlingDTO();
+			// title
+			crawlingDTO.setTitle(webElement.getAttribute("aria-label"));
+			// imgUrl
+			crawlingDTO.setImgUrl(imgLink.getAttribute("src"));
+			// genreId
+			crawlingDTO.setGenreId(genreId);
+			// contentType
+			crawlingDTO.setContentType(genreLinkDTO.getContentType());
+			// platformId
+			crawlingDTO.setPlatformId(genreLinkDTO.getPlatformId());
+			
+			String detailUrl = webElement.getAttribute("href").substring(0,urlIdxOf).replace("/watch/", "/title/");
+			
+			// detail 중복검사 후 없을경우에만 detailUrl 추가 
+			if (crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl()) == null) {
+				// detailUrl
+				crawlingDTO.setUrl(detailUrl);
+			}
+			else { // 있을경우 contentId DTO에 추가
+				crawlingDTO.setContentId(crawlingDAO.selectOneContentLink(crawlingDTO.getImgUrl()).getContentId());
 //					System.out.println("img : " + crawlingDTO.getImgUrl());
 //					logger.info("img : " + crawlingDTO.getImgUrl());
 //					System.out.println("contentId : " + crawlingDTO.getContentId());
 //					logger.info("contentId : " + crawlingDTO.getContentId());
-				}
-				
-				contentList.add(crawlingDTO);
-// 1개만 가져옴 test @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-if (testCnt++ == 20) {
-	return contentList;
-}
-			}	
+			}
+			
+			contentList.add(crawlingDTO);
+		}	
 			
 		return contentList;
 
@@ -784,21 +764,6 @@ if (testCnt++ == 20) {
 		
 		crawlingTimelog(1, "str");
 		
-//		Netflix 단일장르 Test Start
-
-//		List<GenreLinkDTO> genreLinkList = new ArrayList<GenreLinkDTO>();
-//		GenreLinkDTO testTempDTO = null;
-//		testTempDTO = new GenreLinkDTO();
-//		testTempDTO.setContentType("series");
-//		testTempDTO.setPlatformId(1);
-//		testTempDTO.setGenreId(5); //코미디
-//		testTempDTO.setUrl("https://www.netflix.com/browse/genre/10375?bc=83&so=yr");
-//		genreLinkList.add(testTempDTO);
-
-//		Netflix 단일장르 Test End
-		
-		Scanner scan = new Scanner(System.in);
-		
 		List<GenreLinkDTO> genreLinkList = getGenreLinkList(1);
 
 		// 크롬드라이버 초기화
@@ -817,10 +782,6 @@ if (testCnt++ == 20) {
 			}
 		}
 		netflixContentList = getNetflixDetailInfo(netflixContentList);
-		
-//		scan.nextInt();
-		
-//		scan.close();
 		
 		addContents(netflixContentList);
 		// 드라이버 종료
@@ -1125,7 +1086,7 @@ if (testCnt++ == 20) {
         }
         return null;
     }
-    //@@@@@@@@@@@ 통합가능 !! @@@@@@@@@@@@@@
+
     // 개요 탭에서 연도 단위가 있으면 가져오고, 없으면 9999 반환
     private String getEnrolledYear(String text) {
         String regex = "\\b\\d{4}\\b";
@@ -1222,7 +1183,6 @@ if (testCnt++ == 20) {
  	// 크롤링한 데이터리스트 List<CrawlingDTO>의 작품 중복검사 후 DB로 넘기기
  	@Transactional
 	public void addContents(List<CrawlingDTO> crawlingDTOList) {
-		int contentCnt = 0;
 		int insertCnt = 0;
 		int updateInfoCnt = 0;
 		int imgUpdateCnt = 0;
@@ -1230,8 +1190,6 @@ if (testCnt++ == 20) {
 		int test = 0;
 		
 		for(CrawlingDTO crawlingDTO : crawlingDTOList) {
-			contentCnt++;
-//			System.out.println(contentCnt++ + " " + crawlingDTO.toString());
 			
 // 			중복검사 플로우 start (C = content, G = genre , D= Detail, K=contentKey)
 			boolean isInsertContent = false;
@@ -1361,11 +1319,7 @@ if (testCnt++ == 20) {
 				}
 			}
 			if (isUpdateImgUrl) {
-
-				logger.info("이미지 URL 업데이트");
-
-				System.out.println("이미지 URL 업데이트 LINK_ID : " + crawlingDTO.getLinkId());
-
+				logger.info("이미지 URL 업데이트 LINK_ID : " + crawlingDTO.getLinkId());
 				crawlingDAO.updateImgUrl(crawlingDTO);
 				imgUpdateCnt++;
 			}
@@ -1373,12 +1327,9 @@ if (testCnt++ == 20) {
 		}
 
 		logger.info("INSERT CONTENTS COUNT     = " + insertCnt);
-		logger.info("DUPLICATED CONTENTS COUNT = " + duplCnt);
-
-		System.out.println("INSERT CONTENTS COUNT     = " + insertCnt);
-		System.out.println("UPDATE CONTENTS COUNT     = " + updateInfoCnt);
-		System.out.println("IMG UPDATE CONTENTS COUNT = " + imgUpdateCnt);
-		System.out.println("EXISTED CONTENTS COUNT    = " + duplCnt);
+		logger.info("UPDATE CONTENTS COUNT     = " + updateInfoCnt);
+		logger.info("IMG UPDATE CONTENTS COUNT = " + imgUpdateCnt);
+		logger.info("EXISTED CONTENTS COUNT    = " + duplCnt);
 
 	}
 	

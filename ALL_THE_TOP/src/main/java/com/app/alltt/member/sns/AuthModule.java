@@ -3,10 +3,13 @@ package com.app.alltt.member.sns;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,6 +36,8 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	private SnsValue sns;
 	
 	private OAuth20Service oauth20Service;
+	
+	private Logger logger = LoggerFactory.getLogger(AuthModule.class);
 	
 	// sns 정보를 받아서, oauth20service를 설정
 	public void setSns(SnsValue sns, String source) {
@@ -74,8 +79,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		+ "&state=" + state
 		+ "&redirect_uri=" + sns.getRedirectUrl() + "/" + source;
 		return uri;
-		
-		
 	}
 	
 	public String getAccessToken(String code) throws Exception {
@@ -233,6 +236,20 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	        // 확장자가 없는 경우
 	        return null;
 	    }
+	}
+	
+	// session 검증용 method
+	private void getSessionStatus(HttpSession session) {
+		try {
+			Enumeration<String> sessionData = session.getAttributeNames();
+			
+			while (sessionData.hasMoreElements()) {
+				String attName = sessionData.nextElement();
+				logger.info(attName + " = " + session.getAttribute(attName));
+			}
+		} catch (Exception e) {
+			logger.info("세션이 이미 털렸습니다");
+		}
 	}
 	
 }

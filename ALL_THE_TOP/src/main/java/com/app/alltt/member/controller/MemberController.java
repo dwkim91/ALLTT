@@ -75,9 +75,11 @@ public class MemberController {
 	@Autowired
 	private AuthModule authModule;
 	
+	private Logger logger = LoggerFactory.getLogger(MemberController.class);
+	
 	// 회원 가입 및 탈퇴 메서드
 	@GetMapping("/{service}/{source}")
-	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
+	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpServletRequest request) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
 		ModelAndView mv = new ModelAndView();
 		
@@ -91,7 +93,8 @@ public class MemberController {
 		else {
 			return mv;
 		}
-		
+		// session 생성 혹은 가져오기
+		HttpSession session = request.getSession();
 		// application을 구분하는 state 값을 초기화
 		session.removeAttribute("state");
 		// authModule에다가 sns client 정보들을 담은 SnsValue를 삽입해줌으로써 해당 method가 sns 인증을 위해 동작하도록 설정
@@ -107,13 +110,13 @@ public class MemberController {
 	}
 	
 	@GetMapping("/logout")
-	public ResponseEntity<Object> logOut(HttpServletRequest request, HttpSession session) {
+	public ResponseEntity<Object> logOut(HttpServletRequest request) {
 		
 		// security clear
 		allttUserDetailsService.byeUser();
 		
 		// 로그인을 하며 session에 등록된 모든 값들을 날려버림
-		session.invalidate();
+		request.getSession().invalidate();
 		String jsScript = "<script>";
 		jsScript += "alert('로그아웃 되었습니다.');";
 		jsScript += "location.href='" + request.getContextPath() + "/main';";
@@ -128,8 +131,9 @@ public class MemberController {
 	// 로그인 및 회원 가입 메서드
 	// 추후 개발 방향에 따라서, callback을 받는 위치를 나눠서 개발 가능
 	@RequestMapping(value = "/{service}/callback/login", method = {RequestMethod.GET, RequestMethod.POST})
-	public ResponseEntity<Object> callBackSnsLogin(HttpSession session, HttpServletRequest request) throws Exception {
+	public ResponseEntity<Object> callBackSnsLogin(HttpServletRequest request) throws Exception {
 		// state 값 검증
+		HttpSession session = request.getSession();
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
@@ -199,8 +203,9 @@ public class MemberController {
 	
 	// 회원 탈퇴 메서드
 	@RequestMapping(value = "/{service}/callback/withdraw", method = {RequestMethod.GET, RequestMethod.POST})
-	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
+	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request) throws Exception {
 		// state 값 검증
+		HttpSession session = request.getSession();
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
@@ -258,16 +263,17 @@ public class MemberController {
 	// 멤버정보  가져오기
 	@PostMapping("/memberInfo")
 	@ResponseBody
-	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public MemberDTO myPage(HttpServletRequest request) {
+		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 		MemberDTO memberDTO = memberService.getMemberSimpleInfoByMemberId(memberId);
 		return memberDTO;
 	} 
 	
 	@GetMapping("/mypage")
 	@ResponseBody
-	public ModelAndView mypage(HttpServletRequest request, HttpSession session) {
+	public ModelAndView mypage(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
+		HttpSession session = request.getSession();
 		
 		if (session.getAttribute("memberId") == null) {
 			mv.setViewName("/alltt/login");
@@ -317,14 +323,14 @@ public class MemberController {
 	// 랜덤닉네임
 	@RequestMapping(value="/randomNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String genNickName(HttpServletRequest request, HttpSession session) {
+	public String genNickName(HttpServletRequest request) {
 		return memberService.genNickName();
 	}
 
 	// 닉네임 저장
 	@RequestMapping(value="/saveNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String saveNickname(@RequestParam("nickname") String nickname, HttpSession session) {
+	public String saveNickname(@RequestParam("nickname") String nickname, HttpServletRequest request) {
 		String result = "";
 		// 한글, 영문, 숫자 , 일부 특수문자 포함 6~10자 확인용 정규식
 		String nicknameRegex = "^[a-zA-Z0-9가-힣]{6,10}$";
@@ -336,7 +342,7 @@ public class MemberController {
 
 			if (!isDupl) {
 				MemberDTO memberDTO = new MemberDTO();
-				long memberId = ((Long) session.getAttribute("memberId")).longValue();
+				long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 				memberDTO.setNickName(nickname);
 				memberDTO.setMemberId(memberId);
 				memberService.changeNickname(memberDTO);
@@ -356,8 +362,8 @@ public class MemberController {
 	// 구독정보 수정
 	@RequestMapping(value="/setSubscription", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpSession session) {
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpServletRequest request) {
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    memberService.setSubscriptionByMemberId(filterDTO);
 	    return "구독 정보가 수정되었습니다.";
@@ -366,8 +372,8 @@ public class MemberController {
 	// 필터 정보 수정
 	@RequestMapping(value="/setSearchFilter", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpServletRequest request) {
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    memberService.changeContentFilterByMemberId(filterDTO);
 	    return "필터 정보가 수정되었습니다.";
@@ -376,8 +382,8 @@ public class MemberController {
 	// 장르리스트 업데이트용 필터 수정
 	@RequestMapping(value="/filterUpdate", method=RequestMethod.GET)
 	@ResponseBody
-	public List<FilterDTO> updateSearchFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public List<FilterDTO> updateSearchFilter(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
+		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    return mainService.getMoreGenreList(filterDTO);
 	}
@@ -385,8 +391,8 @@ public class MemberController {
 	// 세션 검증용 
 	@PostMapping("/sessionRemainingTime")
 	@ResponseBody
-	public int checkSessionTime(HttpSession session) {
-		
+	public int checkSessionTime(HttpServletRequest request) {
+		HttpSession session = request.getSession();
 		boolean isExist = false;
 		int remainingTime = 0;
 		Enumeration<String> attributeNames = session.getAttributeNames();
@@ -416,9 +422,9 @@ public class MemberController {
 	// 탈퇴
 	@GetMapping("/withdraw")
 	@ResponseBody
-	public ModelAndView withdraw(HttpServletRequest request, HttpSession session) {
+	public ModelAndView withdraw(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 		// 로그인한 멤버DTO
 		mv.addObject("member", memberService.getMemberByMemberId(memberId));
 		mv.setViewName("/alltt/withdraw");
@@ -428,9 +434,9 @@ public class MemberController {
 	// 탈퇴전 글/댓글 삭제
 	@RequestMapping(value="/deleteMyPost", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String deleteMyPost(@RequestBody MemberDTO memberDTO, HttpSession session) {
+	public String deleteMyPost(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
 		
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    
 	    boolean deletePost = memberDTO.getdPostYn().equals("Y");
 	    boolean deleteReply = memberDTO.getdReplyYn().equals("Y");
@@ -446,9 +452,9 @@ public class MemberController {
 	/// 프로필사진 변경
 	@RequestMapping(value="/changeThumbnailImg", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, HttpSession session) throws Exception, IOException {
+	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, HttpServletRequest request) throws Exception, IOException {
 
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    String result = "";
 	    
 	    // 파일 업로드 처리
@@ -519,16 +525,16 @@ public class MemberController {
 			
 			while (sessionData.hasMoreElements()) {
 				String attName = sessionData.nextElement();
-				System.out.println(attName + " = " + session.getAttribute(attName));
+				logger.info(attName + " = " + session.getAttribute(attName));
 			}
 		} catch (Exception e) {
-			System.out.println("세션이 이미 털렸습니다");
+			logger.info("세션이 이미 털렸습니다");
 		}
 	}
 	
 	@RequestMapping(value="/wishStateChange", method=RequestMethod.POST, produces = "application/text; charset=utf8")
-	public ResponseEntity<String> wishStateChange(@ModelAttribute FilteredDTO filteredDTO, HttpSession session) {
-		long memberId = (long)session.getAttribute("memberId");
+	public ResponseEntity<String> wishStateChange(@ModelAttribute FilteredDTO filteredDTO, HttpServletRequest request) {
+		long memberId = (long)request.getSession().getAttribute("memberId");
 		
 		filteredDTO.setMemberId(memberId);
 		
@@ -551,11 +557,11 @@ public class MemberController {
 	
 	@PostMapping("/checkSession")
 	@ResponseBody
-	public Boolean checkSession(HttpSession session) {
+	public Boolean checkSession(HttpServletRequest request) {
 		
 		boolean isLogin = false;
 		
-		if (session.getAttribute("memberId") != null) {
+		if (request.getSession().getAttribute("memberId") != null) {
 			isLogin = true;
 		}
 		
@@ -564,8 +570,9 @@ public class MemberController {
 	}
 	
 	@GetMapping("/wish")
-	public ModelAndView wish(HttpSession session) {
+	public ModelAndView wish(HttpServletRequest request) {
 		
+		HttpSession session = request.getSession();
 		ModelAndView mv = new ModelAndView();
 		
 		if (session.getAttribute("memberId") == null) {
@@ -597,17 +604,17 @@ public class MemberController {
 	
 	@PostMapping("/getWishList")
 	@ResponseBody
-	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
+		filterDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
 		
 		return memberService.getWishContentByFilterDTO(filterDTO);
 	}
 	
 	@PostMapping("/removeWishContent")
-	public ResponseEntity<String> removeWishContent(@RequestBody List<FilteredDTO> filteredDTOList, HttpSession session) {
+	public ResponseEntity<String> removeWishContent(@RequestBody List<FilteredDTO> filteredDTOList, HttpServletRequest request) {
 		
 		for (FilteredDTO filteredDTO : filteredDTOList) {
-			filteredDTO.setMemberId((long)session.getAttribute("memberId"));
+			filteredDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
 		}
 		
 		memberService.removeWishContentByFilterDTOList(filteredDTOList);
@@ -617,8 +624,8 @@ public class MemberController {
 	
 	@PostMapping("/wishSolution")
 	@ResponseBody
-	public Map<Integer, Map<Integer, List<Long>>> wishSolution(@RequestBody Map<String, Object> requestData, HttpSession session) {
-		long memberId = (long)session.getAttribute("memberId");
+	public Map<Integer, Map<Integer, List<Long>>> wishSolution(@RequestBody Map<String, Object> requestData, HttpServletRequest request) {
+		long memberId = (long)request.getSession().getAttribute("memberId");
 		
 		requestData.put("memberId", memberId);
 		
@@ -627,8 +634,8 @@ public class MemberController {
 	
 	@PostMapping("/getPlatformCntLoad")
 	@ResponseBody
-	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
+		filterDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
 		
 		List<Integer> platformCntList = new ArrayList<>();
 		filterDTO.setPlatformId(1);
