@@ -84,11 +84,6 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public String selectOneTitle(long contentId) {
-		return sqlSession.selectOne("crawlingMapper.selectOneTitle", contentId);
-	}
-
-	@Override
 	public void updateCreator(CrawlingDTO crawlingDTO) {
 		sqlSession.update("crawlingMapper.updateCreator", crawlingDTO);
 		
@@ -110,18 +105,8 @@ public class CrawlingDAOImpl implements CrawlingDAO {
 	}
 
 	@Override
-	public List<ContentDTO> selectListContent() {
-		return sqlSession.selectList("crawlingMapper.selectListContent");
-	}
-
-	@Override
-	public List<CrawlingDTO> selectListScrollContent(int contentId) {
-		return sqlSession.selectList("crawlingMapper.selectListScrollContent", contentId);
-	}
-
-	@Override
-	public List<GenreLinkDTO> selectListGenreLinkByGenreId(GenreLinkDTO genreLinkDTO) {
-		return sqlSession.selectList("crawlingMapper.selectListGenreLinkByGenreId", genreLinkDTO);
+	public List<GenreLinkDTO> selectListGenreLinkByPlatformId(GenreLinkDTO genreLinkDTO) {
+		return sqlSession.selectList("crawlingMapper.selectListGenreLinkByPlatformId", genreLinkDTO);
 	}
 
 	@Override
