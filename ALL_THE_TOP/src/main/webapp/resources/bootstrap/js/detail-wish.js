@@ -1,4 +1,4 @@
-import { wishStateChange } from './contentsWishAjax.js';
+import { wishStateChange } from './contentType-wishAjax.js';
 
 $("#addWish").on("click", function(event) {
 	if (memberSession.length > 0){

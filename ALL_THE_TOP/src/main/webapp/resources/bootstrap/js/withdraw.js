@@ -20,8 +20,6 @@ function updateButtonStatus() {
 
 //탈퇴하기
 function withdrawMember(socialNm){
-	console.log(socialNm);
-
 	// 각 체크박스 상태를 저장하는 변수들을 초기화합니다.	
 	var dPostCheckbox = document.getElementById('dPostYn');
     var dReplyCheckbox = document.getElementById('dReplyYn');
@@ -50,7 +48,6 @@ function withdrawMember(socialNm){
 				    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
 				},
 				success : function(response) {
-					console.log(response);
 					if (response !== "none") alert(response);
 					var service = socialNm;	
 					location.href = '/member/' + service + '/withdraw';
