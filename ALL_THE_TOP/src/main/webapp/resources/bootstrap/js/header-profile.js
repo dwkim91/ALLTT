@@ -31,7 +31,6 @@ function getMember() {
 			headerSetMemberInfo(member); // member의 값을 설정하는 함수 호출
 		},
 		error : function(error) {
-			console.log('Failed to fetch member information.');
 		}
 	});
 }

@@ -19,7 +19,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.app.alltt.member.controller.MemberController;
 import com.app.alltt.member.dto.MemberDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,15 +75,10 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		if (this.sns.isNaver()) snsAuth = NAVER_AUTH;
 		else if (this.sns.isKakao()) snsAuth = KAKAO_AUTH;
 		
-		// 로그인 session 검증용
-		this.getSessionStatus(session);
-		
 		String uri = snsAuth + "?response_type=code&client_id=" + sns.getClientId()
 		+ "&state=" + state
 		+ "&redirect_uri=" + sns.getRedirectUrl() + "/" + source;
 		return uri;
-		
-		
 	}
 	
 	public String getAccessToken(String code) throws Exception {

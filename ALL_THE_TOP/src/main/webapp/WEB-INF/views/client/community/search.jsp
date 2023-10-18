@@ -7,9 +7,8 @@
 <head>
 <meta charset="UTF-8">
 <title>검색</title>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/search.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footerCustom.css" type="text/css">
-<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/search-custom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footer-custom.css" type="text/css">
 <script>
 $(function() {
 	$(".btn-back").click(function() {
@@ -135,7 +134,6 @@ $(function() {
 		                        return false; // 3개 이상이면 중단합니다.
 		                    }
 
-							console.log(post);
 			                var li = $("<li>").attr("data-v-53eafb8a", "").addClass("");
 			                var hr = $("<hr>").attr("data-v-0bcef72e", "").addClass("divider");
 			                var a = $("<a>").attr({

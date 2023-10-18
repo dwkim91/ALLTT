@@ -17,7 +17,7 @@
 	
 	<!-- Content 상세 -->
 	<definition name="/alltt/detail" extends="alltt">												
-		<put-attribute name="body" value="/WEB-INF/views/client/contents/contents_details.jsp"/> 					
+		<put-attribute name="body" value="/WEB-INF/views/client/contents/details.jsp"/> 					
 		<put-attribute name="title"   value="main"/> 											
 	</definition>
 
@@ -143,10 +143,12 @@
 		<put-attribute name="title" value="inquiryDetail"/>	
 	</definition>
 	
+	<!-- 404 에러페이지 -->
 	<definition name="/alltt/404" extends="alltt">
 		<put-attribute name="body" value="/WEB-INF/views/common/error_page/404.jsp" />
 	</definition>
 	
+	<!-- 500 에러페이지 -->
 	<definition name="/alltt/500" extends="alltt">
 		<put-attribute name="body" value="/WEB-INF/views/common/error_page/500.jsp" />
 	</definition>

@@ -6,9 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/write.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/write-bootstrap.css" type="text/css">
 <link data-n-head="ssr" rel="icon" type="image/png" sizes="32x32" href="https://nujhrcqkiwag1408085.cdn.ntruss.com/static/common/icon/favicon-33x33.png">
-<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
 <script>
 $(function() {
 	

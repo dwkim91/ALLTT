@@ -1,5 +1,5 @@
-import { wishContentListAjax } from './wishContentListAjax.js';
-import { wishContentRemoveAjax } from './wishContentRemoveAjax.js';
+import { wishContentListAjax } from './wish-contentListLoadAjax.js';
+import { wishContentRemoveAjax } from './wish-contentRemoveAjax.js';
 
 $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(event) {
 	// 이벤트 전파 중단 (버블링 현상 대응)
