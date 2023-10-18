@@ -263,6 +263,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			} catch (Exception e) {
 				sb.append(genreLinkDTO.toString() + e.toString());
 				logger.error(genreLinkDTO.toString() + e.toString());
+			}
+			finally {
 				quit();
 			}
 		}
