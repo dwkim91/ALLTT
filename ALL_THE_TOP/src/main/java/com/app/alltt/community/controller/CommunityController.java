@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,6 @@ import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.main.service.MainService;
 
 @Controller
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @RequestMapping("/community")
 public class CommunityController {
 	
@@ -48,7 +46,7 @@ public class CommunityController {
 	@GetMapping("/feed")
 	public String community(Model model, HttpSession session, HttpServletRequest request) {
 		
-		// 원래는 로그인 된 상태에서만 들어오도록...?
+		// session을 통한 로그인 재검증
 		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
@@ -111,12 +109,7 @@ public class CommunityController {
 	@PostMapping("/getContent")
 	public @ResponseBody List<ContentDTO> searchContent(@RequestParam String searchTitle){
 		
-		if (searchTitle.length() > 0) {
-			return communityService.getContentList(searchTitle);
-		}
-		else {
-			return null;
-		}
+		return searchTitle.length() > 0 ? communityService.getContentList(searchTitle) : null;
 	}
 	
 	// 태그를 누르면, 해당 content의 정보를 가져와야 함 (이름, contenttype, 연도, imgurl)
@@ -127,9 +120,9 @@ public class CommunityController {
 	
 	// 게시글 디테일 페이지
 	@GetMapping("/post")
-	public String postDetail(@RequestParam long postId, Model model, HttpSession session) {
+	public String postDetail(@RequestParam long postId, HttpServletRequest request, Model model, HttpSession session) {
 		
-		// 원래는 로그인 된 상태에서만 들어오도록...?
+		// session을 통한 로그인 재검증
 		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
@@ -199,7 +192,7 @@ public class CommunityController {
 	@GetMapping("/modify")
 	public String modify(@RequestParam long postId, Model model, HttpSession session) {
 		
-		// 원래는 로그인 된 상태에서만 들어오도록...?
+		// session을 통한 로그인 재검증
 		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
@@ -220,19 +213,13 @@ public class CommunityController {
 	
 	@PostMapping("/modifyPost")
 	public @ResponseBody String modifyPost(@ModelAttribute PostDTO post) {
-		
-		if (communityService.modifyPost(post)) {
-			return "modified";
-		}
-		else {
-			return "false";
-		}
+		return communityService.modifyPost(post) ? "modified" : "false";
 	}
 	
 	@GetMapping("/delete")
 	public String delete(@RequestParam long postId, Model model, HttpSession session) {
 		
-		// 원래는 로그인 된 상태에서만 들어오도록...?
+		// session을 이용한 로그인 재검증
 		long memberId = 0;
 		if (session.getAttribute("memberId") != null) {
 			memberId = (Long) session.getAttribute("memberId");
@@ -251,23 +238,12 @@ public class CommunityController {
 	
 	@PostMapping("/deletePost")
 	public @ResponseBody String deletePost(@ModelAttribute PostDTO post) {
-		
-		if (communityService.removePost(post)) {
-			return "deleted";
-		}
-		else {
-			return "false";
-		}
+		return communityService.removePost(post) ? "deleted" : "false";
 	}
 	
 	@PostMapping("/deleteReply")
 	public @ResponseBody String deleteReply(@RequestParam long replyId) {
-		if (communityService.removeReply(replyId) ) {
-			return "deleted";
-		}
-		else {
-			return "false";
-		}
+		return communityService.removeReply(replyId) ? "deleted" : "false";
 	}
 	
 	@GetMapping("/getReply")
@@ -277,13 +253,7 @@ public class CommunityController {
 	
 	@PostMapping("/modifyReply")
 	public @ResponseBody String modifyReply(@ModelAttribute ReplyDTO reply) {
-		
-		if (communityService.modifyReply(reply)) {
-			return "modified";
-		}
-		else {
-			return "false";
-		}
+		return communityService.modifyReply(reply) ? "modified" : "false";
 	}
 	
 	@PostMapping("/postRecmnd")

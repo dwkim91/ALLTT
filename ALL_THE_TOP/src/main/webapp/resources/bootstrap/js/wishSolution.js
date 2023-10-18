@@ -153,24 +153,24 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 	
 	var infoBtn = $("#infoBtn");
 	var platformBtn = $("#platformBtn");
-	var expenseBtn = $("#expenseBtn");
+	var costBtn = $("#costBtn");
 	var message = $("#message");
 	
 	if (clickedClass == 'infoBtn') {
 		infoBtn.removeClass('btn_new').addClass('click_on');
 		platformBtn.removeClass('click_on').addClass('btn_new');
-		expenseBtn.removeClass('click_on').addClass('btn_new');
+		costBtn.removeClass('click_on').addClass('btn_new');
 		message.text("※ 회원님의 구독정보를 바탕으로 컨텐츠를 통합합니다.");
 	}
 	else if(clickedClass == 'platformBtn') {
 		platformBtn.removeClass('btn_new').addClass('click_on');
 		infoBtn.removeClass('click_on').addClass('btn_new');
-		expenseBtn.removeClass('click_on').addClass('btn_new');
+		costBtn.removeClass('click_on').addClass('btn_new');
 		message.text("※ 최소 플랫폼 수를 계산하여 컨텐츠를 통합합니다.");
 		
 	}
-	else if(clickedClass == 'expenseBtn') {
-		expenseBtn.removeClass('btn_new').addClass('click_on');
+	else if(clickedClass == 'costBtn') {
+		costBtn.removeClass('btn_new').addClass('click_on');
 		infoBtn.removeClass('click_on').addClass('btn_new');
 		platformBtn.removeClass('click_on').addClass('btn_new');
 		message.text("※ 최소 구독비를 계산하여 컨텐츠를 통합합니다.");

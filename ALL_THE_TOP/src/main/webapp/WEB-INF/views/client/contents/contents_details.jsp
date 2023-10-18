@@ -10,7 +10,7 @@
 	var tvingUrl = "${tvingUrl}";
 	var wavveUrl = "${wavveUrl}";
 </script>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/detail.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/detail.css" type="text/css">
 <script src="${contextPath}/resources/bootstrap/js/detailWish.js" type="module"></script>
 <script src="${contextPath}/resources/bootstrap/js/contentDetail.js"></script>
 

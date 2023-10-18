@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&amp;family=Roboto:wght@500;700&amp;display=swap" rel="stylesheet">
 <!-- Icon Font Stylesheet -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/bootstrap_InquiryList.min.css"	type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/style_InquiryList.css"	type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/inquiryList_custom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/bootstrap_InquiryList.min.css"	type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/style_InquiryList.css"	type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/inquiryList_custom.css" type="text/css">
 </head>
 <body>
 	<div class="container-fluid position-relative d-flex p-0">
@@ -78,7 +78,16 @@
 			<div class="container-fluid pt-4 px-4">
 				<div class="bg-secondary text-center rounded p-4">
 					<div class="d-flex align-items-center justify-content-between mb-4">
-						<h6 class="mb-0">고객 문의 리스트</h6>
+						<a href="/support/inquiryList/all">
+							<div>
+								<h6 class="mb-0">고객 문의 리스트</h6>
+							</div>
+						</a>
+						<a href="/support/inquiryList/platformCost">
+							<div>
+								<h6>플랫폼별 가격조사</h6>
+							</div>
+						</a>
 						<a href="/support/inquiryList/damagedImage">
 							<div>
 								<h6 class="mb-0">손상된 이미지 리스트</h6>
@@ -89,7 +98,67 @@
 					<div class="table-responsive">
 						<table class="table text-start align-middle table-bordered table-hover mb-0">
 							<c:choose>
-								<c:when test="${'damagedImage' != status}">
+								<c:when test="${'platformCost' == status}">
+									<thead>
+										<tr class="text-white">
+											<th scope="col" class="center-text"> / </th>
+											<th scope="col" class="center-text">Basic (HD)</th>
+											<th scope="col" class="center-text" >Standard (FHD)</th>
+											<th scope="col" class="center-text">Premium (4K)</th>
+											<th scope="col" class="center-text">Modify</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td scope="col" class="center-text">
+												<a href="https://www.netflix.com/signup/planform" target="_blank">Netflix</a>
+											</td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${netflixCost.platformCostBasic}"></td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${netflixCost.platformCostStandard}"></td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${netflixCost.platformCostPremium}"></td>
+											<td rowspan="3" style="vertical-align: middle;">
+												<a class="btn btn-sm btn-primary" onclick="platformCostModify()" style="width: -webkit-fill-available;">Modify</a>
+											</td>
+										</tr>
+										<tr>
+											<td scope="col" class="center-text">
+												<a href="https://www.tving.com/membership/tving" target="_blank">Tving</a>
+											</td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${tvingCost.platformCostBasic}"></td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${tvingCost.platformCostStandard}"></td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${tvingCost.platformCostPremium}"></td>
+										</tr>
+										<tr>
+											<td scope="col" class="center-text">
+												<a href="https://www.wavve.com/voucher/index.html" target="_blank">Wavve</a>
+											</td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${wavveCost.platformCostBasic}"></td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${wavveCost.platformCostStandard}"></td>
+											<td scope="col" class="center-text"><input type="text" name="platformCost" value="${wavveCost.platformCostPremium}"></td>
+										</tr>
+									</tbody>
+								</c:when>
+								<c:when test="${'damagedImage' == status}">
+									<thead>
+										<tr class="text-white">
+											<th scope="col" class="center-text" style="width: 30%;">ContentId</th>
+											<th scope="col" class="center-text" style="width: 30%;">ViewImage</th>
+											<th scope="col" class="center-text" style="width: 30%;">Upload</th>
+										</tr>
+									</thead>
+									<tbody>
+									<c:forEach var="filteredDTO" items="${damagedImageList}">
+										<tr>
+											<td class="center-text">${filteredDTO.contentId}</td>
+											<td class="url-text"><a href="${filteredDTO.imgUrl}" target="_blank" >Image View Button</a></td>
+											<td class="center-text">
+												<a class="btn btn-sm btn-primary" onclick="openFileInput('${filteredDTO.contentId}')">Upload</a>
+												<input type="file" class="fileInput" id="${filteredDTO.contentId}" accept=".jpg, .jpeg, .png, .webp" style="display: none;">
+											</td>
+										</tr>
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
 									<thead>
 										<tr class="text-white">
 											<th scope="col" class="center-text">Date</th>
@@ -123,28 +192,8 @@
 												<td class="center-text"><a class="btn btn-sm btn-primary" href="${contextPath }/support/inquiryDetail?supportId=${supportDTO.supportId}">Detail</a></td>
 											</tr>
 										</c:forEach>
-									</c:when>
-									<c:otherwise>
-										<thead>
-											<tr class="text-white">
-												<th scope="col" class="center-text">ContentId</th>
-												<th scope="col" class="center-text" >ImgUrl</th>
-												<th scope="col" class="center-text">업로드</th>
-											</tr>
-										</thead>
-										<tbody>
-										<c:forEach var="filteredDTO" items="${damagedImageList}">
-											<tr>
-												<td class="center-text">${filteredDTO.contentId}</td>
-												<td><a href="${filteredDTO.imgUrl}" target="_blank" >${filteredDTO.imgUrl}</a></td>
-												<td class="center-text">
-													<a class="btn btn-sm btn-primary" onclick="openFileInput('${filteredDTO.contentId}')">업로드</a>
-													<input type="file" class="fileInput" id="${filteredDTO.contentId}" accept=".jpg, .jpeg, .png, .webp" style="display: none;">
-												</td>
-											</tr>
-										</c:forEach>
-									</c:otherwise>
-								</c:choose>
+								</c:otherwise>
+							</c:choose>
 							</tbody>
 						</table>
 					</div>

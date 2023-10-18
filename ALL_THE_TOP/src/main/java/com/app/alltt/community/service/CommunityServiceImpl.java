@@ -41,9 +41,7 @@ public class CommunityServiceImpl implements CommunityService {
 		recmndDTO.setPostId(postId);
 		
 		// 디테일 페이지를 들어가느거라면 조회수 늘리기
-		if (read) {
-			communityDAO.updateReadCnt(postId);
-		}
+		if (read) communityDAO.updateReadCnt(postId);
 		
 		return communityDAO.selectOnePost(recmndDTO);
 	}
