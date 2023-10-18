@@ -9,7 +9,6 @@ export function contentsLoadAjax(filterData) {
 		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
 		},
 		success: function(contentList) {
-			console.log(filterData);
 			var container = $("#container");
 			var html = "";
 

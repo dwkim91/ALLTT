@@ -4,12 +4,12 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/wishContentList.js"
+<script src="${contextPath}/resources/bootstrap/js/wish-contentListLoad.js"
 	type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/wishSolution.js"
+<script src="${contextPath}/resources/bootstrap/js/wish-solution.js"
 	type="module"></script>
 <link rel="stylesheet"
-	href="${contextPath}/resources/bootstrap/css/custom/custom2.css"
+	href="${contextPath}/resources/bootstrap/css/wish-custom.css"
 	type="text/css">
 </head>
 

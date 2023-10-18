@@ -7,11 +7,10 @@
 <head>
 <meta charset="UTF-8">
 <title>커뮤니티</title>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/community.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footerCustom.css" type="text/css">
-<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/contentLikeBtn.js"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/community-bootstrap.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footer-custom.css" type="text/css">
+<script src="${contextPath}/resources/bootstrap/js/community-getTimeDiff.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/community-contentLikeBtn.js"></script>
 <script>
 $(function() {
 

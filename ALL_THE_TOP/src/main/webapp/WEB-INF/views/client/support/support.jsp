@@ -6,8 +6,8 @@
 <head>
 
 <meta charset="UTF-8">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/support.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/custom/support_custom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/support-bootstrap.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/support-custom.css" type="text/css">
 <title>Insert title here</title>
 
 </head>

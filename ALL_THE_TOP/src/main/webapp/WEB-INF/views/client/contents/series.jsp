@@ -3,9 +3,9 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/contents.js" type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/contentsWish.js" type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/contentSearch.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/contentType-load.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/contentType-wish.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/contentType-search.js" type="module"></script>
 <script>
 	$(document).ready(function() {
 	    var netflixId = ${filterDTO.netflixId};

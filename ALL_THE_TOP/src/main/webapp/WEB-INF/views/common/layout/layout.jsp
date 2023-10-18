@@ -22,7 +22,7 @@
     rel="stylesheet">
 
     <style data-emotion="css" data-s=""></style>
-    <script src="${contextPath}/resources/bootstrap/js/jquery-3.3.1.min.js"></script>
+    <script src="${contextPath}/resources/bootstrap/js/all-jquery-3.3.1.min.js"></script>
 <style class="vjs-styles-defaults">
 .video-js {
 	width: 300px;
@@ -1054,14 +1054,14 @@ transform
 	<!-- Footer Section End -->
 
 <!-- Js Plugins -->
-<script src="${contextPath}/resources/bootstrap/js/bootstrap.min.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/player.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/jquery.nice-select.min.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/mixitup.min.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/jquery.slicknav.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/owl.carousel.min.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/main.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/ctalk.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-bootstrap.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-player.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-jquery.nice-select.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-mixitup.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-jquery.slicknav.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-owl.carousel.min.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-main.js"></script>
+<script src="${contextPath}/resources/bootstrap/js/all-ctalk.js"></script>
 
 
 </body>

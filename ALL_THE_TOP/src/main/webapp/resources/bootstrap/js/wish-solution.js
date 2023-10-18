@@ -1,6 +1,6 @@
-import { wishSolutionAjax, getPlatformMap  } from './wishSolutionAjax.js';
-import { wishContentListAjax } from './wishContentListAjax.js';
-import { wishPlatformCntAjax } from './wishPlatformCntAjax.js';
+import { wishSolutionAjax, getPlatformMap  } from './wish-solutionAjax.js';
+import { wishContentListAjax } from './wish-contentListLoadAjax.js';
+import { wishPlatformCntAjax } from './wish-platformCntAjax.js';
 
 function wishSolution() {
 	
