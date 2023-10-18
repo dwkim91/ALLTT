@@ -8,12 +8,6 @@
 		<put-attribute name="footer" value="/WEB-INF/views/common/layout/footer.jsp" />			
 	</definition>
 	
-	<!-- 메인 (이전버전) -->
-	<definition name="/alltt/main2" extends="alltt">												
-		<put-attribute name="body"	value="/WEB-INF/views/client/main/main2.jsp"/> 					
-		<put-attribute name="title"	value="main2"/> 											
-	</definition>
-
 	<!-- 메인 -->
 	<definition name="/alltt/main" extends="alltt">												
 		<put-attribute name="body"	value="/WEB-INF/views/client/main/main.jsp"/> 					

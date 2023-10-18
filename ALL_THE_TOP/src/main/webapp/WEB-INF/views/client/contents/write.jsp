@@ -7,10 +7,10 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet"
-	href="${contextPath}/resources/bootstrap/css/scss/write.css"
+	href="${contextPath}/resources/bootstrap/css/custom/write.css"
 	type="text/css">
 <link rel="stylesheet"
-	href="${contextPath}/resources/bootstrap/css/scss/write_tag.css"
+	href="${contextPath}/resources/bootstrap/css/custom/write_tag.css"
 	type="text/css">
 </head>
 <body>

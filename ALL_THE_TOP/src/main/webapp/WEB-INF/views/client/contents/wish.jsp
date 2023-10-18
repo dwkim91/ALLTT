@@ -9,7 +9,7 @@
 <script src="${contextPath}/resources/bootstrap/js/wishSolution.js"
 	type="module"></script>
 <link rel="stylesheet"
-	href="${contextPath}/resources/bootstrap/css/scss/custom2.css"
+	href="${contextPath}/resources/bootstrap/css/custom/custom2.css"
 	type="text/css">
 </head>
 
@@ -23,7 +23,7 @@
 							class="page_select_layout btn_popular click_on">구독정보</button>
 						<button type="button" id="platformBtn"
 							class="page_select_layout btn_popular btn_new ">플랫폼</button>
-						<button type="button" id="expenseBtn"
+						<button type="button" id="costBtn"
 							class="page_select_layout btn_popular btn_new ">구독비</button>
 					</div>
 					<div class="page_select_right">
