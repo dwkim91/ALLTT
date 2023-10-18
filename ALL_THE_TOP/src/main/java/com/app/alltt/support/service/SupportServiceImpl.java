@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -36,6 +38,8 @@ public class SupportServiceImpl implements SupportService {
 
 	@Autowired
 	SupportDAO supportDAO;
+	
+	private Logger logger = LoggerFactory.getLogger(SupportServiceImpl.class);
 
 	@Override
 	public void addInquiry(SupportDTO supportDTO) {
@@ -115,15 +119,12 @@ public class SupportServiceImpl implements SupportService {
 					imageService.uploadImageToS3(tempImage, objectKey);
 					
 					supportDAO.insertViewImage(tempDTO);
-					
 				}
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("예외 발생: " + e.getMessage());
-				
+				logger.error("예외 발생: " + e.getMessage());
 			}
-			
 		}
 	}
 
@@ -156,11 +157,11 @@ public class SupportServiceImpl implements SupportService {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("예외 발생: " + e.getMessage());
+			logger.error("예외 발생: " + e.getMessage());
 		}
 	}
 	
-	public class ImageResizeAndUploadService {
+	class ImageResizeAndUploadService {
 		
 	    public BufferedImage resizeImage(String imageUrl, int targetWidth, int targetHeight) {
 	        try {
@@ -175,7 +176,7 @@ public class SupportServiceImpl implements SupportService {
 	            return resizedImage;
 
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	            return null;
 	        }
 	    }
@@ -192,7 +193,7 @@ public class SupportServiceImpl implements SupportService {
 	            return resizedImage;
 
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	            return null;
 	        }
 	    }
@@ -218,7 +219,7 @@ public class SupportServiceImpl implements SupportService {
 	            return newImage;
 
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	            return null;
 	        }
 	    }
@@ -263,7 +264,7 @@ public class SupportServiceImpl implements SupportService {
 	            s3Client.putObject(new PutObjectRequest(BUCKET_NAME, objectKey, new ByteArrayInputStream(resizedImageBytes), metadata));
 	        } catch (IOException | AmazonServiceException e) {
 	            // 예외 처리
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	        }
 	    }
 	    
@@ -281,7 +282,6 @@ public class SupportServiceImpl implements SupportService {
 	        // BufferedImage 반환
 	        return bufferedImage;
 	    }
-	    
 	}
 
 	@Override
@@ -320,9 +320,7 @@ public class SupportServiceImpl implements SupportService {
 			dto.setPlatformCostPremium(Integer.parseInt(dataArray.get(dataIdx++)));
 			
 			supportDAO.updatePlatformCost(dto);
-			
 		}
-		
 	}
 
 	@Override

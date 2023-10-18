@@ -12,9 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,13 +52,7 @@ public class SupportController {
 	public String validateEmail(@RequestParam("email") String email, HttpSession session) {
 		// 정규식을 사용한 이메일 유효성을 검사
 		String emailRegex = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
-		String result = "";
-		if (email.matches(emailRegex)) {
-			result = "vaildated";
-        } else {
-        	result = "unvaildated";
-        }
-		return result;
+		return email.matches(emailRegex) ? "vaildated" : "unvaildated";
 	}
 	
 	// 문의 등록 
@@ -84,15 +76,9 @@ public class SupportController {
 			return mv;
 		}
 		
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
 		mv.setViewName("/alltt/inquiryList");
-		List<SupportDTO> inquiryList = null;
-		if(status.equals("all")) {
-			inquiryList = supportService.getInquiryList();
-		}
-		else {
-			inquiryList = supportService.getInquiryListByStatus(status);
-		}
+		List<SupportDTO> inquiryList = status.equals("all") ? supportService.getInquiryList() : supportService.getInquiryListByStatus(status);
+
 		mv.addObject("inquiryList", inquiryList);
 		mv.addObject("totalCnt", supportService.getInquiryList().size());
 		mv.addObject("newCnt", supportService.getNewCnt());
@@ -119,8 +105,6 @@ public class SupportController {
 	@RequestMapping(value="/registerAnswer", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String registerAnswer(@RequestBody SupportDTO supportDTO, HttpSession session) {
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
-	    System.out.println(supportDTO);
 	    supportService.registerAnswer(supportDTO);
 	    return "답변이 등록 되었습니다.";
 	}
@@ -145,26 +129,21 @@ public class SupportController {
 	    		long fileSize = uploadFile.getSize();
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
-	    			
 	    			supportService.resizeAndUploadDamagedImage(uploadFile, contentId);
-	    			
 	    		}
 	    		else {
 	    			// 파일 크기가 허용 범위를 초과하는 경우 처리
 	    			result = "Error : 파일 크기가 너무 큽니다. 5MB 이하의 파일을 선택해 주세요.";
 	    		}
-				
 	    	}
 	    	else {
 	    		// 허용되지 않는 확장자인 경우 처리
 	    		result = "Error : 허용되지 않는 파일 형식입니다. (jpg, jpeg , png, webp)";
 	    	}
-            
         } else {
             // 업로드된 파일이 비어 있을 경우 처리
         	result = "Error : 파일이 비어 있습니다.";
         }
-	    
 	    return result;
 	}
 	

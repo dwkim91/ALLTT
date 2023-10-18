@@ -3,13 +3,10 @@ package com.app.alltt.member.sns;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -36,8 +33,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	private SnsValue sns;
 	
 	private OAuth20Service oauth20Service;
-	
-	private Logger logger = LoggerFactory.getLogger(AuthModule.class);
 	
 	// sns 정보를 받아서, oauth20service를 설정
 	public void setSns(SnsValue sns, String source) {
@@ -124,11 +119,8 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	 		String access_token = rootNode.get("access_token").asText();
 
 	 		accessToken = access_token;
-			
 		}
-		
 		return accessToken;
-		
 	}
 	
 	// 탈퇴를 진행한다면, access token 과 함께 탈퇴 요청을 전달
@@ -206,8 +198,8 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 			member.setSocialNm(this.sns.getService());
 		}
 		return member;
-		
 	}
+	
 	// 프로필 이미지 URL에서 byte[] 변환
 	private byte[] imgUrlToByte (String imgUrl) throws Exception {
 		// URL 연결 설정
@@ -220,6 +212,7 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	    // 이미지 데이터를 byte[]로 반환
 	    return inputStream.readAllBytes();
 	}
+	
 	// 이미지 URL에서 파일 확장자 추출
 	public String extractFileExtensionFromUrl(String url) {
 	    // URL 문자열에서 파일 이름 부분 추출
@@ -236,20 +229,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	        // 확장자가 없는 경우
 	        return null;
 	    }
-	}
-	
-	// session 검증용 method
-	private void getSessionStatus(HttpSession session) {
-		try {
-			Enumeration<String> sessionData = session.getAttributeNames();
-			
-			while (sessionData.hasMoreElements()) {
-				String attName = sessionData.nextElement();
-				logger.info(attName + " = " + session.getAttribute(attName));
-			}
-		} catch (Exception e) {
-			logger.info("세션이 이미 털렸습니다");
-		}
 	}
 	
 }
