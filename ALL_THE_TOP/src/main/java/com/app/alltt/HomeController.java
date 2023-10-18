@@ -16,5 +16,4 @@ public class HomeController {
 	public void home(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.sendRedirect(request.getContextPath() + "/main");
 	}
-	
 }

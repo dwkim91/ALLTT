@@ -32,9 +32,6 @@ public interface MemberService {
 	public void setMemberFilter(long newMemberId);
 	public List<FilteredDTO> getWishContentByFilterDTO(FilterDTO filterDTO);
 	public void removeWishContentByFilterDTOList(List<FilteredDTO> filteredDTOList);
-	public void changeThumbnailImg(MemberDTO memberDTO);
-	public MemberDTO imgDownload (MemberDTO memberDTO, String filePath);
-	public void deleteThumbnailImg(String currentThumbnailImg, String filePath);
 	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData);
 	public int getPlatformCntByFilterDTO(FilterDTO filterDTO);
 	public void saveProfileImg(MultipartFile uploadFile, MemberDTO memberDTO);

@@ -4,12 +4,12 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/wishContentList.js"
+<script src="${contextPath}/resources/bootstrap/js/wish-contentListLoad.js"
 	type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/wishSolution.js"
+<script src="${contextPath}/resources/bootstrap/js/wish-solution.js"
 	type="module"></script>
 <link rel="stylesheet"
-	href="${contextPath}/resources/bootstrap/css/scss/custom2.css"
+	href="${contextPath}/resources/bootstrap/css/wish-custom.css"
 	type="text/css">
 </head>
 
@@ -23,7 +23,7 @@
 							class="page_select_layout btn_popular click_on">구독정보</button>
 						<button type="button" id="platformBtn"
 							class="page_select_layout btn_popular btn_new ">플랫폼</button>
-						<button type="button" id="expenseBtn"
+						<button type="button" id="costBtn"
 							class="page_select_layout btn_popular btn_new ">구독비</button>
 					</div>
 					<div class="page_select_right">

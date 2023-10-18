@@ -7,10 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <title>tag</title>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/tagFeed.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footerCustom.css" type="text/css">
-<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
-<script src="${contextPath}/resources/bootstrap/js/getTimeDiff.js"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/tagFeed-custom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/footer-custom.css" type="text/css">
+<script src="${contextPath}/resources/bootstrap/js/community-getTimeDiff.js"></script>
 <script type="text/javascript">
 $(function() {
 

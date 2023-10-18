@@ -28,41 +28,6 @@ public class MainController {
 	@Autowired
 	private CommunityService communityService;
 	
-	@GetMapping("/main2")
-	public ModelAndView main2(HttpServletRequest request) {
-		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/alltt/main2");
-
-		// 메인 페이지 로드시 필요한 기본 필터링값
-		FilterDTO filterDTO = new FilterDTO();
-		filterDTO.setSortType("latest");
-		filterDTO.setContentType("series");
-		filterDTO.setLastItemCnt(0);
-		filterDTO.setIsWishInclude(false);
-		
-		// 플랫폼별 독점작 7선
-		filterDTO.setPlatformId(1);
-		mv.addObject("netflixContentList", mainService.getMorePlatformContent(filterDTO));
-
-		// 플랫폼별 독점작 7선
-		filterDTO.setPlatformId(2);
-		mv.addObject("tvingContentList", mainService.getMorePlatformContent(filterDTO));
-		
-		// 플랫폼별 독점작 7선
-		filterDTO.setPlatformId(3);
-		mv.addObject("wavveContentList", mainService.getMorePlatformContent(filterDTO));
-
-		// 액션 7선
-		filterDTO.setGenreId(8);
-		mv.addObject("actionContentList", mainService.getMorePlatformContent(filterDTO));
-		
-		// 드라마장르 7선
-		filterDTO.setGenreId(7);
-		mv.addObject("dramaContentList", mainService.getMorePlatformContent(filterDTO));
-		return mv;
-	}
-	
 	@GetMapping("/main")
 	public ModelAndView main() {
 		ModelAndView mv = new ModelAndView();
@@ -85,7 +50,6 @@ public class MainController {
 		if (session.getAttribute("memberId") != null) filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
 		return mainService.getMoreFilteredContent(filterDTO);
-		
 	}
 	
 	@GetMapping("/detail")

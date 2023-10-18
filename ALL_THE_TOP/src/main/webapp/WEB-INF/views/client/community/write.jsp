@@ -6,8 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/write.css" type="text/css">
-<script src="${contextPath}/resources/bootstrap/js/jquery-3.6.1.min.js"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/write-bootstrap.css" type="text/css">
 <script type="text/javascript">
 $(function() {
 	
@@ -123,6 +122,8 @@ $(function() {
 	// 태그 검색 삭제
 	$(".form__clear").click(function() {
 		$("#input-search").val("");
+		var searchList = $("#tag_list");
+		searchList.empty(); // 기존 내용 제거
 	})
 
 	// 태그 검색

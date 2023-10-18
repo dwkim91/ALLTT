@@ -14,7 +14,6 @@ public interface MemberDAO {
 	public void deleteMember(long memberId);
 	public MemberDTO selectOneMemberByMemberId(long memberId);
 	
-	
 	public void insertWishContent(FilteredDTO filteredDTO);
 	public void deleteWishContent(Map<String, Long> wishMap);
 	public List<MemberDTO> selectListNickName(String nickName);
@@ -33,7 +32,6 @@ public interface MemberDAO {
 	public List<FilteredDTO> selectListWishContentByFilterDTO(FilterDTO filterDTO);
 	public void deleteWishContent(FilteredDTO filteredDTO);
 	public List<FilteredDTO> selectListWishContentByMemberInfo(Map<String, Object> memberInfo);
-	public void updateThumbnailImg(MemberDTO memberDTO);
 	public int selectOnePlatformCntByFilterDTO(FilterDTO filterDTO);
 	public void updateProfileImg(MemberDTO memberDTO);
 	public MemberDTO selectOneMemberSimpleInfoByMemberId(long memberId);

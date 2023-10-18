@@ -150,15 +150,6 @@
 			C.CONTENT_TYPE = #{contentType};	
 	</update>
 	
-	<select id="selectOneTitle" parameterType="Long" resultType="String">
-		SELECT
-				TITLE
-		FROM
-				CONTENT
-		WHERE
-				CONTENT_ID = #{contentId}
-	</select>
-	
 	<update id="updateCreator" parameterType="CrawlingDTO">
 		UPDATE
 				CONTENT
@@ -194,38 +185,16 @@
 		WHERE
 				CONTENT_ID = #{contentId}
 	</update>
-	
-	<!-- DB 정보 가져오기 TEST -->
-	<select id="selectListContent" resultType="ContentDTO">
-		SELECT
-				*
-		FROM
-				CONTENT
-	</select>
 
-	<select id="selectListGenreLinkByGenreId" resultType="GenreLinkDTO">
+	<select id="selectListGenreLinkByPlatformId" resultType="GenreLinkDTO">
 		SELECT 
 				*
 		FROM 
 				GENRE_LINK
 		WHERE 
-				CONTENT_TYPE = #{contentType} AND GENRE_ID = #{genreId}
+				CONTENT_TYPE = #{contentType} AND PLATFORM_ID = #{platformId}
 		ORDER BY 
-				GENRE_ID ASC,
-				PLATFORM_ID ASC;
-	</select>
-	
-	<!-- Scroll 데이터 TEST -->
-	<select id="selectListScrollContent" resultType="CrawlingDTO" parameterType="int">
-		SELECT
-				C.CONTENT_ID,
-		        C.TITLE,
-		        L.IMG_URL,
-		        L.URL
-		FROM
-				CONTENT C
-			INNER JOIN CONTENT_LINK L ON C.CONTENT_ID = L.CONTENT_ID
-		LIMIT #{contentId}, 42;
+				GENRE_ID ASC;
 	</select>
 	
 	<!-- 서비스 종료된 컨텐츠 List -->

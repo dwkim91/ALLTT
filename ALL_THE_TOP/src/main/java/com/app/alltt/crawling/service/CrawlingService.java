@@ -1,9 +1,5 @@
 package com.app.alltt.crawling.service;
 
-import java.util.List;
-
-import com.app.alltt.crawling.dto.CrawlingDTO;
-
 public interface CrawlingService {
 	
 	// 티빙
@@ -12,11 +8,9 @@ public interface CrawlingService {
 	public void addNetflixContent();
 	// 웨이브
 	public void addWavveContent() throws InterruptedException;
-	// 통합 크롤링
-	public void addAllttContent() throws InterruptedException;
-	// scroll test
-	public List<CrawlingDTO> getMoreContents(int contentId);
-	
-	public void deleteContent();
+	// 시리즈 통합 크롤링
+	public void addSeriesContents() throws InterruptedException;
+	// 무비 통합 크롤링
+	public void addMovieContents() throws InterruptedException;
 	
 }

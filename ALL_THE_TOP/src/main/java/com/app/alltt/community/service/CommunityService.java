@@ -10,6 +10,7 @@ import com.app.alltt.member.dto.MemberDTO;
 
 public interface CommunityService {
 
+	// 게시글 추가
 	public void addPost(PostDTO post);
 	// 게시글 상세 페이지 볼 때, content 정보도 필요함
 	public PostDTO getPostDetail(long postId, long memberId, boolean read);
@@ -31,6 +32,7 @@ public interface CommunityService {
 	
 	// 로그인한 멤버의 정보를 넘겨주기 위해
 	public MemberDTO getMemberId(long memberId);
+	
 	// 로그인한 멤버가 쓴 게시글과 댓글
 	public int getPostCntByMember(long memberId);
 	public int getReplyCntByMemberId(long memberId);

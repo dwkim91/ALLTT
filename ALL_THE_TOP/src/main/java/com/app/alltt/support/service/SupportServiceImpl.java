@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -25,6 +27,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.support.dao.SupportDAO;
+import com.app.alltt.support.dto.PlatformDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
 import net.coobird.thumbnailator.Thumbnails;
@@ -35,6 +38,8 @@ public class SupportServiceImpl implements SupportService {
 
 	@Autowired
 	SupportDAO supportDAO;
+	
+	private Logger logger = LoggerFactory.getLogger(SupportServiceImpl.class);
 
 	@Override
 	public void addInquiry(SupportDTO supportDTO) {
@@ -114,15 +119,12 @@ public class SupportServiceImpl implements SupportService {
 					imageService.uploadImageToS3(tempImage, objectKey);
 					
 					supportDAO.insertViewImage(tempDTO);
-					
 				}
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("예외 발생: " + e.getMessage());
-				
+				logger.error("예외 발생: " + e.getMessage());
 			}
-			
 		}
 	}
 
@@ -155,11 +157,11 @@ public class SupportServiceImpl implements SupportService {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("예외 발생: " + e.getMessage());
+			logger.error("예외 발생: " + e.getMessage());
 		}
 	}
 	
-	public class ImageResizeAndUploadService {
+	class ImageResizeAndUploadService {
 		
 	    public BufferedImage resizeImage(String imageUrl, int targetWidth, int targetHeight) {
 	        try {
@@ -174,7 +176,7 @@ public class SupportServiceImpl implements SupportService {
 	            return resizedImage;
 
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	            return null;
 	        }
 	    }
@@ -191,7 +193,7 @@ public class SupportServiceImpl implements SupportService {
 	            return resizedImage;
 
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	            return null;
 	        }
 	    }
@@ -217,7 +219,7 @@ public class SupportServiceImpl implements SupportService {
 	            return newImage;
 
 	        } catch (IOException e) {
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	            return null;
 	        }
 	    }
@@ -262,7 +264,7 @@ public class SupportServiceImpl implements SupportService {
 	            s3Client.putObject(new PutObjectRequest(BUCKET_NAME, objectKey, new ByteArrayInputStream(resizedImageBytes), metadata));
 	        } catch (IOException | AmazonServiceException e) {
 	            // 예외 처리
-	            e.printStackTrace();
+	            logger.error(e.getMessage());
 	        }
 	    }
 	    
@@ -280,12 +282,50 @@ public class SupportServiceImpl implements SupportService {
 	        // BufferedImage 반환
 	        return bufferedImage;
 	    }
-	    
 	}
 
 	@Override
 	public List<FilteredDTO> getImageRequiredToBeUploaded() {
 		return supportDAO.selectListImageRequiredToBeUploaded();
+	}
+
+	@Override
+	public void deleteViewImage(long contentId) {
+		
+		String deleteImageFileName = contentId + ".jpg";
+		
+		BasicAWSCredentials awsCredentials = new BasicAWSCredentials(ACCESS_KEY, SECRET_KEY);
+        AmazonS3 s3Client = AmazonS3Client.builder()
+                .withRegion("ap-northeast-2") // 원하는 AWS 리전 선택
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .build();
+		
+        s3Client.deleteObject(BUCKET_NAME, deleteImageFileName);
+        
+        supportDAO.deleteViewImage(contentId);
+	}
+
+	@Override
+	public void platformCostModify(List<String> dataArray) {
+		
+		int platformCnt = 3;
+		int dataIdx = 0;
+		
+		for (int i = 1; i <= platformCnt; i++) {
+			PlatformDTO dto = new PlatformDTO();
+			
+			dto.setPlatformId(i);
+			dto.setPlatformCostBasic(Integer.parseInt(dataArray.get(dataIdx++)));
+			dto.setPlatformCostStandard(Integer.parseInt(dataArray.get(dataIdx++)));
+			dto.setPlatformCostPremium(Integer.parseInt(dataArray.get(dataIdx++)));
+			
+			supportDAO.updatePlatformCost(dto);
+		}
+	}
+
+	@Override
+	public PlatformDTO getCostByPlatformId(int platformId) {
+		return supportDAO.selectOnePlatformCost(platformId);
 	}
 
 }

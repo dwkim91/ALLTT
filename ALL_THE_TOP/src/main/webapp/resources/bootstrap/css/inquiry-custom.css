@@ -1,0 +1,31 @@
+
+.table-responsive .form-check-input {
+	position: unset;
+	text-align: center;
+	margin: 0 auto;
+	display: block;
+	background-color: #5b4b4b;
+}
+
+.table td, .table th {
+    color: #efefef;
+}
+
+.btn-primary {
+    color: #efefef;
+}
+
+.center-text {
+	text-align: center;
+}
+
+.url-text {
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+input[type="text"] {
+	text-align: center;
+}

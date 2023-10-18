@@ -12,10 +12,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&amp;family=Roboto:wght@500;700&amp;display=swap" rel="stylesheet">
 <!-- Icon Font Stylesheet -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/bootstrap_InquiryList.min.css"	type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/style_InquiryList.css"	type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/inquiryList_custom.css" type="text/css">
-<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/scss/support.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/inquiry-bootstrap.min.css"	type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/inquiry-custom.css" type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/inquiryList-custom.css"	type="text/css">
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/support-bootstrap.css" type="text/css">
 </head>
 <body>
 	<div class="container-fluid position-relative d-flex p-0">

@@ -132,4 +132,31 @@
 				)
 	</insert>
 	
+	<delete id="deleteViewImage" parameterType="long">
+		DELETE FROM
+				CONTENT_VIEWIMG
+		WHERE
+				CONTENT_ID = #{contentId}
+	</delete>
+	
+	<update id="updatePlatformCost" parameterType="PlatformDTO">
+		UPDATE 
+				OTT_PLATFORM 
+		SET
+				PLATFORM_COST_BASIC = #{platformCostBasic},
+				PLATFORM_COST_STANDARD = #{platformCostStandard},
+				PLATFORM_COST_PREMIUM = #{platformCostPremium}
+		WHERE
+				PLATFORM_ID = #{platformId};
+	</update>
+	
+	<select id="selectOnePlatformCost" parameterType="int" resultType="PlatformDTO">
+		SELECT
+				*
+		FROM
+				OTT_PLATFORM
+		WHERE
+				PLATFORM_ID = #{platformId}
+	</select>
+	
 </mapper>

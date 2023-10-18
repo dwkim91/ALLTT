@@ -3,7 +3,6 @@ package com.app.alltt.member.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,16 +42,6 @@ import com.app.alltt.security.ALLTTUserDetailsService;
 @RequestMapping("/member")
 public class MemberController {
 
-	// 이미지 저장 상대 경로용 서버에 올려서는 서버 내의 별도 이미지경로의 절대 경로 사용 예정
-	private static String THUMBNAIL_IMG_PATH = "/resources/bootstrap/img/thumbnailImg/";
-	
-	// 로그 기록용
-	private static Logger logger = LoggerFactory.getLogger(MemberController.class);
-	
-	public static String getThumbnailImagePath(HttpSession session) {
-        return session.getServletContext().getRealPath(THUMBNAIL_IMG_PATH);		
-    }
-	
 	@Autowired
 	private MemberService memberService;
 	
@@ -80,7 +67,7 @@ public class MemberController {
 	
 	// 회원 가입 및 탈퇴 메서드
 	@GetMapping("/{service}/{source}")
-	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpSession session) throws Exception {
+	public ModelAndView serviceCallback(@PathVariable("service") String service, @PathVariable("source") String source, HttpServletRequest request) throws Exception {
 	// connectApi를 넣는 주소를 숨길수 없나? -> state 값으로 우리가 요청한 값인지 아닌지 확인 가능하긴 함
 		ModelAndView mv = new ModelAndView();
 		
@@ -94,29 +81,24 @@ public class MemberController {
 		else {
 			return mv;
 		}
-		
+		// session 생성 혹은 가져오기
+		HttpSession session = request.getSession();
 		// application을 구분하는 state 값을 초기화
 		session.removeAttribute("state");
 		// authModule에다가 sns client 정보들을 담은 SnsValue를 삽입해줌으로써 해당 method가 sns 인증을 위해 동작하도록 설정
 		authModule.setSns(sns, source);
 		// 인증 code를 요청
-		// 외부로 보이는 url이라 추후 확인 필요
-		// naver login api를 사용하는 상용 서비스들도 이 url은 보이는 편이긴 함
 		mv.setViewName("redirect:" + authModule.getSnsAuthUrl(session));
-		// 현재 browser에 저장된 session이 어떤 값들이 있나 검증용
-		//getSessionStatus(session);
 		
 		return mv;
 	}
 	
 	@GetMapping("/logout")
-	public ResponseEntity<Object> logOut(HttpServletRequest request, HttpSession session) {
+	public ResponseEntity<Object> logOut(HttpServletRequest request) {
 		
-		// security clear
 		allttUserDetailsService.byeUser();
+		request.getSession().invalidate();
 		
-		// 로그인을 하며 session에 등록된 모든 값들을 날려버림
-		session.invalidate();
 		String jsScript = "<script>";
 		jsScript += "alert('로그아웃 되었습니다.');";
 		jsScript += "location.href='" + request.getContextPath() + "/main';";
@@ -129,20 +111,15 @@ public class MemberController {
 	}
 	
 	// 로그인 및 회원 가입 메서드
-	// 추후 개발 방향에 따라서, callback을 받는 위치를 나눠서 개발 가능
 	@RequestMapping(value = "/{service}/callback/login", method = {RequestMethod.GET, RequestMethod.POST})
-	public ResponseEntity<Object> callBackSnsLogin(HttpSession session, HttpServletRequest request) throws Exception {
+	public ResponseEntity<Object> callBackSnsLogin(HttpServletRequest request) throws Exception {
 		// state 값 검증
+		HttpSession session = request.getSession();
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
-		//로그인 state 값확인 폰접속애러 확인용 
-		logger.info("stateSession : " + stateSession);
-		logger.info("state        : " + state);
-		
-		// ** 처리방향 논의 필요
 		// 다른 계정으로 로그인한 유저가 url로 로그인 접속을 하는 경우?
-		// 일단 로그인 정보를 날려놓
+		// 현재 로그인 정보를 날리고 다시 로그인 시킴
 		allttUserDetailsService.byeUser();
 		
 		// 사용자에게 보여주는 메세지
@@ -206,8 +183,9 @@ public class MemberController {
 	
 	// 회원 탈퇴 메서드
 	@RequestMapping(value = "/{service}/callback/withdraw", method = {RequestMethod.GET, RequestMethod.POST})
-	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request, HttpSession session) throws Exception {
+	public ResponseEntity<Object> callbackWithdraw(@PathVariable("service") String service, HttpServletRequest request) throws Exception {
 		// state 값 검증
+		HttpSession session = request.getSession();
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
@@ -227,16 +205,14 @@ public class MemberController {
 				// sns에서 profile 정보를 지우고
 				if (authModule.withdraw(authModule.getAccessToken(code))) {
 					// 세션과 DB에서 모두 날린다
-					MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
-					memberService.deleteThumbnailImg(memberDTO.getThumbnailImg(), getThumbnailImagePath(session));
 					memberService.removeMember(memberId);
 					
+					allttUserDetailsService.byeUser();
 					session.invalidate();
 					
 					jsScript += "alert('다음에 다시 만나요!');";
 				}
-				// NAVER 에서 연동을 해제하는 요청은 boolean 형태로 result를 확인하도록 했는데, 혹시나 안됐을 경우?
-				// 예외처리 방향 확인
+				// 예외처리 방향 확인 > Oauth 모듈에서 오류가 났을때는 우리에게 어떻게 컨택을 하지?
 				else {
 					jsScript += "alert('관리자에게 문의하세요.');";
 				}
@@ -256,25 +232,23 @@ public class MemberController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 
-		// session 검증용
-		//getSessionStatus(session);
-		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
 	
 	// 멤버정보  가져오기
 	@PostMapping("/memberInfo")
 	@ResponseBody
-	public MemberDTO myPage(HttpServletRequest request, HttpSession session) {
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public MemberDTO myPage(HttpServletRequest request) {
+		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 		MemberDTO memberDTO = memberService.getMemberSimpleInfoByMemberId(memberId);
 		return memberDTO;
 	} 
 	
 	@GetMapping("/mypage")
 	@ResponseBody
-	public ModelAndView mypage(HttpServletRequest request, HttpSession session) {
+	public ModelAndView mypage(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
+		HttpSession session = request.getSession();
 		
 		if (session.getAttribute("memberId") == null) {
 			mv.setViewName("/alltt/login");
@@ -324,15 +298,14 @@ public class MemberController {
 	// 랜덤닉네임
 	@RequestMapping(value="/randomNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String genNickName(HttpServletRequest request, HttpSession session) {
+	public String genNickName(HttpServletRequest request) {
 		return memberService.genNickName();
 	}
 
 	// 닉네임 저장
 	@RequestMapping(value="/saveNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String saveNickname(@RequestParam("nickname") String nickname, HttpSession session) {
-		String result = "";
+	public String saveNickname(@RequestParam("nickname") String nickname, HttpServletRequest request) {
 		// 한글, 영문, 숫자 , 일부 특수문자 포함 6~10자 확인용 정규식
 		String nicknameRegex = "^[a-zA-Z0-9가-힣]{6,10}$";
 		// 자동생성 조건 정규식
@@ -343,28 +316,22 @@ public class MemberController {
 
 			if (!isDupl) {
 				MemberDTO memberDTO = new MemberDTO();
-				long memberId = ((Long) session.getAttribute("memberId")).longValue();
+				long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 				memberDTO.setNickName(nickname);
 				memberDTO.setMemberId(memberId);
 				memberService.changeNickname(memberDTO);
-				result = "닉네임이 변경되었습니다.";
+				return "닉네임이 변경되었습니다.";
 			}
-			else {
-				result = "닉네임이 중복되었습니다.";
-			}
+			else return "닉네임이 중복되었습니다.";
 		}
-		else {
-			result = "한글, 영문, 숫자로 구성되어 있고 6~10자 사이의 닉네임을 입력하세요.";
-		}
-				
-		return result;
+		else return"한글, 영문, 숫자로 구성되어 있고 6~10자 사이의 닉네임을 입력하세요.";
 	}
 	
 	// 구독정보 수정
 	@RequestMapping(value="/setSubscription", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpSession session) {
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public String savePlatforms(@RequestBody FilterDTO filterDTO, HttpServletRequest request) {
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    memberService.setSubscriptionByMemberId(filterDTO);
 	    return "구독 정보가 수정되었습니다.";
@@ -373,8 +340,8 @@ public class MemberController {
 	// 필터 정보 수정
 	@RequestMapping(value="/setSearchFilter", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpSession session) {
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public String saveSearchFilter(@RequestBody FilterDTO filterDTO, HttpServletRequest request) {
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    memberService.changeContentFilterByMemberId(filterDTO);
 	    return "필터 정보가 수정되었습니다.";
@@ -383,49 +350,18 @@ public class MemberController {
 	// 장르리스트 업데이트용 필터 수정
 	@RequestMapping(value="/filterUpdate", method=RequestMethod.GET)
 	@ResponseBody
-	public List<FilterDTO> updateSearchFilter(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	public List<FilterDTO> updateSearchFilter(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
+		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    return mainService.getMoreGenreList(filterDTO);
-	}
-	
-	// 세션 검증용 
-	@PostMapping("/sessionRemainingTime")
-	@ResponseBody
-	public int checkSessionTime(HttpSession session) {
-		
-		boolean isExist = false;
-		int remainingTime = 0;
-		Enumeration<String> attributeNames = session.getAttributeNames();
-		
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-	        if (attributeName.equals("memberId")) {
-	            int maxInactiveInterval = session.getMaxInactiveInterval();
-//	        	int maxInactiveInterval = 180;
-	            int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - session.getLastAccessedTime()) / 1000);
-	            isExist = true;
-	            remainingTime = maxInactiveInterval - elapsedTimeInSeconds;
-//	            System.out.print("maxInactiveInterval = " + maxInactiveInterval);
-//	            System.out.println("elapsedTimeInSeconds = " + elapsedTimeInSeconds);
-//	            session.invalidate();
-	        }
-		}
-		if (!isExist) {
-			System.out.println("세션이 만료되었습니다.");
-		}
-		else {
-			System.out.println(remainingTime);
-		}
-		return 0;
 	}
 	
 	// 탈퇴
 	@GetMapping("/withdraw")
 	@ResponseBody
-	public ModelAndView withdraw(HttpServletRequest request, HttpSession session) {
+	public ModelAndView withdraw(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-		long memberId = ((Long) session.getAttribute("memberId")).longValue();
+		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 		// 로그인한 멤버DTO
 		mv.addObject("member", memberService.getMemberByMemberId(memberId));
 		mv.setViewName("/alltt/withdraw");
@@ -435,9 +371,9 @@ public class MemberController {
 	// 탈퇴전 글/댓글 삭제
 	@RequestMapping(value="/deleteMyPost", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String deleteMyPost(@RequestBody MemberDTO memberDTO, HttpSession session) {
+	public String deleteMyPost(@RequestBody MemberDTO memberDTO, HttpServletRequest request) {
 		
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    
 	    boolean deletePost = memberDTO.getdPostYn().equals("Y");
 	    boolean deleteReply = memberDTO.getdReplyYn().equals("Y");
@@ -453,9 +389,9 @@ public class MemberController {
 	/// 프로필사진 변경
 	@RequestMapping(value="/changeThumbnailImg", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
-	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, HttpSession session) throws Exception, IOException {
+	public String changeThumbnailImg(@RequestParam("uploadFile") MultipartFile uploadFile, HttpServletRequest request) throws Exception, IOException {
 
-	    long memberId = ((Long) session.getAttribute("memberId")).longValue();
+	    long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    String result = "";
 	    
 	    // 파일 업로드 처리
@@ -474,68 +410,32 @@ public class MemberController {
 	    		long fileSize = uploadFile.getSize();
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
-// 프로젝트 내부 저장방식 
-	    			/*
-	    			// 현재 프로필 이미지 파일 경로 가져오기
-	    			MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
-	    			// 기존 프로필이미지 삭제
-	    			String currentThumbnailImg = memberDTO.getThumbnailImg();
-	    			memberService.deleteThumbnailImg(currentThumbnailImg, getThumbnailImagePath(session));
-	    			
-	    			SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-	    			// 파일이름생성
-	    			String newFileName = fmt.format(new Date()) + "_" + UUID.randomUUID() + "_" + uploadFile.getOriginalFilename();
-	    			// 프로필이미지 저장
-	    			uploadFile.transferTo(new File(getThumbnailImagePath(session) + newFileName)); 
-	    			
-	    			memberDTO.setThumbnailImg(newFileName);
-	    			memberService.changeThumbnailImg(memberDTO);
-	    			*/
-// DB 저장방식	    			
 	    			MemberDTO memberDTO = new MemberDTO();
 	    			memberDTO.setMemberId(memberId);
 	    			memberDTO.setImgExtension(fileExtension);
 	    			
 	    			// 기존 프로필이미지 업데이트
 	    			memberService.saveProfileImg(uploadFile, memberDTO);
-	    			
 	    		}
 	    		else {
 	    			// 파일 크기가 허용 범위를 초과하는 경우 처리
 	    			result = "Error : 파일 크기가 너무 큽니다. 5MB 이하의 파일을 선택해 주세요.";
 	    		}
-				
 	    	}
 	    	else {
 	    		// 허용되지 않는 확장자인 경우 처리
 	    		result = "Error : 허용되지 않는 파일 형식입니다. (jpg, jpeg , png, gif)";
 	    	}
-            
         } else {
             // 업로드된 파일이 비어 있을 경우 처리
         	result = "Error : 파일이 비어 있습니다.";
         }
-	    
 	    return result;
 	}
 	
-	// session 검증용 method
-	public void getSessionStatus(HttpSession session) {
-		try {
-			Enumeration<String> sessionData = session.getAttributeNames();
-			
-			while (sessionData.hasMoreElements()) {
-				String attName = sessionData.nextElement();
-				System.out.println(attName + " = " + session.getAttribute(attName));
-			}
-		} catch (Exception e) {
-			System.out.println("세션이 이미 털렸습니다");
-		}
-	}
-	
 	@RequestMapping(value="/wishStateChange", method=RequestMethod.POST, produces = "application/text; charset=utf8")
-	public ResponseEntity<String> wishStateChange(@ModelAttribute FilteredDTO filteredDTO, HttpSession session) {
-		long memberId = (long)session.getAttribute("memberId");
+	public ResponseEntity<String> wishStateChange(@ModelAttribute FilteredDTO filteredDTO, HttpServletRequest request) {
+		long memberId = (long)request.getSession().getAttribute("memberId");
 		
 		filteredDTO.setMemberId(memberId);
 		
@@ -549,30 +449,21 @@ public class MemberController {
 			return ResponseEntity.ok("찜 컨텐츠가 추가되었습니다.");
 		}
 		else {
-			
 			memberService.deleteWishContentByMemberId(filteredDTO);
 			return ResponseEntity.ok("찜 컨텐츠가 삭제되었습니다.");
 		}
-
 	} 
 	
 	@PostMapping("/checkSession")
 	@ResponseBody
-	public Boolean checkSession(HttpSession session) {
-		
-		boolean isLogin = false;
-		
-		if (session.getAttribute("memberId") != null) {
-			isLogin = true;
-		}
-		
-		System.out.println(isLogin);
-		return isLogin;
+	public Boolean checkSession(HttpServletRequest request) {
+		return request.getSession().getAttribute("memberId") != null ? true : false;
 	}
 	
 	@GetMapping("/wish")
-	public ModelAndView wish(HttpSession session) {
+	public ModelAndView wish(HttpServletRequest request) {
 		
+		HttpSession session = request.getSession();
 		ModelAndView mv = new ModelAndView();
 		
 		if (session.getAttribute("memberId") == null) {
@@ -604,17 +495,17 @@ public class MemberController {
 	
 	@PostMapping("/getWishList")
 	@ResponseBody
-	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
+		filterDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
 		
 		return memberService.getWishContentByFilterDTO(filterDTO);
 	}
 	
 	@PostMapping("/removeWishContent")
-	public ResponseEntity<String> removeWishContent(@RequestBody List<FilteredDTO> filteredDTOList, HttpSession session) {
+	public ResponseEntity<String> removeWishContent(@RequestBody List<FilteredDTO> filteredDTOList, HttpServletRequest request) {
 		
 		for (FilteredDTO filteredDTO : filteredDTOList) {
-			filteredDTO.setMemberId((long)session.getAttribute("memberId"));
+			filteredDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
 		}
 		
 		memberService.removeWishContentByFilterDTOList(filteredDTOList);
@@ -624,8 +515,8 @@ public class MemberController {
 	
 	@PostMapping("/wishSolution")
 	@ResponseBody
-	public Map<Integer, Map<Integer, List<Long>>> wishSolution(@RequestBody Map<String, Object> requestData, HttpSession session) {
-		long memberId = (long)session.getAttribute("memberId");
+	public Map<Integer, Map<Integer, List<Long>>> wishSolution(@RequestBody Map<String, Object> requestData, HttpServletRequest request) {
+		long memberId = (long)request.getSession().getAttribute("memberId");
 		
 		requestData.put("memberId", memberId);
 		
@@ -634,8 +525,8 @@ public class MemberController {
 	
 	@PostMapping("/getPlatformCntLoad")
 	@ResponseBody
-	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpSession session) {
-		filterDTO.setMemberId((long)session.getAttribute("memberId"));
+	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
+		filterDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
 		
 		List<Integer> platformCntList = new ArrayList<>();
 		filterDTO.setPlatformId(1);

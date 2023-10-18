@@ -1,22 +1,16 @@
 package com.app.alltt.member.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +19,19 @@ import com.app.alltt.main.dto.FilterDTO;
 import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.member.dao.MemberDAO;
 import com.app.alltt.member.dto.MemberDTO;
+import com.app.alltt.support.dto.PlatformDTO;
+import com.app.alltt.support.service.SupportService;
 
 @Service
 public class MemberServiceImpl implements MemberService {
 	
 	@Autowired
 	private MemberDAO memberDAO;
+	
+	@Autowired
+	private SupportService supportService;
+	
+	private Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
 	
 	// 랜덤 닉네임 생성 메소드
 	@Override
@@ -142,7 +143,6 @@ public class MemberServiceImpl implements MemberService {
         Random random = new Random();
         int ranIndex = random.nextInt(range);
         return ranIndex;
-        
     }
 	
 	@Override
@@ -280,80 +280,8 @@ public class MemberServiceImpl implements MemberService {
 		for (FilteredDTO filteredDTO : filteredDTOList) {
 			memberDAO.deleteWishContent(filteredDTO);
 		}
-		
 	}
 	
-	// 썸네일 이미지 변경
-	@Override
-	public void changeThumbnailImg(MemberDTO memberDTO) {
-		memberDAO.updateThumbnailImg(memberDTO);
-	}
-	
-	// 이미지 파일 다운로드 
-	public MemberDTO imgDownload (MemberDTO member, String filePath) {
-		MemberDTO memberDTO = member;
-		String imgUrl = memberDTO.getThumbnailImg();
-		
-		// URL에서 파일 이름 부분 추출
-		String[] urlParts = imgUrl.split("/");
-		String fileName = urlParts[urlParts.length - 1];
-		
-		// 파일 이름에서 확장자 추출
-		String[] fileNameParts = fileName.split("\\.");
-		String fileExtension = fileNameParts[fileNameParts.length - 1];
-		
-		// 허용된 이미지 확장자
-    	List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif");
-
-    	if (allowedExtensions.contains(fileExtension.toLowerCase())) {
-	
-    		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-			// 파일이름생성
-			String newFileName = fmt.format(new Date()) + "_" + UUID.randomUUID() + "_" + fileName;
-			String outputFilePath = filePath + newFileName; // 저장할 파일 경로 및 이름
-			try {
-	            // URL 연결 설정
-	            URL url = new URL(imgUrl);
-	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-	            // 이미지 다운로드
-	            InputStream inputStream = connection.getInputStream();
-	            FileOutputStream outputStream = new FileOutputStream(outputFilePath);
-	            byte[] buffer = new byte[1024];
-	            int bytesRead;
-	            while ((bytesRead = inputStream.read(buffer)) != -1) {
-	                outputStream.write(buffer, 0, bytesRead);
-	            }
-	            outputStream.close();
-	            inputStream.close();
-	            
-	            memberDTO.setThumbnailImg(newFileName);
-	            
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-    		
-    	}
-    	else {
-    		
-    		memberDTO.setThumbnailImg("default_profile.png");
-    		
-    	}
-		return memberDTO;
-	}
-	
-	// 이미지 삭제
-	@Override
-	public void deleteThumbnailImg(String currentThumbnailImg, String filePath) {
-		if (currentThumbnailImg != null && !currentThumbnailImg.isEmpty()) {
-			// 현재 프로필 이미지 파일 삭제
-			File currentThumbnailImgFile = new File(filePath + currentThumbnailImg);
-			if (currentThumbnailImgFile.exists()) {
-				currentThumbnailImgFile.delete();
-			}
-		}
-	}
-
 	@Override
 	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData) {
 		
@@ -416,12 +344,29 @@ public class MemberServiceImpl implements MemberService {
 				    platformPriority.add(platformId);
 				}
 			}
-			else if (buttonVal.equals("expenseBtn")) {
+			else if (buttonVal.equals("costBtn")) {
 				
-				// 임시로 웨이브부터
-				platformPriority.add(3);
-				platformPriority.add(2);
-				platformPriority.add(1);
+				PlatformDTO netflixInfo = supportService.getCostByPlatformId(1);
+				PlatformDTO tvingInfo = supportService.getCostByPlatformId(2);
+				PlatformDTO wavveInfo = supportService.getCostByPlatformId(3);
+				
+				List<PlatformDTO> platformList = new ArrayList<PlatformDTO>();
+				
+				platformList.add(netflixInfo);
+				platformList.add(tvingInfo);
+				platformList.add(wavveInfo);
+				
+		        // platformCostBasic 값을 기준으로 오름차순으로 정렬
+		        Collections.sort(platformList, new Comparator<PlatformDTO>() {
+		            @Override
+		            public int compare(PlatformDTO platform1, PlatformDTO platform2) {
+		                return Integer.compare(platform1.getPlatformCostBasic(), platform2.getPlatformCostBasic());
+		            }
+		        });
+				
+				platformPriority.add(platformList.get(0).getPlatformId());
+				platformPriority.add(platformList.get(1).getPlatformId());
+				platformPriority.add(platformList.get(2).getPlatformId());
 				
 			}
 			
@@ -455,11 +400,8 @@ public class MemberServiceImpl implements MemberService {
 				    	platformMaps.get(platformId).get(nextPlatformId).add(content);
 				    }
 				}
-				
 			}
-			
 		}
-		
 		return platformMaps;
 	}
 
@@ -477,14 +419,13 @@ public class MemberServiceImpl implements MemberService {
 		try {
 			imageData = uploadFile.getBytes();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
         
         memberDTO.setImgData(imageData);
         
 		// Blob을 데이터베이스에 저장
 		memberDAO.updateProfileImg(memberDTO);
-		
 	}
 
 	@Override

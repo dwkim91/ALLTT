@@ -16,11 +16,6 @@ public class MainDAOImpl implements MainDAO {
 	private SqlSession sqlSession;
 
 	@Override
-	public List<FilteredDTO> selectListPlatformContent(FilterDTO filterDTO) {
-		return sqlSession.selectList("mainMapper.selectListPlatformContent",filterDTO);
-	}
-
-	@Override
 	public List<FilteredDTO> selectListFilteredContentList(FilterDTO filterDTO) {
 		return sqlSession.selectList("mainMapper.selectListFilteredContent", filterDTO);
 	}

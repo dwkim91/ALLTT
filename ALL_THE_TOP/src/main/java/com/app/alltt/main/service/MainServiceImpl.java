@@ -16,11 +16,6 @@ public class MainServiceImpl implements MainService {
 	private MainDAO mainDAO;
 
 	@Override
-	public List<FilteredDTO> getMorePlatformContent(FilterDTO filterDTO) {
-		return mainDAO.selectListPlatformContent(filterDTO);
-	}
-	
-	@Override
 	public List<FilteredDTO> getMoreFilteredContent(FilterDTO filterDTO) {
 		return mainDAO.selectListFilteredContentList(filterDTO);
 	}
@@ -67,12 +62,7 @@ public class MainServiceImpl implements MainService {
 
 	@Override
 	public boolean getWishByMemberId(FilteredDTO filteredDTO) {
-		boolean isWishCheck = false;
-		
-		if (mainDAO.selectOneWishByMemberId(filteredDTO) > 0) {
-			isWishCheck = true; 
-		}
-		return isWishCheck;
+		return mainDAO.selectOneWishByMemberId(filteredDTO) > 0 ? true : false;
 	}
 	
 }

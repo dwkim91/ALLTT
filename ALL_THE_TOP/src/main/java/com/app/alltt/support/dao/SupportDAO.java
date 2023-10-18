@@ -3,6 +3,7 @@ package com.app.alltt.support.dao;
 import java.util.List;
 
 import com.app.alltt.main.dto.FilteredDTO;
+import com.app.alltt.support.dto.PlatformDTO;
 import com.app.alltt.support.dto.SupportDTO;
 
 public interface SupportDAO {
@@ -28,5 +29,11 @@ public interface SupportDAO {
 	List<FilteredDTO> selectListImageRequiredToBeUploadedByPlatformId(int platformId);
 
 	void insertViewImage(FilteredDTO tempDTO);
+
+	void deleteViewImage(long contentId);
+
+	void updatePlatformCost(PlatformDTO platformDTO);
+
+	PlatformDTO selectOnePlatformCost(int platformId);
 
 }

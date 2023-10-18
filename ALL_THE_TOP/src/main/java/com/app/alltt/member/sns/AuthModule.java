@@ -74,8 +74,6 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 		+ "&state=" + state
 		+ "&redirect_uri=" + sns.getRedirectUrl() + "/" + source;
 		return uri;
-		
-		
 	}
 	
 	public String getAccessToken(String code) throws Exception {
@@ -121,11 +119,8 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	 		String access_token = rootNode.get("access_token").asText();
 
 	 		accessToken = access_token;
-			
 		}
-		
 		return accessToken;
-		
 	}
 	
 	// 탈퇴를 진행한다면, access token 과 함께 탈퇴 요청을 전달
@@ -203,8 +198,8 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 			member.setSocialNm(this.sns.getService());
 		}
 		return member;
-		
 	}
+	
 	// 프로필 이미지 URL에서 byte[] 변환
 	private byte[] imgUrlToByte (String imgUrl) throws Exception {
 		// URL 연결 설정
@@ -217,6 +212,7 @@ public class AuthModule implements NaverUrls, KakaoUrls {
 	    // 이미지 데이터를 byte[]로 반환
 	    return inputStream.readAllBytes();
 	}
+	
 	// 이미지 URL에서 파일 확장자 추출
 	public String extractFileExtensionFromUrl(String url) {
 	    // URL 문자열에서 파일 이름 부분 추출
