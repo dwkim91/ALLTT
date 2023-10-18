@@ -14,8 +14,6 @@ public class HomeController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public void home(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
 		response.sendRedirect(request.getContextPath() + "/main");
 	}
-	
 }

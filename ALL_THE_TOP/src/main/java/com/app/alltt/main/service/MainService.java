@@ -7,9 +7,6 @@ import com.app.alltt.main.dto.FilteredDTO;
 
 public interface MainService {
 	
-	// 필터링 조건 + platformId > 독점컨텐츠
-	List<FilteredDTO> getMorePlatformContent(FilterDTO filterDTO);
-	
 	// 필터링 조건 > 필터링된 컨텐츠 정보
 	List<FilteredDTO> getMoreFilteredContent(FilterDTO filterDTO);
 	

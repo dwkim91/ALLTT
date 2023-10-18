@@ -3,7 +3,6 @@ package com.app.alltt.member.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,13 +42,6 @@ import com.app.alltt.security.ALLTTUserDetailsService;
 @RequestMapping("/member")
 public class MemberController {
 
-	// 이미지 저장 상대 경로용 서버에 올려서는 서버 내의 별도 이미지경로의 절대 경로 사용 예정
-	private static String THUMBNAIL_IMG_PATH = "/resources/bootstrap/img/thumbnailImg/";
-	
-	public static String getThumbnailImagePath(HttpSession session) {
-        return session.getServletContext().getRealPath(THUMBNAIL_IMG_PATH);		
-    }
-	
 	@Autowired
 	private MemberService memberService;
 	
@@ -74,8 +64,6 @@ public class MemberController {
 	// OAuth2.0을 활용한  토큰, 코드, 정보요청 서비스 module
 	@Autowired
 	private AuthModule authModule;
-	
-	private Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
 	// 회원 가입 및 탈퇴 메서드
 	@GetMapping("/{service}/{source}")
@@ -100,11 +88,7 @@ public class MemberController {
 		// authModule에다가 sns client 정보들을 담은 SnsValue를 삽입해줌으로써 해당 method가 sns 인증을 위해 동작하도록 설정
 		authModule.setSns(sns, source);
 		// 인증 code를 요청
-		// 외부로 보이는 url이라 추후 확인 필요
-		// naver login api를 사용하는 상용 서비스들도 이 url은 보이는 편이긴 함
 		mv.setViewName("redirect:" + authModule.getSnsAuthUrl(session));
-		// 현재 browser에 저장된 session이 어떤 값들이 있나 검증용
-		//getSessionStatus(session);
 		
 		return mv;
 	}
@@ -112,11 +96,9 @@ public class MemberController {
 	@GetMapping("/logout")
 	public ResponseEntity<Object> logOut(HttpServletRequest request) {
 		
-		// security clear
 		allttUserDetailsService.byeUser();
-		
-		// 로그인을 하며 session에 등록된 모든 값들을 날려버림
 		request.getSession().invalidate();
+		
 		String jsScript = "<script>";
 		jsScript += "alert('로그아웃 되었습니다.');";
 		jsScript += "location.href='" + request.getContextPath() + "/main';";
@@ -129,7 +111,6 @@ public class MemberController {
 	}
 	
 	// 로그인 및 회원 가입 메서드
-	// 추후 개발 방향에 따라서, callback을 받는 위치를 나눠서 개발 가능
 	@RequestMapping(value = "/{service}/callback/login", method = {RequestMethod.GET, RequestMethod.POST})
 	public ResponseEntity<Object> callBackSnsLogin(HttpServletRequest request) throws Exception {
 		// state 값 검증
@@ -137,9 +118,8 @@ public class MemberController {
 		String stateSession = (String)session.getAttribute("state");
 		String state = request.getParameter("state");
 		
-		// ** 처리방향 논의 필요
 		// 다른 계정으로 로그인한 유저가 url로 로그인 접속을 하는 경우?
-		// 일단 로그인 정보를 날려놓
+		// 현재 로그인 정보를 날리고 다시 로그인 시킴
 		allttUserDetailsService.byeUser();
 		
 		// 사용자에게 보여주는 메세지
@@ -225,16 +205,14 @@ public class MemberController {
 				// sns에서 profile 정보를 지우고
 				if (authModule.withdraw(authModule.getAccessToken(code))) {
 					// 세션과 DB에서 모두 날린다
-					MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
-					memberService.deleteThumbnailImg(memberDTO.getThumbnailImg(), getThumbnailImagePath(session));
 					memberService.removeMember(memberId);
 					
+					allttUserDetailsService.byeUser();
 					session.invalidate();
 					
 					jsScript += "alert('다음에 다시 만나요!');";
 				}
-				// NAVER 에서 연동을 해제하는 요청은 boolean 형태로 result를 확인하도록 했는데, 혹시나 안됐을 경우?
-				// 예외처리 방향 확인
+				// 예외처리 방향 확인 > Oauth 모듈에서 오류가 났을때는 우리에게 어떻게 컨택을 하지?
 				else {
 					jsScript += "alert('관리자에게 문의하세요.');";
 				}
@@ -254,9 +232,6 @@ public class MemberController {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 
-		// session 검증용
-		//getSessionStatus(session);
-		
 		return new ResponseEntity<Object>(jsScript , responseHeaders , HttpStatus.OK);
 	}
 	
@@ -331,7 +306,6 @@ public class MemberController {
 	@RequestMapping(value="/saveNickname", method=RequestMethod.POST, produces = "application/text; charset=utf8")
 	@ResponseBody
 	public String saveNickname(@RequestParam("nickname") String nickname, HttpServletRequest request) {
-		String result = "";
 		// 한글, 영문, 숫자 , 일부 특수문자 포함 6~10자 확인용 정규식
 		String nicknameRegex = "^[a-zA-Z0-9가-힣]{6,10}$";
 		// 자동생성 조건 정규식
@@ -346,17 +320,11 @@ public class MemberController {
 				memberDTO.setNickName(nickname);
 				memberDTO.setMemberId(memberId);
 				memberService.changeNickname(memberDTO);
-				result = "닉네임이 변경되었습니다.";
+				return "닉네임이 변경되었습니다.";
 			}
-			else {
-				result = "닉네임이 중복되었습니다.";
-			}
+			else return "닉네임이 중복되었습니다.";
 		}
-		else {
-			result = "한글, 영문, 숫자로 구성되어 있고 6~10자 사이의 닉네임을 입력하세요.";
-		}
-				
-		return result;
+		else return"한글, 영문, 숫자로 구성되어 있고 6~10자 사이의 닉네임을 입력하세요.";
 	}
 	
 	// 구독정보 수정
@@ -386,37 +354,6 @@ public class MemberController {
 		long memberId = ((Long) request.getSession().getAttribute("memberId")).longValue();
 	    filterDTO.setMemberId(memberId);
 	    return mainService.getMoreGenreList(filterDTO);
-	}
-	
-	// 세션 검증용 
-	@PostMapping("/sessionRemainingTime")
-	@ResponseBody
-	public int checkSessionTime(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		boolean isExist = false;
-		int remainingTime = 0;
-		Enumeration<String> attributeNames = session.getAttributeNames();
-		
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-	        if (attributeName.equals("memberId")) {
-	            int maxInactiveInterval = session.getMaxInactiveInterval();
-//	        	int maxInactiveInterval = 180;
-	            int elapsedTimeInSeconds = (int) ((System.currentTimeMillis() - session.getLastAccessedTime()) / 1000);
-	            isExist = true;
-	            remainingTime = maxInactiveInterval - elapsedTimeInSeconds;
-//	            System.out.print("maxInactiveInterval = " + maxInactiveInterval);
-//	            System.out.println("elapsedTimeInSeconds = " + elapsedTimeInSeconds);
-//	            session.invalidate();
-	        }
-		}
-		if (!isExist) {
-			System.out.println("세션이 만료되었습니다.");
-		}
-		else {
-			System.out.println(remainingTime);
-		}
-		return 0;
 	}
 	
 	// 탈퇴
@@ -473,63 +410,27 @@ public class MemberController {
 	    		long fileSize = uploadFile.getSize();
 	    		// 파일 크기 제한 
 	    		if (fileSize < maxFileSizeInBytes) {
-// 프로젝트 내부 저장방식 
-	    			/*
-	    			// 현재 프로필 이미지 파일 경로 가져오기
-	    			MemberDTO memberDTO = memberService.getMemberByMemberId(memberId);
-	    			// 기존 프로필이미지 삭제
-	    			String currentThumbnailImg = memberDTO.getThumbnailImg();
-	    			memberService.deleteThumbnailImg(currentThumbnailImg, getThumbnailImagePath(session));
-	    			
-	    			SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-	    			// 파일이름생성
-	    			String newFileName = fmt.format(new Date()) + "_" + UUID.randomUUID() + "_" + uploadFile.getOriginalFilename();
-	    			// 프로필이미지 저장
-	    			uploadFile.transferTo(new File(getThumbnailImagePath(session) + newFileName)); 
-	    			
-	    			memberDTO.setThumbnailImg(newFileName);
-	    			memberService.changeThumbnailImg(memberDTO);
-	    			*/
-// DB 저장방식	    			
 	    			MemberDTO memberDTO = new MemberDTO();
 	    			memberDTO.setMemberId(memberId);
 	    			memberDTO.setImgExtension(fileExtension);
 	    			
 	    			// 기존 프로필이미지 업데이트
 	    			memberService.saveProfileImg(uploadFile, memberDTO);
-	    			
 	    		}
 	    		else {
 	    			// 파일 크기가 허용 범위를 초과하는 경우 처리
 	    			result = "Error : 파일 크기가 너무 큽니다. 5MB 이하의 파일을 선택해 주세요.";
 	    		}
-				
 	    	}
 	    	else {
 	    		// 허용되지 않는 확장자인 경우 처리
 	    		result = "Error : 허용되지 않는 파일 형식입니다. (jpg, jpeg , png, gif)";
 	    	}
-            
         } else {
             // 업로드된 파일이 비어 있을 경우 처리
         	result = "Error : 파일이 비어 있습니다.";
         }
-	    
 	    return result;
-	}
-	
-	// session 검증용 method
-	public void getSessionStatus(HttpSession session) {
-		try {
-			Enumeration<String> sessionData = session.getAttributeNames();
-			
-			while (sessionData.hasMoreElements()) {
-				String attName = sessionData.nextElement();
-				logger.info(attName + " = " + session.getAttribute(attName));
-			}
-		} catch (Exception e) {
-			logger.info("세션이 이미 털렸습니다");
-		}
 	}
 	
 	@RequestMapping(value="/wishStateChange", method=RequestMethod.POST, produces = "application/text; charset=utf8")
@@ -548,25 +449,15 @@ public class MemberController {
 			return ResponseEntity.ok("찜 컨텐츠가 추가되었습니다.");
 		}
 		else {
-			
 			memberService.deleteWishContentByMemberId(filteredDTO);
 			return ResponseEntity.ok("찜 컨텐츠가 삭제되었습니다.");
 		}
-
 	} 
 	
 	@PostMapping("/checkSession")
 	@ResponseBody
 	public Boolean checkSession(HttpServletRequest request) {
-		
-		boolean isLogin = false;
-		
-		if (request.getSession().getAttribute("memberId") != null) {
-			isLogin = true;
-		}
-		
-		System.out.println(isLogin);
-		return isLogin;
+		return request.getSession().getAttribute("memberId") != null ? true : false;
 	}
 	
 	@GetMapping("/wish")
