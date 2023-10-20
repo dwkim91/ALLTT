@@ -32,10 +32,12 @@
 * GitHub & SourceTree
 
 ## ERD
+![image](https://github.com/dwkim91/ALLTT/assets/96005857/00cafdc2-4618-42b5-8f56-29a4972d3807)
 
 ## 주요기능
 * Crawling 
-  - Netflix, Tving, Wavve crawling 
+  - Netflix, Tving, Wavve crawling
+  - 3사 OTT 플랫폼의 중복 컨텐츠 통합 로직 구현 
   - batch를 통한 자동화 crawling 구현 
   - 작품의 image를 AWS S3로 저장
 
@@ -66,6 +68,7 @@
   - admin
     + 사용자 문의사항 처리 게시판
     + crawling 중 발생되는 누락 이미지 확인 및 업데이트 기능
+    + platform별 요금제 업데이트 기능
 
 
 
