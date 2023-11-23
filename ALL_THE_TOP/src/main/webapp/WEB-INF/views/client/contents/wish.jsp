@@ -1,99 +1,98 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <head>
-<script src="${contextPath}/resources/bootstrap/js/wish-contentListLoad.js"
-	type="module"></script>
-<script src="${contextPath}/resources/bootstrap/js/wish-solution.js"
-	type="module"></script>
-<link rel="stylesheet"
-	href="${contextPath}/resources/bootstrap/css/wish-custom.css"
-	type="text/css">
+<script src="${contextPath}/resources/bootstrap/js/wish-contentListLoad.js" type="module"></script>
+<script src="${contextPath}/resources/bootstrap/js/wish-solution.js" type="module"></script>
+<link rel="stylesheet" href="${contextPath}/resources/bootstrap/css/wish-custom.css" type="text/css">
 </head>
 
 <main class="is-desktop css-p5l6tq eeennqe0">
 	<section class="contents_wrap">
 		<div>
 			<section class="myprofile__contents myprofile css-yfyhdz e2z45lx0">
-				<div class="page_select btn_type layout__flex-left">
-					<div class="layout__flex-left">
-						<button type="button" id="infoBtn"
-							class="page_select_layout btn_popular click_on">구독정보</button>
-						<button type="button" id="platformBtn"
-							class="page_select_layout btn_popular btn_new ">플랫폼</button>
-						<button type="button" id="costBtn"
-							class="page_select_layout btn_popular btn_new ">구독비</button>
-					</div>
-					<div class="page_select_right">
-						<button class="chartType">시리즈</button>
-					</div>
-				</div>
-				<div style="color: navajowhite;" id="message">※ 회원님의 구독정보를 바탕으로 컨텐츠를 통합합니다.</div>
-				<div style="display: flex; flex-wrap: wrap;" class="tableContainer">
-					<table class="platformTable" data-id="1">
-						<tr>
-							<td colspan="2">넷플릭스 ( <span id="netflixWishCnt">${netflixWishCnt}</span> )</td>
-						</tr>
-						<tr class="platformTr" data-id="1">
-							<td><img src="/resources/bootstrap/img/n100.jpeg"
-								class="platformIcon" id="netflixByNetflixBtn"></td>
-							<td style="text-align: left;" id="netflixByNetflixCnt"></td>
-						</tr>
-						<tr class="platformTr" data-id="2">
-							<td><img src="/resources/bootstrap/img/t100.jpeg"
-								class="platformIcon" id="netflixByTvingBtn"></td>
-							<td style="text-align: left;" id="netflixByTvingCnt"></td>
-						</tr>
-						<tr class="platformTr" data-id="3">
-							<td><img src="/resources/bootstrap/img/w100.jpeg"
-								class="platformIcon" id="netflixByWavveBtn"></td>
-							<td style="text-align: left;" id="netflixByWavveCnt"></td>
-						</tr>
-					</table>
-					<table class="platformTable" data-id="2">
-						<tr>
-							<td colspan="3">티빙 ( <span id="tvingWishCnt">${tvingWishCnt}</span> )</td>
-						</tr>
-						<tr class="platformTr" data-id="2">
-							<td><img src="/resources/bootstrap/img/t100.jpeg"
-								class="platformIcon" id="tvingByTvingBtn"></td>
-							<td style="text-align: left;" id="tvingByTvingCnt"></td>
-						</tr>
-						<tr class="platformTr" data-id="1">
-							<td><img src="/resources/bootstrap/img/n100.jpeg"
-								class="platformIcon" id="tvingByNetflixBtn"></td>
-							<td style="text-align: left;" id="tvingByNetflixCnt"></td>
-						</tr>
-						<tr class="platformTr" data-id="3">
-							<td><img src="/resources/bootstrap/img/w100.jpeg"
-								class="platformIcon" id="tvingByWavveBtn"></td>
-							<td style="text-align: left;" id="tvingByWavveCnt"></td>
-						</tr>
-					</table>
-					<table class="platformTable" data-id="1">
-						<tr>
-							<td colspan="3">웨이브 ( <span id="wavveWishCnt">${wavveWishCnt}</span> )</td>
-						</tr>
-						<tr class="platformTr" data-id="3">
-							<td><img src="/resources/bootstrap/img/w100.jpeg"
-								class="platformIcon" id="wavveByWavveBtn"></td>
-							<td style="text-align: left;" id="wavveByWavveCnt"></td>
-						</tr>
-						<tr class="platformTr" data-id="1">
-							<td><img src="/resources/bootstrap/img/n100.jpeg"
-								class="platformIcon" id="wavveByNetflixBtn"></td>
-							<td style="text-align: left;" id="wavveByNetflixCnt"></td>
-						</tr>
-						<tr class="platformTr" data-id="2">
-							<td><img src="/resources/bootstrap/img/t100.jpeg"
-								class="platformIcon" id="wavveByTvingBtn"></td>
-							<td style="text-align: left;" id="wavveByTvingCnt"></td>
-						</tr>
-					</table>
-				</div>
+				<div style="color: navajowhite;" id="message">※ 회원님께서 찜한 시리즈컨텐츠 수는 총 ${totalCnt}개 입니다.</div>
 				<div>
+					<table class="tableContainer">
+						<tr>
+							<td>기준</td>
+							<td>넷플릭스</td>
+							<td>시청가능한 컨텐츠 수</td>
+							<td>티빙</td>
+							<td>시청가능한 컨텐츠 수</td>
+							<td>웨이브</td>
+							<td>시청가능한 컨텐츠 수</td>
+							<td>Basic</td>
+							<td>Standard</td>
+							<td>Premium</td>
+						</tr>
+						<tr>
+							<td>현재</td>
+							<c:choose>
+								<c:when test="${subscription.netflixId != 0}">
+									<td data-id="1" class="platformTd">
+										<img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon">
+									</td>
+									<td id= "myNetflixCnt">${netflixWishCnt}</td>
+								</c:when>
+								<c:otherwise>
+									<td></td>
+									<td></td>
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${subscription.tvingId != 0}">
+									<td data-id="2" class="platformTd">
+										<img src="/resources/bootstrap/img/t100.jpeg" class="platformIcon">
+									</td>
+									<td id= "tvingWishCnt">${tvingWishCnt}</td>
+								</c:when>
+								<c:otherwise>
+									<td></td>
+									<td></td>
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${subscription.wavveId != 0}">
+									<td data-id="3" class="platformTd">
+										<img src="/resources/bootstrap/img/w100.jpeg" class="platformIcon">
+									</td>
+									<td id= "wavveWishCnt">${wavveWishCnt}</td>
+								</c:when>
+								<c:otherwise>
+									<td></td>
+									<td></td>
+								</c:otherwise>
+							</c:choose>
+							<td><fmt:formatNumber value="${myBasicCost}" pattern="#,###"/>원</td>
+							<td><fmt:formatNumber value="${myStandardCost}" pattern="#,###"/>원</td>
+							<td><fmt:formatNumber value="${myPremiumCost}" pattern="#,###"/>원</td>
+						</tr>
+						<tr>
+							<td>제안</td>
+							<td id = "netflixIcon" data-id="1" class="platformTd"></td>
+							<td id = "netflixCnt"></td>
+							<td id = "tvingIcon" data-id="2" class="platformTd"></td>
+							<td id = "tvingCnt"></td>
+							<td id = "wavveIcon" data-id="3" class="platformTd"></td>
+							<td id = "wavveCnt"></td>
+							<td id = "basicCost"></td>
+							<td id = "standardCost" ></td>
+							<td id = "premiumCost"></td>
+						</tr>
+					</table>
+					<input type="hidden" id="netflixBasic" value="${netflixCost.platformCostBasic}">
+					<input type="hidden" id="tvingBasic" value="${tvingCost.platformCostBasic}">
+					<input type="hidden" id="wavveBasic" value="${wavveCost.platformCostBasic}">
+					<input type="hidden" id="netflixStandard" value="${netflixCost.platformCostStandard}">
+					<input type="hidden" id="tvingStandard" value="${tvingCost.platformCostStandard}">
+					<input type="hidden" id="wavveStandard" value="${wavveCost.platformCostStandard}">
+					<input type="hidden" id="netflixPremium" value="${netflixCost.platformCostPremium}">
+					<input type="hidden" id="tvingPremium" value="${tvingCost.platformCostPremium}">
+					<input type="hidden" id="wavvePremium" value="${wavveCost.platformCostPremium}">
+				</div>
 					<div class="page_select btn_type layout__flex-left">
 						<div class="layout__flex-left">
 							<button type="button" id="seriesBtn"

@@ -13,12 +13,10 @@
 td {
 	height: 2rem;
 	padding: 0.5rem;
-	width: 20%;
 	text-align:center;
 }
 table {
     flex: 1;
-    width: calc(33.33% - 10px);
 	background-color: #212121;
 	border-collapse: collapse;
     border-radius: 10px;

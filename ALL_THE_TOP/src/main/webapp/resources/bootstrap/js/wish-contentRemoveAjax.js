@@ -9,6 +9,8 @@ export function wishContentRemoveAjax(removeContentList) {
 		    xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
 		},
 		success: function(successCheck) {
+			$("#wishContainer").empty();
+			location.reload();
 		}
 	})
 }

@@ -1,5 +1,15 @@
 import { wishContentListAjax } from './wish-contentListLoadAjax.js';
 import { wishContentRemoveAjax } from './wish-contentRemoveAjax.js';
+import { wishSolutionAjax, getPlatformMap  } from './wish-solutionAjax.js';
+
+function wishSolution() {
+	
+	var filtered = {
+			contentType : $('#contentType').val(),
+	};
+	
+	wishSolutionAjax(filtered);
+}
 
 $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(event) {
 	// 이벤트 전파 중단 (버블링 현상 대응)
@@ -27,7 +37,6 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 		$(".chartType").text('시리즈');
 		
 		$("#wishContainer").empty();
-		wishContentLoad();
 	}
 	else if(clickedClass == 'movieBtn') {
 		$("#contentType").val('movie');
@@ -38,8 +47,10 @@ $('.layout__flex-left').on('click','.page_select_layout.btn_popular', function(e
 		$('.chartType').text('영화');
 		
 		$("#wishContainer").empty();
-		wishContentLoad();
 	}
+	
+	wishContentLoad();
+	wishSolution()
 	
 });
 
@@ -163,8 +174,6 @@ $("#itemCnt").on("click",function(){
 		$("#itemCnt").text("삭제 (0)");
 		
 		wishContentRemoveAjax(removeContentList);
-		
-		location.reload();
 		
 	}
 	

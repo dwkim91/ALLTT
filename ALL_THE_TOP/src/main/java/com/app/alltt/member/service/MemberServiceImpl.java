@@ -282,16 +282,12 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 	
-	@Override
-	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData) {
+	private Map<Integer, Map<Integer, List<Long>>> customSolution (Map<String, Object> requestData, String buttonVal) {
 		
+		Map<Integer, Map<Integer, List<Long>>> platformMaps = new HashMap<>();
 		long memberId = (long)requestData.get("memberId");
-		String buttonVal = requestData.get("buttonVal") + "";
 		int platformCnt = 3;
 		
-		// 플랫폼별 Map 생성
-		Map<Integer, Map<Integer, List<Long>>> platformMaps = new HashMap<>();
-
 		for (int i = 1; i <= platformCnt; i++) {
 		    Map<Integer, List<Long>> platformMap = new HashMap<>();
 		    for (int j = 1; j <= platformCnt; j++) {
@@ -403,6 +399,47 @@ public class MemberServiceImpl implements MemberService {
 			}
 		}
 		return platformMaps;
+	}
+	
+	private int platformCnt(Map<Integer, Map<Integer, List<Long>>> platformMap) {
+		
+		int cnt = 0;
+		
+		for (int i = 1; i <= 3; i++) {
+			for (int j = 1; j <= 3; j++) {
+				if (platformMap.get(i).get(j).size() > 0) {
+					cnt++;
+					j += 3;
+				}
+			}
+		}
+		return cnt;
+	}
+	
+	@Override
+	public Map<Integer, Map<Integer, List<Long>>> getContentPlatformMapByMemberId(Map<String, Object> requestData) {
+		
+		// 회원의 구독정보
+		Map<Integer, Map<Integer, List<Long>>> subscriptionInfo = customSolution(requestData,"infoBtn");
+		// 최소 플랫폼수
+		Map<Integer, Map<Integer, List<Long>>> minimumPlatforms = customSolution(requestData,"platformBtn");
+		// 최소 구독비
+		Map<Integer, Map<Integer, List<Long>>> minimumSubscriptionFee = customSolution(requestData,"costBtn");
+		
+		int subscriptionInfoCnt = platformCnt(subscriptionInfo);
+		int minimumPlatformsCnt = platformCnt(minimumPlatforms);
+		int minimumSubscriptionFeeCnt = platformCnt(minimumSubscriptionFee);
+		
+		if (subscriptionInfoCnt <= minimumPlatformsCnt && subscriptionInfoCnt <= minimumSubscriptionFeeCnt && subscriptionInfoCnt != 0) {
+			return subscriptionInfo;
+		}
+		else if (minimumPlatformsCnt <= subscriptionInfoCnt && minimumPlatformsCnt <= minimumSubscriptionFeeCnt && minimumPlatformsCnt != 0) {
+			return minimumPlatforms;
+		}
+		else if (minimumSubscriptionFeeCnt <= subscriptionInfoCnt && minimumSubscriptionFeeCnt <= minimumPlatformsCnt && minimumSubscriptionFeeCnt != 0) {
+			return minimumSubscriptionFee;
+		}
+		return minimumPlatforms;
 	}
 
 	@Override
