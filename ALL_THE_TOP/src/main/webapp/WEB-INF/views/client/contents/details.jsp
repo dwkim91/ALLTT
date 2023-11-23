@@ -189,8 +189,7 @@
 															<div class="item__thumb item__thumb-25x36">
 														</c:when>
 														<c:otherwise>
-															<div class="item__thumb item__thumb-25x36"
-																id="wishContent">
+															<div class="item__thumb item__thumb-25x36" id="wishContent">
 														</c:otherwise>
 													</c:choose>
 													<div class="item__tags"></div>
@@ -203,41 +202,6 @@
 												<div class="item__info ">
 													<a class="item__title"
 														href="/detail?contentId=${latestContent.contentId}">${latestContent.title}</a>
-												</div>
-										</div>
-										</c:forEach>
-									</section>
-								</div>
-								<div>
-									<div class="section-title" style="margin-bottom: 20px;">
-										<h5>넷플릭스 최신 컨텐츠</h5>
-									</div>
-									<section class="lists lists__noneLazy">
-										<div
-											class="lists__columns lists__columns-vertical css-0 enth0yz0"
-											id="container">
-											<!-- 기본 42개 -->
-											<c:forEach var="similarContent" items="${similarList}">
-												<div class="item" data-id="${similarContent.contentId}">
-													<c:choose>
-														<c:when test="${similarContent.memberId == 0}">
-															<div class="item__thumb item__thumb-25x36">
-														</c:when>
-														<c:otherwise>
-															<div class="item__thumb item__thumb-25x36"
-																id="wishContent">
-														</c:otherwise>
-													</c:choose>
-													<div class="item__tags"></div>
-													<div class="item__image lazy">
-														<img class="loaded css-1doy9ip euf32k22"
-															src="${similarContent.imgUrl}"
-															alt="${similarContent.title}">
-													</div>
-												</div>
-												<div class="item__info ">
-													<a class="item__title"
-														href="/detail?contentId=${similarContent.contentId}">${similarContent.title}</a>
 												</div>
 										</div>
 										</c:forEach>

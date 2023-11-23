@@ -78,9 +78,7 @@ public class MainController {
 		}
 		mv.addObject("genreNmList", genreNm);
 		List<FilteredDTO> latestList = mainService.getGenreLatestContent(filteredDTO); 
-		List<FilteredDTO> similarList = mainService.getGenreSimilarContent(filteredDTO); 
 		mv.addObject("latestList", latestList);
-		mv.addObject("similarList",similarList);
 		filteredDTO.setPlatformId(1);
 		mv.addObject("netflixUrl",mainService.getPlatformByDetailUrl(filteredDTO));
 		filteredDTO.setPlatformId(2);
