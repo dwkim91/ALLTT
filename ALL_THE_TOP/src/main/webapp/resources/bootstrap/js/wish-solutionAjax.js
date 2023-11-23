@@ -38,10 +38,10 @@ export function wishSolutionAjax(filtered) {
 			var premiumCost = 0;
 			
 			if (filtered.contentType == "series") {
-				$('#message').text("※ 회원님께서 찜한 시리즈컨텐츠 수는 총 " + totalContentCnt  +"개이며, 구독권이 필요한 컨텐츠는 테두리가 반짝입니다.");
+				$('#message').text("※ 회원님께서 찜한 시리즈컨텐츠 수는 총 " + totalContentCnt  +"개 입니다.");
 			}
 			else {
-				$('#message').text("※ 회원님께서 찜한 영화컨텐츠 수는 총 " + totalContentCnt +"개이며, 구독권이 필요한 컨텐츠는 테두리가 반짝입니다.");
+				$('#message').text("※ 회원님께서 찜한 영화컨텐츠 수는 총 " + totalContentCnt +"개 입니다.");
 			}
 			if (netflixContentCnt != 0) {
 				$('#netflixIcon').html('<img src="/resources/bootstrap/img/n100.jpeg" class="platformIcon">');
