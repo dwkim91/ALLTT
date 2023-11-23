@@ -159,4 +159,48 @@
 				PLATFORM_ID = #{platformId}
 	</select>
 	
+	<select id="selectListMisContentList" resultType="FilteredDTO">
+		SELECT
+				*
+		FROM 
+				CONTENT
+		WHERE
+				CREATOR = '' OR 
+				ACTORS = '' OR
+				ENROLL_DT = 9999
+		ORDER BY
+        		CONTENT_ID ASC;
+	</select>
+	
+	<select id="selectOneContentDetail" parameterType="Long" resultType="FilteredDTO">
+		SELECT
+				*
+		FROM
+				CONTENT
+		WHERE
+				CONTENT_ID = #{contentId}
+	</select>
+	
+	<update id="updateContentInfo" parameterType="FilteredDTO">
+		UPDATE 
+				CONTENT 
+		SET
+				TITLE = #{title},
+				CREATOR = #{creator},
+				ACTORS = #{actors},
+				SUMMARY = #{summary},
+				ENROLL_DT = #{enrollDt}
+		WHERE
+				CONTENT_ID = #{contentId};
+	</update>
+	
+	<select id="selectListContentByTitle" parameterType="String" resultType="FilteredDTO">
+		SELECT
+				*
+		FROM
+				CONTENT
+		WHERE
+				TITLE LIKE CONCAT('%', #{title}, '%'); 
+	</select>
+	
 </mapper>
