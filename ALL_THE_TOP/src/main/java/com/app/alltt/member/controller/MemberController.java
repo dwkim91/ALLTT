@@ -37,6 +37,8 @@ import com.app.alltt.member.service.MemberService;
 import com.app.alltt.member.sns.AuthModule;
 import com.app.alltt.member.sns.SnsValue;
 import com.app.alltt.security.ALLTTUserDetailsService;
+import com.app.alltt.support.dto.PlatformDTO;
+import com.app.alltt.support.service.SupportService;
 
 @Controller
 @RequestMapping("/member")
@@ -50,6 +52,9 @@ public class MemberController {
 	
 	@Autowired
 	private MainService mainService;
+	
+	@Autowired
+	private SupportService supportService;
 	
 	@Autowired
 	private ALLTTUserDetailsService allttUserDetailsService;
@@ -476,8 +481,10 @@ public class MemberController {
 		filterDTO.setContentType("series");
 		filterDTO.setMemberId((long)session.getAttribute("memberId"));
 		
-		// 로그인한 맴버의 찜 리스트
-		mv.addObject("wishContentList", memberService.getWishContentByFilterDTO(filterDTO));
+		// 로그인한 맴버의 찜 리스트 및 사이즈
+		List<FilteredDTO> wishList = memberService.getWishContentByFilterDTO(filterDTO);
+		mv.addObject("wishContentList", wishList);
+		mv.addObject("totalCnt", wishList.size());
 		// 로그인한 멤버가 선택한 넷플릭스 찜 작품 수
 		filterDTO.setPlatformId(1);
 		mv.addObject("netflixWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
@@ -487,6 +494,43 @@ public class MemberController {
 		// 로그인한 멤버가 선택한 웨이브 찜 작품 수
 		filterDTO.setPlatformId(3);
 		mv.addObject("wavveWishCnt", memberService.getPlatformCntByFilterDTO(filterDTO));
+		// 로그인한 멤버가 선택한 구독 정보
+		mv.addObject("subscription", memberService.getSubscriptionByMemberId(filterDTO.getMemberId()));
+		
+		int myBasicCost = 0;
+		int myStandardCost = 0;
+		int myPremiumCost = 0;
+		
+		FilterDTO subscription = memberService.getSubscriptionByMemberId(filterDTO.getMemberId());
+		
+		PlatformDTO netflixCost = supportService.getCostByPlatformId(1);
+		PlatformDTO tvingCost = supportService.getCostByPlatformId(2);
+		PlatformDTO wavveCost = supportService.getCostByPlatformId(3);
+
+		mv.addObject("netflixCost", netflixCost);
+		mv.addObject("tvingCost", tvingCost);
+		mv.addObject("wavveCost", wavveCost);
+		
+		
+		if (subscription.getNetflixId() != 0) {
+			myBasicCost += netflixCost.getPlatformCostBasic();
+			myStandardCost += netflixCost.getPlatformCostStandard();
+			myPremiumCost += netflixCost.getPlatformCostPremium();
+		}
+		if (subscription.getTvingId() != 0) {
+			myBasicCost += tvingCost.getPlatformCostBasic();
+			myStandardCost += tvingCost.getPlatformCostStandard();
+			myPremiumCost += tvingCost.getPlatformCostPremium();
+		}
+		if (subscription.getWavveId() != 0) {
+			myBasicCost += wavveCost.getPlatformCostBasic();
+			myStandardCost += wavveCost.getPlatformCostStandard();
+			myPremiumCost += wavveCost.getPlatformCostPremium();
+		}
+		
+		mv.addObject("myBasicCost", myBasicCost);
+		mv.addObject("myStandardCost", myStandardCost);
+		mv.addObject("myPremiumCost", myPremiumCost);
 		
 		mv.setViewName("/alltt/wish");
 		
@@ -497,7 +541,6 @@ public class MemberController {
 	@ResponseBody
 	public List<FilteredDTO> getWishList(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
 		filterDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
-		
 		return memberService.getWishContentByFilterDTO(filterDTO);
 	}
 	
@@ -521,21 +564,5 @@ public class MemberController {
 		requestData.put("memberId", memberId);
 		
 		return memberService.getContentPlatformMapByMemberId(requestData);
-	}
-	
-	@PostMapping("/getPlatformCntLoad")
-	@ResponseBody
-	public List<Integer> getPlatformCntLoad(@ModelAttribute FilterDTO filterDTO, HttpServletRequest request) {
-		filterDTO.setMemberId((long)request.getSession().getAttribute("memberId"));
-		
-		List<Integer> platformCntList = new ArrayList<>();
-		filterDTO.setPlatformId(1);
-		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
-		filterDTO.setPlatformId(2);
-		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
-		filterDTO.setPlatformId(3);
-		platformCntList.add(memberService.getPlatformCntByFilterDTO(filterDTO));
-		
-		return platformCntList;
 	}
 }
