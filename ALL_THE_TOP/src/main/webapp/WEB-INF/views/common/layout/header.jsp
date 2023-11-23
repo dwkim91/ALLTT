@@ -78,7 +78,7 @@
 						<ul class="menu_my_btn_wrap">
 							<li><a class="btn_my" href="${contextPath}/member/mypage" style="color: #f0a9a9;">마이페이지</a></li>
 							<c:if test="${sessionScope.managerYn == 'Y'}">
-								<li><a href="/support/inquiryList/all" style="color: #f0a9a9;">고객문의관리</a></li>
+								<li><a href="/support/inquiryList/all" style="color: #f0a9a9;">관리자 페이지</a></li>
 							</c:if>
 							<li><a href="/support/inquiry" style="color: #f0a9a9;">고객센터</a></li>
 							<li><a class="btn_logout" href="/member/logout" style="color: #f0a9a9;">로그아웃</a></li>
