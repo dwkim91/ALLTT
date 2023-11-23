@@ -12,6 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.app.alltt.main.dto.FilterDTO;
+import com.app.alltt.main.dto.FilteredDTO;
 import com.app.alltt.support.dto.SupportDTO;
 import com.app.alltt.support.service.SupportService;
 
@@ -155,5 +158,41 @@ public class SupportController {
 		
 	    return "구독가격 업데이트가 완료되었습니다.";
 	}
+	// 컨텐츠 관리
+	@GetMapping("/contentManagement")
+	@ResponseBody
+	public ModelAndView contentManagement(HttpServletRequest request, HttpSession session) {
+		ModelAndView mv = new ModelAndView();
+		
+		if (session.getAttribute("memberId") == null) {
+			mv.setViewName("/alltt/login");
+			return mv;
+		}
+		mv.setViewName("/alltt/contentManagement");
+		mv.addObject("misContentList", supportService.getMisContentList());
+		return mv;
+	}
+	// 컨텐츠 정보
+	@GetMapping("/contentDetail")
+	public ModelAndView misContentDetail(@RequestParam("contentId") long contentId) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/alltt/contentDetail");
+		mv.addObject("content", supportService.getContentDetail(contentId));
+		return mv;
+	}
 	
+	// 컨텐츠 전보 수정
+	@RequestMapping(value="/modifyContentInfo", method=RequestMethod.POST, produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String modifyContentInfo(@RequestBody FilteredDTO filteredDTO, HttpSession session) {
+	    supportService.modifyContentInfo(filteredDTO);
+	    return "컨텐츠 정보가 수정되었습니다.";
+	}
+	
+	// 컨텐츠 검색
+	@RequestMapping(value="/searchContent", method=RequestMethod.GET)
+	@ResponseBody
+	public List<FilteredDTO> searchContent(@RequestParam("title") String title, HttpServletRequest request) {
+	    return supportService.getContentListByTitle(title);
+	}
 }

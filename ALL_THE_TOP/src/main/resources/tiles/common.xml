@@ -125,7 +125,7 @@
 		<put-attribute name="title" value="keyword"/>	
 	</definition>
 	
-	<!-- 고객 센터-->
+	<!-- 고객 센터 -->
 	<definition name="/alltt/support" extends="alltt">
 		<put-attribute name="body"	value="/WEB-INF/views/client/support/support.jsp"/>	
 		<put-attribute name="title" value="support"/>	
@@ -141,6 +141,18 @@
 	<definition name="/alltt/inquiryDetail" extends="alltt">
 		<put-attribute name="body"	value="/WEB-INF/views/admin/support/inquiryDetail.jsp"/>	
 		<put-attribute name="title" value="inquiryDetail"/>	
+	</definition>
+	
+	<!-- 컨텐츠 관리 -->
+	<definition name="/alltt/contentManagement" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/admin/support/contentManagement.jsp"/>	
+		<put-attribute name="title" value="contentManagement"/>	
+	</definition>
+	
+	<!-- 컨텐츠 정보 -->
+	<definition name="/alltt/contentDetail" extends="alltt">
+		<put-attribute name="body"	value="/WEB-INF/views/admin/support/contentDetail.jsp"/>	
+		<put-attribute name="title" value="contentDetail"/>	
 	</definition>
 	
 	<!-- 404 에러페이지 -->

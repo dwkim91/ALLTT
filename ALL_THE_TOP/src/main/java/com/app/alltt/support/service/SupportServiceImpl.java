@@ -328,4 +328,24 @@ public class SupportServiceImpl implements SupportService {
 		return supportDAO.selectOnePlatformCost(platformId);
 	}
 
+	@Override
+	public List<FilteredDTO> getMisContentList() {
+		return supportDAO.selectListMisContentList();
+	}
+
+	@Override
+	public FilteredDTO getContentDetail(long contentId) {
+		return supportDAO.selectOneContentDetail(contentId);
+	}
+
+	@Override
+	public void modifyContentInfo(FilteredDTO filteredDTO) {
+		supportDAO.updateContentInfo(filteredDTO);
+	}
+
+	@Override
+	public List<FilteredDTO> getContentListByTitle(String title) {
+		return supportDAO.selectListContentByTitle(title);
+	}
+
 }

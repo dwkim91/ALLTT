@@ -24,5 +24,9 @@ public interface SupportService {
 	void deleteViewImage(long contentId);
 	void platformCostModify(List<String> dataArray);
 	PlatformDTO getCostByPlatformId(int platformId);
+	List<FilteredDTO> getMisContentList();
+	FilteredDTO getContentDetail(long contentId);
+	void modifyContentInfo(FilteredDTO filteredDTO);
+	List<FilteredDTO> getContentListByTitle(String title);
 	
 }

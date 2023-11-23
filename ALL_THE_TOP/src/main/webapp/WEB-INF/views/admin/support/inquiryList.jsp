@@ -83,6 +83,11 @@
 								<h6 class="mb-0">고객 문의 리스트</h6>
 							</div>
 						</a>
+						<a href="/support/contentManagement">
+							<div>
+								<h6 class="mb-0">컨텐츠 관리</h6>
+							</div>
+						</a>
 						<a href="/support/inquiryList/platformCost">
 							<div>
 								<h6>플랫폼별 가격조사</h6>

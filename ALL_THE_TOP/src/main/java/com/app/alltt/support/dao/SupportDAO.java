@@ -36,4 +36,12 @@ public interface SupportDAO {
 
 	PlatformDTO selectOnePlatformCost(int platformId);
 
+	List<FilteredDTO> selectListMisContentList();
+
+	FilteredDTO selectOneContentDetail(long contentId);
+
+	void updateContentInfo(FilteredDTO filteredDTO);
+
+	List<FilteredDTO> selectListContentByTitle(String title);
+
 }

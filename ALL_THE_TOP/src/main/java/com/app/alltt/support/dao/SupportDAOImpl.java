@@ -86,4 +86,25 @@ public class SupportDAOImpl implements SupportDAO {
 		return sqlSession.selectOne("supportMapper.selectOnePlatformCost", platformId);
 	}
 
+	@Override
+	public List<FilteredDTO> selectListMisContentList() {
+		return sqlSession.selectList("supportMapper.selectListMisContentList");
+	}
+
+	@Override
+	public FilteredDTO selectOneContentDetail(long contentId) {
+		return sqlSession.selectOne("supportMapper.selectOneContentDetail", contentId);
+	}
+
+	@Override
+	public void updateContentInfo(FilteredDTO filteredDTO) {
+		System.out.println(filteredDTO);
+		sqlSession.update("supportMapper.updateContentInfo", filteredDTO);
+	}
+
+	@Override
+	public List<FilteredDTO> selectListContentByTitle(String title) {
+		return sqlSession.selectList("supportMapper.selectListContentByTitle", title);
+	}
+
 }
